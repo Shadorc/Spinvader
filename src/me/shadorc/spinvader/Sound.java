@@ -21,8 +21,8 @@ public class Sound {
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource("/snd/" + name));
 			clip.open(audioIn);
 
-			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			gainControl.setValue(todB(gain));
+			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			this.setGain(gain);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
@@ -36,12 +36,8 @@ public class Sound {
 		clip.stop();
 	}
 
-	public void setVolume(int gain) {
-		gainControl.setValue(todB(gain));
+	public void setGain(double gain) {
+		float volume = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
+		gainControl.setValue(volume);
 	}
-
-	private static float todB(double gain) {
-		return (float) (Math.log(gain) / Math.log(10.0) * 20.0);
-	}
-
 }

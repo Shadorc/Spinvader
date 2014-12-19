@@ -1,4 +1,4 @@
-package me.shadorc.spinvader.element;
+package me.shadorc.spinvader.entity;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,31 +10,34 @@ import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.graphic.Sprite;
 
-public class SpaceShip implements Element {
+public class SpaceshipEntity implements Entity {
 
 	private float x, y;
 	private float speed;
 	private float life;
 
-	private ImageIcon img;
-	private ArrayList <Bullet> bullets;
-
 	private double lastShoot;
 	private int shootSpeed;
 	private int shootTime;
 
-	public SpaceShip(int x, int y) {
+	private ImageIcon img;
+	private ArrayList <BulletEntity> bullets;
+
+	public SpaceshipEntity(int x, int y) {
 		this.x = x;
 		this.y = y;
 
 		speed = 25;
-		shootSpeed = 50;
-		shootTime = 500;
 		life = 5;
+
 		lastShoot = 0;
-		img = new ImageIcon(new ImageIcon(this.getClass().getResource("/img/spaceship.png")).getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH));
-		bullets = new ArrayList <Bullet> ();
+		shootSpeed = 50;
+		shootTime = 50;
+
+		img = Sprite.getSprite("/img/spaceship_normal.png", 150, 150);
+		bullets = new ArrayList <BulletEntity> ();
 	}
 
 	@Override
@@ -61,7 +64,7 @@ public class SpaceShip implements Element {
 		return (System.currentTimeMillis() - lastShoot) >= shootTime;
 	}
 
-	public ArrayList <Bullet> getBullets() {
+	public ArrayList <BulletEntity> getBullets() {
 		return bullets;
 	}
 
@@ -83,29 +86,35 @@ public class SpaceShip implements Element {
 	}
 
 	public void moveLeft() {
-		if(x >= 0)
+		if(x >= 0) {
 			x -= speed;
+			img = Sprite.getSprite("/img/spaceship_left.png", 150, 150);
+		}
 	}
 
 	public void moveRight() {
-		if(x <= Frame.getScreenWidth() - img.getIconWidth())
+		if(x <= Frame.getScreenWidth() - img.getIconWidth()) {
 			x += speed;
+			img = Sprite.getSprite("/img/spaceship_right.png", 150, 150);
+		}
 	}
 
 	public void moveForward() {
-		if(y >= 0)
+		if(y >= 0) {
 			y -= speed;
+		}
 	}
 
 	public void moveBackward() {
-		if(y <= Frame.getScreenHeight() - img.getIconHeight())
+		if(y <= Frame.getScreenHeight() - img.getIconHeight()) {
 			y += speed;
+		}
 	}
 
 	@Override
 	public void shoot() {
 		if(this.isReloaded()) {
-			bullets.add(new Bullet(x + img.getIconWidth()/2, y, Direction.UP, shootSpeed));
+			bullets.add(new BulletEntity(x + img.getIconWidth()/2, y, Direction.UP, shootSpeed));
 			new Sound("spaceship_shoot.wav", 0.01).start();
 			lastShoot = System.currentTimeMillis();
 		}

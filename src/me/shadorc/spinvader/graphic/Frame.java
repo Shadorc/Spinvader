@@ -49,8 +49,4 @@ public class Frame extends JFrame {
 	public static int getScreenHeight() {
 		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
 	}
-
-	public static void gameOver() {
-		setPanel(new Menu());
-	}
 }

@@ -84,6 +84,7 @@ public class Menu extends JPanel implements ActionListener {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
 		g2d.setFont(new Font("Consolas", Font.BOLD, 200));
@@ -101,7 +102,7 @@ public class Menu extends JPanel implements ActionListener {
 		JButton bu = (JButton) event.getSource();
 
 		if(bu == start) {
-			Frame.setPanel(new Pane());
+			Frame.setPanel(new Game());
 		} else if(bu == options) {
 
 		} else if(bu == quit) {

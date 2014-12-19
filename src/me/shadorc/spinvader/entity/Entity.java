@@ -1,10 +1,10 @@
-package me.shadorc.spinvader.element;
+package me.shadorc.spinvader.entity;
 
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 
-public interface Element {
+public interface Entity {
 
 	public enum Direction {
 		UP, DOWN, RIGHT, LEFT;

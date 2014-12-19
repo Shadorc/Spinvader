@@ -1,4 +1,4 @@
-package me.shadorc.spinvader.element;
+package me.shadorc.spinvader.entity;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -8,8 +8,9 @@ import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.graphic.Sprite;
 
-public class Bullet implements Element {
+public class BulletEntity implements Entity {
 
 	private float x, y;
 	private float speed;
@@ -17,13 +18,13 @@ public class Bullet implements Element {
 	private Direction dir;
 	private boolean alive;
 
-	Bullet(float x, float y, Direction dir, float speed) {
+	BulletEntity(float x, float y, Direction dir, float speed) {
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
 		this.speed = speed;
 
-		img = new ImageIcon(this.getClass().getResource("/img/bullet.png"));
+		img = Sprite.getSprite("/img/bullet.png");
 		alive = true;
 	}
 
