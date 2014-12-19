@@ -4,12 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class SpaceshipEntity implements Entity {
@@ -18,16 +18,18 @@ public class SpaceshipEntity implements Entity {
 	private float speed;
 	private float life;
 
+	private Game game;
+
 	private double lastShoot;
 	private int shootSpeed;
 	private int shootTime;
 
 	private ImageIcon img;
-	private ArrayList <BulletEntity> bullets;
 
-	public SpaceshipEntity(int x, int y) {
+	public SpaceshipEntity(int x, int y, Game game) {
 		this.x = x;
 		this.y = y;
+		this.game = game;
 
 		speed = 25;
 		life = 5;
@@ -37,7 +39,6 @@ public class SpaceshipEntity implements Entity {
 		shootTime = 50;
 
 		img = Sprite.getSprite("/img/spaceship_normal.png", 150, 150);
-		bullets = new ArrayList <BulletEntity> ();
 	}
 
 	@Override
@@ -60,14 +61,6 @@ public class SpaceshipEntity implements Entity {
 		life--;
 	}
 
-	public boolean isReloaded() {
-		return (System.currentTimeMillis() - lastShoot) >= shootTime;
-	}
-
-	public ArrayList <BulletEntity> getBullets() {
-		return bullets;
-	}
-
 	@Override
 	public Image getImage() {
 		return img.getImage();
@@ -83,6 +76,38 @@ public class SpaceshipEntity implements Entity {
 		Rectangle re = this.getHitbox();
 		g.setColor(new Color(1f, 0f, 0f, 0.5f));
 		g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
+	}
+
+	@Override
+	public void collidedWith(Entity en) {
+		if(en instanceof EnemyEntity) {
+			Game.gameOver();
+		}
+
+		else if(en instanceof BulletEntity) {
+			if(((BulletEntity) en).getType() == Type.ENEMY) {
+				this.hit();
+				game.removeEntity(en);
+			}
+		}
+	}
+
+	public boolean isReloaded() {
+		return (System.currentTimeMillis() - lastShoot) >= shootTime;
+	}
+
+	@Override
+	public void shoot() {
+		if(this.isReloaded()) {
+			game.addEntity(new BulletEntity(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP, game));
+			new Sound("spaceship_shoot.wav", 0.01).start();
+			lastShoot = System.currentTimeMillis();
+		}
+	}
+
+	@Override
+	public void move(double delta) {
+
 	}
 
 	public void moveLeft() {
@@ -108,15 +133,6 @@ public class SpaceshipEntity implements Entity {
 	public void moveBackward() {
 		if(y <= Frame.getScreenHeight() - img.getIconHeight()) {
 			y += speed;
-		}
-	}
-
-	@Override
-	public void shoot() {
-		if(this.isReloaded()) {
-			bullets.add(new BulletEntity(x + img.getIconWidth()/2, y, Direction.UP, shootSpeed));
-			new Sound("spaceship_shoot.wav", 0.01).start();
-			lastShoot = System.currentTimeMillis();
 		}
 	}
 }

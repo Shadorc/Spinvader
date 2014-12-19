@@ -25,7 +25,7 @@ public class Frame extends JFrame {
 		this.pack();
 
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		if (device.isFullScreenSupported()) {
+		if(device.isFullScreenSupported()) {
 			device.setFullScreenWindow(this);
 		} else {
 			JOptionPane.showMessageDialog(null, "Le mode plein ecran n'est pas disponible", "Erreur", JOptionPane.ERROR_MESSAGE);

@@ -9,17 +9,15 @@ import java.net.URISyntaxException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-public class Sprite {
+import me.shadorc.spinvader.entity.Entity.Type;
 
-	public enum Type {
-		ENNEMY;
-	}
+public class Sprite {
 
 	public static ImageIcon generateSprite(Type type) {
 
 		BufferedImage img = null;
 
-		if(type == Type.ENNEMY) {
+		if(type == Type.ENEMY) {
 			try {
 				img = ImageIO.read(new File(Sprite.class.getResource("/img/invaders.png").toURI()));
 				//				img = img.getSubimage(new Random().nextInt(img.getWidth()/69)*69, new Random().nextInt(img.getHeight()/55)*55, 69, 55);

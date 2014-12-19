@@ -10,15 +10,20 @@ public interface Entity {
 		UP, DOWN, RIGHT, LEFT;
 	}
 
+	public enum Type {
+		ENEMY, SPACESHIP, BOSS;
+	}
+
 	public float getX();
 	public float getY();
 	public float getLife();
 
 	public Rectangle getHitbox();
 	public Image getImage();
-	
-	public void drawHitbox(Graphics g);
 
+	public void collidedWith(Entity en);
+	public void drawHitbox(Graphics g);
+	public void move(double delta);
 	public void shoot();
 	public void hit();
 }

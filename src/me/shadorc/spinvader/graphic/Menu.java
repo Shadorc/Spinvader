@@ -41,9 +41,9 @@ public class Menu extends JPanel implements ActionListener {
 		JPanel buttons = new JPanel(new GridLayout(3, 0, 0, 35));
 		buttons.setOpaque(false);
 
-		start = createButton(new JButton("Start"));
-		options = createButton(new JButton("Options"));
-		quit = createButton(new JButton("Quit"));
+		start = this.createButton(new JButton("Start"));
+		options = this.createButton(new JButton("Options"));
+		quit = this.createButton(new JButton("Quit"));
 
 		buttons.add(start);
 		buttons.add(options);
@@ -91,10 +91,10 @@ public class Menu extends JPanel implements ActionListener {
 		g2d.setColor(Color.BLACK);
 
 		//Text centered
-		int stringLen = (int) g2d.getFontMetrics().getStringBounds(title, g2d).getWidth();  
-		int start = Frame.getScreenWidth()/2 - stringLen/2;  
+		int stringLen = (int) g2d.getFontMetrics().getStringBounds(title, g2d).getWidth();
+		int start = Frame.getScreenWidth() / 2 - stringLen / 2;
 
-		g2d.drawString(title, start, Frame.getScreenHeight()/6);  
+		g2d.drawString(title, start, Frame.getScreenHeight() / 6);
 	}
 
 	@Override

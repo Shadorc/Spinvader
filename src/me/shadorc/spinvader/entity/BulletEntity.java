@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class BulletEntity implements Entity {
@@ -16,48 +17,58 @@ public class BulletEntity implements Entity {
 	private float speed;
 	private ImageIcon img;
 	private Direction dir;
-	private boolean alive;
+	private Type type;
+	private Game game;
 
-	BulletEntity(float x, float y, Direction dir, float speed) {
+	BulletEntity(float x, float y, Direction dir, float speed, Type type, Game game) {
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
 		this.speed = speed;
+		this.type = type;
+		this.game = game;
 
 		img = Sprite.getSprite("/img/bullet.png");
-		alive = true;
 	}
 
+	@Override
 	public float getX() {
 		return x;
 	}
 
+	@Override
 	public float getY() {
 		return y;
 	}
 
+	@Override
 	public Image getImage() {
 		return img.getImage();
 	}
 
-	public boolean isAlive() {
-		return alive;
+	public Type getType() {
+		return type;
 	}
 
-	public void move() {
-		if(dir == Direction.UP)
-			y -= speed;
-		else if(dir == Direction.DOWN)
-			y += speed;
+	@Override
+	public void move(double delta) {
+		if(dir == Direction.UP) {
+			y -= (speed * delta) / 30;
+		} else if(dir == Direction.DOWN) {
+			y += (speed * delta) / 30;
+		}
 
-		if(y <= 0 || y >= Frame.getScreenHeight())
-			alive = false;
+		if(y <= 0 || y >= Frame.getScreenHeight()) {
+			game.removeEntity(this);
+		}
 	}
 
+	@Override
 	public Rectangle getHitbox() {
 		return new Rectangle((int) x, (int) y, img.getIconWidth(), img.getIconHeight());
 	}
 
+	@Override
 	public void drawHitbox(Graphics g) {
 		Rectangle re = this.getHitbox();
 		g.setColor(new Color(1f, 0f, 0f, 0.5f));
@@ -66,19 +77,15 @@ public class BulletEntity implements Entity {
 
 	@Override
 	public float getLife() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public void shoot() {
-		// TODO Auto-generated method stub
-
-	}
+	public void shoot() { }
 
 	@Override
-	public void hit() {
-		// TODO Auto-generated method stub
+	public void hit() { }
 
-	}
+	@Override
+	public void collidedWith(Entity en) { }
 }

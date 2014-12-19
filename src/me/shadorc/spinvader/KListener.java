@@ -9,7 +9,7 @@ public class KListener implements KeyListener {
 	private ArrayList <Integer> keys;
 
 	public KListener() {
-		this.keys = new ArrayList <Integer> ();
+		this.keys = new ArrayList <Integer>();
 	}
 
 	public ArrayList <Integer> getKeysPressed() {
