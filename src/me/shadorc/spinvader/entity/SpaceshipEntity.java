@@ -35,8 +35,8 @@ public class SpaceshipEntity implements Entity {
 		life = 5;
 
 		lastShoot = 0;
-		shootSpeed = 50;
-		shootTime = 50;
+		shootSpeed = 100;
+		shootTime = 0;
 
 		img = Sprite.getSprite("/img/spaceship_normal.png", 150, 150);
 	}
@@ -81,7 +81,7 @@ public class SpaceshipEntity implements Entity {
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof EnemyEntity) {
-			Game.gameOver();
+//			Game.gameOver();
 		}
 
 		else if(en instanceof BulletEntity) {
@@ -110,29 +110,29 @@ public class SpaceshipEntity implements Entity {
 
 	}
 
-	public void moveLeft() {
+	public void moveLeft(double delta) {
 		if(x >= 0) {
-			x -= speed;
-			img = Sprite.getSprite("/img/spaceship_left.png", 150, 150);
+			x -= (speed * delta) / 30;
+			//			img = Sprite.getSprite("/img/spaceship_left.png", 150, 150);
 		}
 	}
 
-	public void moveRight() {
+	public void moveRight(double delta) {
 		if(x <= Frame.getScreenWidth() - img.getIconWidth()) {
-			x += speed;
-			img = Sprite.getSprite("/img/spaceship_right.png", 150, 150);
+			x += (speed * delta) / 30;
+			//			img = Sprite.getSprite("/img/spaceship_right.png", 150, 150);
 		}
 	}
 
-	public void moveForward() {
+	public void moveForward(double delta) {
 		if(y >= 0) {
-			y -= speed;
+			y -= (speed * delta) / 30;
 		}
 	}
 
-	public void moveBackward() {
+	public void moveBackward(double delta) {
 		if(y <= Frame.getScreenHeight() - img.getIconHeight()) {
-			y += speed;
+			y += (speed * delta) / 30;
 		}
 	}
 }

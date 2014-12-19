@@ -23,15 +23,18 @@ public class EnemyEntity implements Entity {
 	private ImageIcon img;
 	private Direction dir;
 
+	private int toReach;
+
 	private EnemyEntity(float x, float y, ImageIcon img, Game game) {
 		this.x = x;
 		this.y = y;
 		this.img = img;
 		this.game = game;
 
-		speed = 10;
+		speed = 15;
 		shootSpeed = 20;
-		life = 3;
+		life = 1;
+		toReach = (int) (-y-100);
 
 		dir = Direction.RIGHT;
 	}
@@ -68,7 +71,7 @@ public class EnemyEntity implements Entity {
 
 	@Override
 	public void shoot() {
-		game.addEntity(new BulletEntity(x, y, Direction.DOWN, shootSpeed, Type.ENEMY, game));
+		game.addEntity(new BulletEntity((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
 	}
 
 	@Override
@@ -80,16 +83,31 @@ public class EnemyEntity implements Entity {
 
 	@Override
 	public void move(double delta) {
-		if(dir == Direction.RIGHT) {
-			x += (speed * delta) / 30;
-		} else if(dir == Direction.LEFT) {
-			x -= (speed * delta) / 30;
-		}
+		if(toReach != y) {
+			y += (float) ((speed * delta) / 30);
 
-		if(x <= 0) {
-			dir = Direction.RIGHT;
-		} else if(x >= Frame.getScreenWidth() - img.getIconWidth()) {
-			dir = Direction.LEFT;
+			if(y >= toReach)	
+				y = toReach;
+
+			if(y >= (Frame.getScreenHeight() - img.getIconHeight()))
+				Game.gameOver();
+
+		} else {
+			if(dir == Direction.RIGHT) {
+				x += (float) ((speed * delta) / 30);
+			} else if(dir == Direction.LEFT) {
+				x -= (float) ((speed * delta) / 30);
+			}
+
+			if(x <= 0) {
+				dir = Direction.RIGHT;
+				x = 0;
+				toReach = (int) (y + this.getHitbox().getHeight());
+			} else if(x >= Frame.getScreenWidth() - img.getIconWidth()) {
+				dir = Direction.LEFT;
+				x = (float) (Frame.getScreenWidth() - img.getIconWidth());
+				toReach = (int) (y + this.getHitbox().getHeight());
+			}
 		}
 	}
 
@@ -102,20 +120,10 @@ public class EnemyEntity implements Entity {
 
 				if(this.life <= 0) {
 					game.removeEntity(this);
+					game.increaseScore(35);
 				}
 			}
 		}
-	}
-
-	public void goDown() {
-		y += img.getIconHeight();
-		if(y >= Frame.getScreenHeight() - img.getIconHeight()) {
-			Game.gameOver();
-		}
-	}
-
-	public void setDirection(Direction dir) {
-		this.dir = dir;
 	}
 
 	public static ArrayList <EnemyEntity> generate(int count, Game game) {
@@ -124,7 +132,7 @@ public class EnemyEntity implements Entity {
 		int y = 0;
 
 		for(int i = 1; i < count + 1; i++) {
-			ennemies.add(new EnemyEntity(10 + (100 * x), 10 + (100 * y), Sprite.resize(Sprite.generateSprite(Type.ENEMY), 100, 100), game));
+			ennemies.add(new EnemyEntity(10 + (100 * x), (10 + (100 * y) - 3*(110)), Sprite.resize(Sprite.generateSprite(Type.ENEMY), 100, 100), game));
 			if(i % 12 == 0) {
 				y++;
 				x = 0;
