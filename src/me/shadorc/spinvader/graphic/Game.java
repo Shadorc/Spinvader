@@ -38,25 +38,26 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	private static Sound music;
 
-	private boolean showHitbox = true;
+	private boolean showHitbox = false;
+	private boolean showDebug = false;
+	private boolean gameOver = false;
 
 	private Thread th;
 
 	private double fpsTime = System.currentTimeMillis();
 	private double loopTime = System.currentTimeMillis();
 	private int fps = 0, frame = 0;
-	private static Timer update;
+	private Timer update;
 
 	private ArrayList <Entity> entities;
 
 	Game() {
 
-		entities = new ArrayList <Entity>();
-
 		spaceship = new SpaceshipEntity(Frame.getScreenWidth() / 2, Frame.getScreenHeight() / 2, this);
 
+		entities = new ArrayList <Entity>();
 		entities.add(spaceship);
-		entities.addAll(EnemyEntity.generate(12, this));
+		entities.addAll(EnemyEntity.generate(36, this));
 
 		background = new ImageIcon(this.getClass().getResource("/img/background.png"));
 		listener = new KListener();
@@ -96,11 +97,33 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		g2d.setFont(new Font("Consolas", Font.BOLD, 20));
 		g2d.setColor(Color.RED);
 		g2d.drawString("Score : " + score, Frame.getScreenWidth() - 150, 30);
-		g2d.drawString(fps + " FPS", 10, 30);
-		g2d.drawString("Resolution: " + Frame.getScreenWidth() + "x" + Frame.getScreenHeight(), 10, 60);
-		g2d.drawString("Entities: " + entities.size(), 10, 90);
-		g2d.drawString("Show Hitbox: " + showHitbox, 10, 120);
-		g2d.drawString("Life: " + spaceship.getLife(), 10, 150);
+
+		if(showDebug) {
+			g2d.drawString(fps + " FPS", 10, 30);
+			g2d.drawString("Resolution: " + Frame.getScreenWidth() + "x" + Frame.getScreenHeight(), 10, 60);
+			g2d.drawString("Entities: " + entities.size(), 10, 90);
+			g2d.drawString("Show Hitbox: " + showHitbox, 10, 120);
+			g2d.drawString("Life: " + spaceship.getLife(), 10, 150);
+		}
+
+		if(gameOver) {
+			g2d.setPaint(new Color(0, 0, 0, 0.5f));
+			g2d.fillRect(0, 0, Frame.getScreenWidth(), Frame.getScreenHeight());
+
+			g2d.setFont(new Font("Consolas", Font.BOLD, 200));
+			g2d.setColor(Color.RED);
+
+			String fir = "GAME OVER !";
+			int start = this.getCenteredText(g2d, fir);
+			g.drawString(fir, start, Frame.getScreenHeight()/2);
+
+			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
+			g2d.setColor(Color.WHITE);
+
+			String sec = "Press \"Esc\" to return to the menu.";
+			start = this.getCenteredText(g2d, sec); 
+			g.drawString(sec, start, Frame.getScreenHeight()/2 + 50);
+		}
 
 		if(System.currentTimeMillis() - fpsTime >= 500) {
 			fps = frame * 2;
@@ -112,6 +135,14 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.repaint();
+
+		if(gameOver) {
+			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
+				update.stop();
+				Frame.setPanel(new Menu());
+			}
+			return;
+		}
 
 		double delta = System.currentTimeMillis() - loopTime;
 		loopTime = System.currentTimeMillis();
@@ -125,10 +156,12 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			if(key == KeyEvent.VK_UP)		spaceship.moveForward(delta);
 			if(key == KeyEvent.VK_DOWN)		spaceship.moveBackward(delta);
 			if(key == KeyEvent.VK_SPACE)	spaceship.shoot();
+			if(key == KeyEvent.VK_F3)		showDebug = !showDebug;
+			if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
 		}
 
 		if(!th.isAlive()) {
-			if(this.getEnemies().size() <= 151) {
+			if(this.getEnemies().size() == 0) {
 				th = new Thread(this);
 				th.start();
 			} else if(rand.nextInt(10) == 0) {
@@ -151,10 +184,10 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		}
 	}
 
-	public static void gameOver() {
+	public void gameOver() {
 		music.stop();
-		update.stop();
-		Frame.setPanel(new Menu());
+		//		update.stop();
+		gameOver = true;
 	}
 
 	private ArrayList <EnemyEntity> getEnemies() {
@@ -177,10 +210,17 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	@Override
 	public void run() {
-		entities.addAll(EnemyEntity.generate(12, this));
+		entities.addAll(EnemyEntity.generate(36, this));
 	}
 
 	public void increaseScore(int i) {
 		score += i;		
+	}
+
+	private int getCenteredText(Graphics g, String str) {
+		int stringLen = (int) g.getFontMetrics().getStringBounds(str, g).getWidth();
+		int start = Frame.getScreenWidth() / 2 - stringLen / 2;
+
+		return start;
 	}
 }

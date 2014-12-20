@@ -36,7 +36,7 @@ public class SpaceshipEntity implements Entity {
 
 		lastShoot = 0;
 		shootSpeed = 100;
-		shootTime = 0;
+		shootTime = 200;
 
 		img = Sprite.getSprite("/img/spaceship_normal.png", 150, 150);
 	}
@@ -81,7 +81,7 @@ public class SpaceshipEntity implements Entity {
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof EnemyEntity) {
-//			Game.gameOver();
+			game.gameOver();
 		}
 
 		else if(en instanceof BulletEntity) {
