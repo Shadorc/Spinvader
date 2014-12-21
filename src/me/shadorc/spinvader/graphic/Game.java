@@ -34,6 +34,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	private KListener listener;
 
 	private int score = 0;
+	private int money = 0;
 	private int level = 1;
 
 	private static Sound music;
@@ -106,6 +107,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		g2d.setFont(new Font("Consolas", Font.BOLD, 20));
 		g2d.setColor(Color.RED);
 		g2d.drawString("Score : " + score, Frame.getScreenWidth() - 150, 30);
+		g2d.drawString("Money : " + money, Frame.getScreenWidth() - 150, 60);
 
 		if(showDebug) {
 			int mb = 1024*1024;
@@ -237,6 +239,10 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	public void increaseScore(int i) {
 		score += i;		
+	}
+
+	public void increaseMoney(int i) {
+		money += i;		
 	}
 
 	private int getCenteredText(Graphics g, String str) {

@@ -107,6 +107,15 @@ public class SpaceshipEntity implements Entity {
 	@Override
 	public void shoot() {
 		if(this.isReloaded()) {
+
+			/*
+			Point a = new Point(new Random().nextInt(Frame.getScreenWidth()), 0);
+			Point b = new Point((int) x, (int) y);
+
+			float coef = (float) ((b.getY() - a.getY())/(b.getX() - a.getX()));
+			float ord = (float) (b.getY() - coef * b.getX());
+			 */
+
 			game.addEntity(new BulletEntity(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			game.addEntity(new BulletEntity(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			game.addEntity(new BulletEntity(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));

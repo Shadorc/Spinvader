@@ -130,6 +130,9 @@ public class EnemyEntity implements Entity {
 				if(this.life <= 0) {
 					game.removeEntity(this);
 					game.increaseScore(35);
+					if(rand.nextInt(10) == 0) {
+						game.addEntity(new Item(x, y, game));
+					}
 				}
 			}
 		}
