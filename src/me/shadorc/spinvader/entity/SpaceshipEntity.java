@@ -1,7 +1,5 @@
 package me.shadorc.spinvader.entity;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 
@@ -14,15 +12,14 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class SpaceshipEntity implements Entity {
 
+	private Game game;
+
 	private float x, y;
 	private float speed;
 	private float lifeMax, life;
 
-	private Game game;
-
 	private double lastShoot;
-	private int shootSpeed;
-	private int shootTime;
+	private int shootSpeed, shootTime;
 
 	private ImageIcon img;
 
@@ -62,11 +59,6 @@ public class SpaceshipEntity implements Entity {
 	}
 
 	@Override
-	public void hit() {
-		life--;
-	}
-
-	@Override
 	public Image getImage() {
 		return img.getImage();
 	}
@@ -77,13 +69,6 @@ public class SpaceshipEntity implements Entity {
 	}
 
 	@Override
-	public void drawHitbox(Graphics g) {
-		Rectangle re = this.getHitbox();
-		g.setColor(new Color(1f, 0f, 0f, 0.5f));
-		g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
-	}
-
-	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof EnemyEntity) {
 			game.gameOver();
@@ -91,7 +76,7 @@ public class SpaceshipEntity implements Entity {
 
 		else if(en instanceof BulletEntity) {
 			if(((BulletEntity) en).getType() == Type.ENEMY) {
-				this.hit();
+				life--;
 				game.removeEntity(en);
 				if(life <= 0) {
 					game.gameOver();

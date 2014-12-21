@@ -1,7 +1,5 @@
 package me.shadorc.spinvader.entity;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 
@@ -69,22 +67,12 @@ public class BulletEntity implements Entity {
 	}
 
 	@Override
-	public void drawHitbox(Graphics g) {
-		Rectangle re = this.getHitbox();
-		g.setColor(new Color(1f, 0f, 0f, 0.5f));
-		g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
-	}
-
-	@Override
 	public float getLife() {
 		return 0;
 	}
 
 	@Override
 	public void shoot() { }
-
-	@Override
-	public void hit() { }
 
 	@Override
 	public void collidedWith(Entity en) { }

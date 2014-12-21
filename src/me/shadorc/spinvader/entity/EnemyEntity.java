@@ -1,7 +1,5 @@
 package me.shadorc.spinvader.entity;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ public class EnemyEntity implements Entity {
 	private float life;
 
 	private ImageIcon img;
-	private Direction dir;
+	private static Direction dir;
 
 	private int toReach;
 
@@ -41,7 +39,7 @@ public class EnemyEntity implements Entity {
 		lastShoot = System.currentTimeMillis();
 		shootTime = rand.nextInt(5000)+1000;
 		life = 1;
-		toReach = (int) (-y-100);
+		toReach = (int) (y+350);
 
 		dir = Direction.RIGHT;
 	}
@@ -62,11 +60,6 @@ public class EnemyEntity implements Entity {
 	}
 
 	@Override
-	public void hit() {
-		life--;
-	}
-
-	@Override
 	public Image getImage() {
 		return img.getImage();
 	}
@@ -84,24 +77,48 @@ public class EnemyEntity implements Entity {
 	}
 
 	@Override
-	public void drawHitbox(Graphics g) {
-		Rectangle re = this.getHitbox();
-		g.setColor(new Color(1f, 0f, 0f, 0.5f));
-		g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
-	}
-
-	@Override
 	public void move(double delta) {
-		if(toReach != y) {
+
+		if(dir == Direction.DOWN) {
 			y += (float) ((speed * delta) / 30);
 
-			if(y >= toReach)	
-				y = toReach;
+			if(Math.abs(toReach - y) < 0.1) {
+				if(x > 500) {
+					dir = Direction.LEFT;
+				} else {
+					dir = Direction.RIGHT;
+				}
+			}
 
-			if(y >= (Frame.getScreenHeight() - img.getIconHeight()))
+			if(y >= (Frame.getScreenHeight() - img.getIconHeight())) {
 				game.gameOver();
+			}
 
-		} else {
+		} else if(dir == Direction.RIGHT) {
+			x += (float) ((speed * delta) / 30);
+
+			if(x >= Frame.getScreenWidth() - img.getIconWidth()) {
+				dir = Direction.LEFT;
+				x = (float) (Frame.getScreenWidth() - img.getIconWidth());
+				dir = Direction.DOWN;
+				toReach = (int) (y + this.getHitbox().getHeight());
+			}
+
+		} else if(dir == Direction.LEFT) {
+			x -= (float) ((speed * delta) / 30);
+
+			if(x <= 0) {
+				dir = Direction.RIGHT;
+				x = 0;
+				dir = Direction.DOWN;
+				toReach = (int) (y + this.getHitbox().getHeight());
+			}
+		}
+
+
+		/*
+		//If y ~= toReach
+		if(Math.abs(toReach - y) < 0.00001) {
 			if(dir == Direction.RIGHT) {
 				x += (float) ((speed * delta) / 30);
 			} else if(dir == Direction.LEFT) {
@@ -117,14 +134,25 @@ public class EnemyEntity implements Entity {
 				x = (float) (Frame.getScreenWidth() - img.getIconWidth());
 				toReach = (int) (y + this.getHitbox().getHeight());
 			}
+		} else {
+			y += (float) ((speed * delta) / 30);
+
+			if(y > toReach)	{
+				y = toReach;
+			}
+
+			if(y >= (Frame.getScreenHeight() - img.getIconHeight())) {
+				game.gameOver();
+			}
 		}
+		 */
 	}
 
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof BulletEntity) {
 			if(((BulletEntity) en).getType() == Type.SPACESHIP) {
-				this.hit();
+				life--;
 				game.removeEntity(en);
 
 				if(this.life <= 0) {
@@ -150,11 +178,7 @@ public class EnemyEntity implements Entity {
 		int y = 0;
 
 		for(int i = 1; i < count + 1; i++) {
-			ennemies.add(
-					new EnemyEntity(10 + (100 * x),
-							(10 + (100 * y) - 3*(110)),
-							Sprite.resize(Sprite.generateSprite(level), 100, 100),
-							game));
+			ennemies.add(new EnemyEntity((10+110*x), (10+110*y - 3*110), Sprite.resize(Sprite.generateSprite(level), 100, 90),	game));
 			if(i % 12 == 0) {
 				y++;
 				x = 0;

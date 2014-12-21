@@ -1,7 +1,5 @@
 package me.shadorc.spinvader.entity;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 
@@ -21,12 +19,12 @@ public class Item implements Entity {
 	private float speed;
 
 	Item(float x, float y, Game game) {
-		img = Sprite.resize(Sprite.getSprite("/img/dollar.png"), 50, 50);
-
 		this.x = x;
 		this.y = y;
 		this.speed = 5;
 		this.game = game;
+
+		img = Sprite.resize(Sprite.getSprite("/img/dollar.png"), 50, 50);
 	}
 
 	@Override
@@ -63,13 +61,6 @@ public class Item implements Entity {
 	}
 
 	@Override
-	public void drawHitbox(Graphics g) {
-		Rectangle re = this.getHitbox();
-		g.setColor(new Color(1f, 0f, 0f, 0.5f));
-		g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
-	}
-
-	@Override
 	public void move(double delta) {
 		y += (float) ((speed * delta) / 30);
 
@@ -83,11 +74,4 @@ public class Item implements Entity {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public void hit() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

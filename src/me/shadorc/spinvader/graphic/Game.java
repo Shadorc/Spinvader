@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -96,7 +97,9 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		for(Entity en : entities) {
 			g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
 			if(showHitbox) {
-				en.drawHitbox(g2d);
+				Rectangle re = en.getHitbox();
+				g.setColor(Color.RED);
+				g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
 			}
 		}
 
@@ -121,6 +124,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			infos.add(fps + " FPS");
 			infos.add("Used Memory: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
 			infos.add("Threads: " + Thread.activeCount());
+			infos.add("Keys: " + listener.getKeysPressed());
 
 			for(int i = 30; i < infos.size() * 30; i+=30) {
 				g2d.drawString(infos.get(i/30), 40, i);
@@ -144,7 +148,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 			String sec = "Press \"Esc\" to return to the menu.";
 			start = this.getCenteredText(g2d, sec); 
-			g.drawString(sec, start, Frame.getScreenHeight()/2 + 50);
+			g2d.drawString(sec, start, Frame.getScreenHeight()/2 + 50);
 		}
 
 		if(System.currentTimeMillis() - fpsTime >= 500) {
@@ -183,7 +187,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
 		}
 
-		if(!th.isAlive() &&  this.getEnemies().size() == 0) {
+		if(!th.isAlive() &&  !this.isEnemyAlive()) {
 			th = new Thread(this);
 			th.start();
 		}
@@ -213,14 +217,13 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		//FIXME: Memory used when dying, find why
 	}
 
-	private ArrayList <EnemyEntity> getEnemies() {
-		ArrayList <EnemyEntity> list = new ArrayList <EnemyEntity>();
+	private boolean isEnemyAlive() {
 		for(Entity en : entities) {
 			if(en instanceof EnemyEntity) {
-				list.add((EnemyEntity) en);
+				return true;
 			}
 		}
-		return list;
+		return false;
 	}
 
 	public void addEntity(Entity en) {
