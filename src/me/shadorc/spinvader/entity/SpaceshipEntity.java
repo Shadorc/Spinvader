@@ -20,6 +20,8 @@ public class SpaceshipEntity implements Entity {
 
 	private Game game;
 
+	private boolean tripleFire = true;
+
 	private double lastShoot;
 	private int shootSpeed;
 	private int shootTime;
@@ -35,7 +37,7 @@ public class SpaceshipEntity implements Entity {
 		life = 5;
 
 		lastShoot = 0;
-		shootSpeed = 100;
+		shootSpeed = 50;
 		shootTime = 200;
 
 		img = Sprite.getSprite("/img/spaceship_normal.png", 150, 150);
@@ -88,6 +90,9 @@ public class SpaceshipEntity implements Entity {
 			if(((BulletEntity) en).getType() == Type.ENEMY) {
 				this.hit();
 				game.removeEntity(en);
+				if(life <= 0) {
+					game.gameOver();
+				}
 			}
 		}
 	}
@@ -100,6 +105,8 @@ public class SpaceshipEntity implements Entity {
 	public void shoot() {
 		if(this.isReloaded()) {
 			game.addEntity(new BulletEntity(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP, game));
+			game.addEntity(new BulletEntity(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
+			game.addEntity(new BulletEntity(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			new Sound("spaceship_shoot.wav", 0.01).start();
 			lastShoot = System.currentTimeMillis();
 		}

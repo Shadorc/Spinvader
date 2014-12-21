@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -30,16 +29,16 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	private SpaceshipEntity spaceship;
 
-	private Random rand = new Random();
-
 	private ImageIcon background;
 	private KListener listener;
+
 	private int score = 0;
+	private int level = 1;
 
 	private static Sound music;
 
 	private boolean showHitbox = false;
-	private boolean showDebug = false;
+	private boolean showDebug = true;
 	private boolean gameOver = false;
 
 	private Thread th;
@@ -94,6 +93,10 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			}
 		}
 
+		//Life bar
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(0, (int) ((Frame.getScreenHeight()/5)*(5-spaceship.getLife())), 30, Frame.getScreenHeight());
+
 		g2d.setFont(new Font("Consolas", Font.BOLD, 20));
 		g2d.setColor(Color.RED);
 		g2d.drawString("Score : " + score, Frame.getScreenWidth() - 150, 30);
@@ -107,6 +110,8 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		}
 
 		if(gameOver) {
+
+			//Transparent filter to darken the game 
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
 			g2d.fillRect(0, 0, Frame.getScreenWidth(), Frame.getScreenHeight());
 
@@ -139,6 +144,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		if(gameOver) {
 			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
 				update.stop();
+				music.stop();
 				Frame.setPanel(new Menu());
 			}
 			return;
@@ -160,19 +166,19 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
 		}
 
-		if(!th.isAlive()) {
-			if(this.getEnemies().size() == 0) {
-				th = new Thread(this);
-				th.start();
-			} else if(rand.nextInt(10) == 0) {
-				this.getEnemies().get(rand.nextInt(this.getEnemies().size())).shoot();
-			}
+		if(!th.isAlive() &&  this.getEnemies().size() == 0) {
+			th = new Thread(this);
+			th.start();
 		}
 
 		for(int i = 0; i < entities.size(); i++) {
 			Entity en = entities.get(i);
 
 			en.move(delta);
+
+			if(en instanceof EnemyEntity) {
+				((EnemyEntity) en).update();
+			}
 
 			for(int o = 0; o < entities.size(); o++) {
 				Entity en1 = entities.get(o);
@@ -185,8 +191,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void gameOver() {
-		music.stop();
-		//		update.stop();
+		//		music.stop();
 		gameOver = true;
 	}
 

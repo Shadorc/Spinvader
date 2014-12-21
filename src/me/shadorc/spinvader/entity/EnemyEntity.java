@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 
@@ -15,9 +16,11 @@ import me.shadorc.spinvader.graphic.Sprite;
 public class EnemyEntity implements Entity {
 
 	private Game game;
+	private Random rand;
 
 	private float x, y;
-	private float speed, shootSpeed;
+	private float speed, shootSpeed, shootTime;
+	private double lastShoot;
 	private float life;
 
 	private ImageIcon img;
@@ -31,8 +34,12 @@ public class EnemyEntity implements Entity {
 		this.img = img;
 		this.game = game;
 
-		speed = 10;
+		rand = new Random();
+
+		speed = 5;
 		shootSpeed = 20;
+		lastShoot = System.currentTimeMillis();
+		shootTime = rand.nextInt(5000)+1000;
 		life = 1;
 		toReach = (int) (-y-100);
 
@@ -72,6 +79,8 @@ public class EnemyEntity implements Entity {
 	@Override
 	public void shoot() {
 		game.addEntity(new BulletEntity((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
+		lastShoot = System.currentTimeMillis();
+		shootTime = rand.nextInt(5000)+1000;
 	}
 
 	@Override
@@ -123,6 +132,12 @@ public class EnemyEntity implements Entity {
 					game.increaseScore(35);
 				}
 			}
+		}
+	}
+
+	public void update() {
+		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
+			this.shoot();
 		}
 	}
 
