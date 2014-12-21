@@ -9,23 +9,19 @@ import java.net.URISyntaxException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import me.shadorc.spinvader.entity.Entity.Type;
-
 public class Sprite {
 
-	public static ImageIcon generateSprite(Type type) {
+	public static ImageIcon generateSprite(int level) {
 
 		BufferedImage img = null;
 
-		if(type == Type.ENEMY) {
-			try {
-				img = ImageIO.read(new File(Sprite.class.getResource("/img/invaders.png").toURI()));
-				//				img = img.getSubimage(new Random().nextInt(img.getWidth()/69)*69, new Random().nextInt(img.getHeight()/55)*55, 69, 55);
-				img = img.getSubimage(0, 0, 69, 55);
-			} catch (IOException | URISyntaxException e) {
-				e.printStackTrace();
-				img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-			}
+		//FIXME: Launch boss when no image available anymore
+		try {
+			img = ImageIO.read(new File(Sprite.class.getResource("/img/invaders1.png").toURI()));
+			img = img.getSubimage(img.getWidth()-65*level, 0, 65, 40);
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+			img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
 		}
 
 		return new ImageIcon(img);

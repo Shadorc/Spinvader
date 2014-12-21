@@ -16,11 +16,9 @@ public class SpaceshipEntity implements Entity {
 
 	private float x, y;
 	private float speed;
-	private float life;
+	private float lifeMax, life;
 
 	private Game game;
-
-	private boolean tripleFire = true;
 
 	private double lastShoot;
 	private int shootSpeed;
@@ -34,7 +32,8 @@ public class SpaceshipEntity implements Entity {
 		this.game = game;
 
 		speed = 25;
-		life = 5;
+		lifeMax = 25;
+		life = lifeMax;
 
 		lastShoot = 0;
 		shootSpeed = 50;
@@ -56,6 +55,10 @@ public class SpaceshipEntity implements Entity {
 	@Override
 	public float getLife() {
 		return life;
+	}
+
+	public float getMaximumLife() {
+		return lifeMax;
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class SpaceshipEntity implements Entity {
 			game.addEntity(new BulletEntity(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			game.addEntity(new BulletEntity(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			game.addEntity(new BulletEntity(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
-			new Sound("spaceship_shoot.wav", 0.01).start();
+			new Sound("spaceship_shoot.wav", 0.1).start();
 			lastShoot = System.currentTimeMillis();
 		}
 	}

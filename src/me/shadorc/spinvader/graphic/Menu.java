@@ -104,7 +104,7 @@ public class Menu extends JPanel implements ActionListener {
 		if(bu == start) {
 			Frame.setPanel(new Game());
 		} else if(bu == options) {
-
+			Frame.setPanel(new Options());
 		} else if(bu == quit) {
 			System.exit(0);
 		}

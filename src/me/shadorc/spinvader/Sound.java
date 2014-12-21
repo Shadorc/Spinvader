@@ -6,6 +6,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -23,6 +25,15 @@ public class Sound {
 
 			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			this.setGain(gain);
+
+			//Close sound thread when the sound finished
+			clip.addLineListener(new LineListener() {
+				public void update(LineEvent evt) {
+					if(evt.getType() == LineEvent.Type.STOP) {
+						evt.getLine().close();
+					}
+				}
+			});
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}

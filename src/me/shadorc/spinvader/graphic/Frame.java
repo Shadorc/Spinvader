@@ -24,6 +24,8 @@ public class Frame extends JFrame {
 		this.setUndecorated(true);
 		this.pack();
 
+		new Options();
+
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		if(device.isFullScreenSupported()) {
 			device.setFullScreenWindow(this);

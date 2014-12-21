@@ -141,13 +141,17 @@ public class EnemyEntity implements Entity {
 		}
 	}
 
-	public static ArrayList <EnemyEntity> generate(int count, Game game) {
+	public static ArrayList <EnemyEntity> generate(int count, int level, Game game) {
 		ArrayList <EnemyEntity> ennemies = new ArrayList <EnemyEntity>();
 		int x = 0;
 		int y = 0;
 
 		for(int i = 1; i < count + 1; i++) {
-			ennemies.add(new EnemyEntity(10 + (100 * x), (10 + (100 * y) - 3*(110)), Sprite.getSprite("/img/enemy.png", 100, 100), game));
+			ennemies.add(
+					new EnemyEntity(10 + (100 * x),
+							(10 + (100 * y) - 3*(110)),
+							Sprite.resize(Sprite.generateSprite(level), 100, 100),
+							game));
 			if(i % 12 == 0) {
 				y++;
 				x = 0;

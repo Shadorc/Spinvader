@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,7 +57,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 		entities = new ArrayList <Entity>();
 		entities.add(spaceship);
-		entities.addAll(EnemyEntity.generate(36, this));
+		entities.addAll(EnemyEntity.generate(36, level, this));
 
 		background = new ImageIcon(this.getClass().getResource("/img/background.png"));
 		listener = new KListener();
@@ -83,9 +84,14 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 
+		if(Options.isAntialiasEnable()) {
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		}
+
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
-		//FIXME: If thread is generating enemiies, concurrencial modification exception occured.
+		//FIXME: If thread is generating enemies, concurrencial modification exception occured.
 		for(Entity en : entities) {
 			g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
 			if(showHitbox) {
@@ -94,23 +100,32 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		}
 
 		//Life bar
-		g2d.setColor(Color.WHITE);
-		g2d.fillRect(0, (int) ((Frame.getScreenHeight()/5)*(5-spaceship.getLife())), 30, Frame.getScreenHeight());
+		g2d.setColor(Color.GREEN);
+		g2d.fillRect(0, (int) ((Frame.getScreenHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getScreenHeight());
 
 		g2d.setFont(new Font("Consolas", Font.BOLD, 20));
 		g2d.setColor(Color.RED);
 		g2d.drawString("Score : " + score, Frame.getScreenWidth() - 150, 30);
 
 		if(showDebug) {
-			g2d.drawString(fps + " FPS", 10, 30);
-			g2d.drawString("Resolution: " + Frame.getScreenWidth() + "x" + Frame.getScreenHeight(), 10, 60);
-			g2d.drawString("Entities: " + entities.size(), 10, 90);
-			g2d.drawString("Show Hitbox: " + showHitbox, 10, 120);
-			g2d.drawString("Life: " + spaceship.getLife(), 10, 150);
+			int mb = 1024*1024;
+			Runtime runtime = Runtime.getRuntime();
+
+			ArrayList <String> infos = new ArrayList <String> ();
+			infos.add("Resolution: " + Frame.getScreenWidth() + "x" + Frame.getScreenHeight());
+			infos.add("Level: " + level);
+			infos.add("Life: " + spaceship.getLife());
+			infos.add("Entities: " + entities.size());
+			infos.add(fps + " FPS");
+			infos.add("Used Memory: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
+			infos.add("Threads: " + Thread.activeCount());
+
+			for(int i = 30; i < infos.size() * 30; i+=30) {
+				g2d.drawString(infos.get(i/30), 40, i);
+			}
 		}
 
 		if(gameOver) {
-
 			//Transparent filter to darken the game 
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
 			g2d.fillRect(0, 0, Frame.getScreenWidth(), Frame.getScreenHeight());
@@ -193,6 +208,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	public void gameOver() {
 		//		music.stop();
 		gameOver = true;
+		//FIXME: Memory used when dying, find why
 	}
 
 	private ArrayList <EnemyEntity> getEnemies() {
@@ -215,7 +231,8 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	@Override
 	public void run() {
-		entities.addAll(EnemyEntity.generate(36, this));
+		entities.addAll(EnemyEntity.generate(36, level, this));
+		level++;
 	}
 
 	public void increaseScore(int i) {
