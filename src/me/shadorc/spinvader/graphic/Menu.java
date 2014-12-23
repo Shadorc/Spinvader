@@ -2,6 +2,7 @@ package me.shadorc.spinvader.graphic;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -9,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -87,14 +89,18 @@ public class Menu extends JPanel implements ActionListener {
 
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
-		g2d.setFont(new Font("Consolas", Font.BOLD, 200));
+		try {
+			g2d.setFont(Font.createFont(Font.TRUETYPE_FONT,getClass().getResourceAsStream("/res/space_invaders.ttf")).deriveFont(Font.PLAIN, 200f));
+		} catch (FontFormatException | IOException e) {
+			g2d.setFont(new Font("Consolas", Font.PLAIN, 200));
+		}
 		g2d.setColor(Color.BLACK);
 
 		//Text centered
 		int stringLen = (int) g2d.getFontMetrics().getStringBounds(title, g2d).getWidth();
-		int start = Frame.getScreenWidth() / 2 - stringLen / 2;
+		int start = Frame.getWidth() / 2 - stringLen / 2;
 
-		g2d.drawString(title, start, Frame.getScreenHeight() / 6);
+		g2d.drawString(title, start, Frame.getHeight()/5);
 	}
 
 	@Override

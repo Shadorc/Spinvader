@@ -56,7 +56,7 @@ public class BulletEntity implements Entity {
 			y += (speed * delta) / 30;
 		}
 
-		if(y <= 0 || y >= Frame.getScreenHeight()) {
+		if(y <= 0 || y >= Frame.getHeight()) {
 			game.removeEntity(this);
 		}
 	}

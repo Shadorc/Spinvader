@@ -16,9 +16,11 @@ public class Sprite {
 		BufferedImage img = null;
 
 		//FIXME: Launch boss when no image available anymore
+
+		//10px is the separation between two sprites
 		try {
 			img = ImageIO.read(new File(Sprite.class.getResource("/img/invaders1.png").toURI()));
-			img = img.getSubimage(img.getWidth()-65*level, 0, 65, 40);
+			img = img.getSubimage(img.getWidth() - 10*level - 55*level, 0, 55, 40);
 		} catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
 			img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);

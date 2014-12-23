@@ -12,20 +12,21 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item implements Entity {
 
-	private ImageIcon img;
-
 	private Game game;
 
 	private float x, y;
 	private float speed;
+
 	private Bonus type;
+	private ImageIcon img;
 
 	Item(float x, float y, Bonus type, Game game) {
 		this.x = x;
 		this.y = y;
 		this.type = type;
-		this.speed = 5;
 		this.game = game;
+
+		this.speed = 5;
 
 		if(type == Bonus.MONEY) {
 			img = Sprite.resize(Sprite.getSprite("/img/dollar.png"), 50, 50);
@@ -77,14 +78,11 @@ public class Item implements Entity {
 	public void move(double delta) {
 		y += (float) ((speed * delta) / 30);
 
-		if(y >= Frame.getScreenHeight()) {
+		if(y >= Frame.getHeight()) {
 			game.removeEntity(this);
 		}
 	}
 
 	@Override
-	public void shoot() {
-		// TODO Auto-generated method stub
-
-	}
+	public void shoot() {	}
 }

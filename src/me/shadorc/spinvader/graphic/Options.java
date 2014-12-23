@@ -31,6 +31,8 @@ public class Options extends JPanel implements KeyListener {
 		antialias.setOpaque(false);
 
 		this.add(antialias);
+
+		this.addKeyListener(this);
 	}
 
 	@Override
@@ -47,20 +49,14 @@ public class Options extends JPanel implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			Frame.setPanel(new Menu());
+		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void keyReleased(KeyEvent e) {	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public void keyTyped(KeyEvent e) {	}
 }

@@ -21,6 +21,7 @@ import javax.swing.Timer;
 
 import me.shadorc.spinvader.KListener;
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.entity.BossEntity;
 import me.shadorc.spinvader.entity.EnemyEntity;
 import me.shadorc.spinvader.entity.Entity;
 import me.shadorc.spinvader.entity.SpaceshipEntity;
@@ -55,11 +56,10 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	Game() {
 
-		spaceship = new SpaceshipEntity(Frame.getScreenWidth() / 2, Frame.getScreenHeight() / 2, this);
+		spaceship = new SpaceshipEntity(Frame.getWidth() / 2, Frame.getHeight() / 2, this);
 
 		entities = new ArrayList <Entity>();
 		entities.add(spaceship);
-		entities.addAll(EnemyEntity.generate(36, level, this));
 
 		background = new ImageIcon(this.getClass().getResource("/img/background.png"));
 		listener = new KListener();
@@ -94,30 +94,32 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
 		//FIXME: If thread is generating enemies, concurrencial modification exception occured.
-		for(Entity en : entities) {
-			g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
-			if(showHitbox) {
-				Rectangle re = en.getHitbox();
-				g.setColor(Color.RED);
-				g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
+		if(!th.isAlive()) {
+			for(Entity en : entities) {
+				g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
+				if(showHitbox) {
+					Rectangle re = en.getHitbox();
+					g.setColor(Color.RED);
+					g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
+				}
 			}
 		}
 
 		//Life bar
 		g2d.setColor(Color.GREEN);
-		g2d.fillRect(0, (int) ((Frame.getScreenHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getScreenHeight());
+		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getHeight());
 
 		g2d.setFont(new Font("Consolas", Font.BOLD, 20));
 		g2d.setColor(Color.RED);
-		g2d.drawString("Score : " + score, Frame.getScreenWidth() - 150, 30);
-		g2d.drawString("Money : " + money, Frame.getScreenWidth() - 150, 60);
+		g2d.drawString("Score : " + score, Frame.getWidth() - 150, 30);
+		g2d.drawString("Money : " + money, Frame.getWidth() - 150, 60);
 
 		if(showDebug) {
 			int mb = 1024*1024;
 			Runtime runtime = Runtime.getRuntime();
 
 			ArrayList <String> infos = new ArrayList <String> ();
-			infos.add("Resolution: " + Frame.getScreenWidth() + "x" + Frame.getScreenHeight());
+			infos.add("Resolution: " + Frame.getWidth() + "x" + Frame.getHeight());
 			infos.add("Level: " + level);
 			infos.add("Life: " + spaceship.getLife());
 			infos.add("Entities: " + entities.size());
@@ -133,21 +135,21 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		if(gameOver) {
 			//Transparent filter to darken the game 
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
-			g2d.fillRect(0, 0, Frame.getScreenWidth(), Frame.getScreenHeight());
+			g2d.fillRect(0, 0, Frame.getWidth(), Frame.getHeight());
 
 			g2d.setFont(new Font("Consolas", Font.BOLD, 200));
 			g2d.setColor(Color.RED);
 
 			String fir = "GAME OVER !";
 			int start = this.getCenteredText(g2d, fir);
-			g.drawString(fir, start, Frame.getScreenHeight()/2);
+			g.drawString(fir, start, Frame.getHeight()/2);
 
 			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
 			g2d.setColor(Color.WHITE);
 
 			String sec = "Press \"Esc\" to return to the menu.";
 			start = this.getCenteredText(g2d, sec); 
-			g2d.drawString(sec, start, Frame.getScreenHeight()/2 + 50);
+			g2d.drawString(sec, start, Frame.getHeight()/2 + 50);
 		}
 
 		if(System.currentTimeMillis() - fpsTime >= 500) {
@@ -196,8 +198,8 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 			en.move(delta);
 
-			if(en instanceof EnemyEntity) {
-				((EnemyEntity) en).update();
+			if(en instanceof EnemyEntity || en instanceof BossEntity) {
+				en.shoot();
 			}
 
 			for(int o = 0; o < entities.size(); o++) {
@@ -210,15 +212,15 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		}
 	}
 
+	//FIXME: Memory leaks when dying, find why
 	public void gameOver() {
-		gameOver = true;
 		new Sound("Game Over.wav", 0.5).start();
-		//FIXME: Memory leaks when dying, find why
+		gameOver = true;
 	}
 
 	private boolean isEnemyAlive() {
 		for(Entity en : entities) {
-			if(en instanceof EnemyEntity) {
+			if(en instanceof EnemyEntity || en instanceof BossEntity) {
 				return true;
 			}
 		}
@@ -235,7 +237,28 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	@Override
 	public void run() {
-		entities.addAll(EnemyEntity.generate(36, level, this));
+
+		int count = 36;
+
+		int x = 0;
+		int y = 0;
+		int sep = 25; //Separation in pixels between two enemies
+
+		if(level <= 7) {
+			for(int i = 1; i < count + 1; i++) {
+				entities.add(new EnemyEntity((x*(110+sep)+40), (y*(80+sep) - 3*(80+sep)), Sprite.resize(Sprite.generateSprite(level), 110, 80), this));
+				if(i % 12 == 0) {
+					y++;
+					x = 0;
+				} else {
+					x++;
+				}
+			}
+		} else {
+			entities.add(new BossEntity(100, 50, this));
+			level = 1;
+		}
+
 		level++;
 	}
 
@@ -253,15 +276,15 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	private int getCenteredText(Graphics g, String str) {
 		int stringLen = (int) g.getFontMetrics().getStringBounds(str, g).getWidth();
-		int start = Frame.getScreenWidth() / 2 - stringLen / 2;
+		int start = Frame.getWidth() / 2 - stringLen / 2;
 
 		return start;
 	}
 
-	public void descendreEnnemis() {
+	public void bringDownEnemies() {
 		for(Entity en : entities) {
 			if(en instanceof EnemyEntity) {
-				((EnemyEntity) en).setToReach();
+				((EnemyEntity) en).goDown();
 			}
 		}
 	}

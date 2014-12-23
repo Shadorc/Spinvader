@@ -55,7 +55,9 @@ public class SpaceshipEntity implements Entity {
 	}
 
 	public void heal(int i) {
-		life += i;
+		if(life < lifeMax) {
+			life += i;
+		}
 	}
 
 	public float getMaximumLife() {
@@ -89,22 +91,9 @@ public class SpaceshipEntity implements Entity {
 		}
 	}
 
-	public boolean isReloaded() {
-		return (System.currentTimeMillis() - lastShoot) >= shootTime;
-	}
-
 	@Override
 	public void shoot() {
-		if(this.isReloaded()) {
-
-			/*
-			Point a = new Point(new Random().nextInt(Frame.getScreenWidth()), 0);
-			Point b = new Point((int) x, (int) y);
-
-			float coef = (float) ((b.getY() - a.getY())/(b.getX() - a.getX()));
-			float ord = (float) (b.getY() - coef * b.getX());
-			 */
-
+		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
 			game.addEntity(new BulletEntity(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			game.addEntity(new BulletEntity(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
 			game.addEntity(new BulletEntity(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
@@ -121,14 +110,12 @@ public class SpaceshipEntity implements Entity {
 	public void moveLeft(double delta) {
 		if(x >= 0) {
 			x -= (speed * delta) / 30;
-			//			img = Sprite.getSprite("/img/spaceship_left.png", 150, 150);
 		}
 	}
 
 	public void moveRight(double delta) {
-		if(x <= Frame.getScreenWidth() - img.getIconWidth()) {
+		if(x <= Frame.getWidth() - img.getIconWidth()) {
 			x += (speed * delta) / 30;
-			//			img = Sprite.getSprite("/img/spaceship_right.png", 150, 150);
 		}
 	}
 
@@ -139,7 +126,7 @@ public class SpaceshipEntity implements Entity {
 	}
 
 	public void moveBackward(double delta) {
-		if(y <= Frame.getScreenHeight() - img.getIconHeight()) {
+		if(y <= Frame.getHeight() - img.getIconHeight()) {
 			y += (speed * delta) / 30;
 		}
 	}

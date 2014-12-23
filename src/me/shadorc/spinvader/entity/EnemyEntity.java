@@ -2,7 +2,6 @@ package me.shadorc.spinvader.entity;
 
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -10,7 +9,6 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
-import me.shadorc.spinvader.graphic.Sprite;
 
 public class EnemyEntity implements Entity {
 
@@ -18,8 +16,9 @@ public class EnemyEntity implements Entity {
 	private Random rand;
 
 	private float x, y;
-	private float speed, shootSpeed, shootTime;
 	private double lastShoot;
+	private float speed, shootSpeed, shootTime;
+	private int randomTime, minTime;
 	private float life;
 
 	private ImageIcon img;
@@ -28,7 +27,7 @@ public class EnemyEntity implements Entity {
 
 	private int toReach;
 
-	private EnemyEntity(float x, float y, ImageIcon img, Game game) {
+	public EnemyEntity(float x, float y, ImageIcon img, Game game) {
 		this.x = x;
 		this.y = y;
 		this.img = img;
@@ -37,12 +36,15 @@ public class EnemyEntity implements Entity {
 		rand = new Random();
 
 		speed = 5;
-		shootSpeed = 15;
-		lastShoot = System.currentTimeMillis();
-		shootTime = rand.nextInt(7500)+2500;
-		life = 3;
-		toReach = (int) (y+350);
+		life = 1;
 
+		shootSpeed = 15;
+		randomTime = 7500;
+		minTime = 2500;
+		lastShoot = System.currentTimeMillis();
+		shootTime = rand.nextInt(randomTime)+minTime;
+
+		toReach = (int) (y+400);
 		dir = Direction.DOWN;
 		nextDir = Direction.RIGHT;
 	}
@@ -74,9 +76,11 @@ public class EnemyEntity implements Entity {
 
 	@Override
 	public void shoot() {
-		game.addEntity(new BulletEntity((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
-		lastShoot = System.currentTimeMillis();
-		shootTime = rand.nextInt(7500)+2500;
+		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
+			game.addEntity(new BulletEntity((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
+			lastShoot = System.currentTimeMillis();
+			shootTime = rand.nextInt(randomTime)+minTime;
+		}
 	}
 
 	@Override
@@ -90,18 +94,18 @@ public class EnemyEntity implements Entity {
 				dir = nextDir;
 			}
 
-			if(y >= (Frame.getScreenHeight() - img.getIconHeight())) {
+			if(y >= (Frame.getHeight() - img.getIconHeight())) {
 				game.gameOver();
 			}
 
 		} else if(dir == Direction.RIGHT) {
 			x += (float) ((speed * delta) / 30);
 
-			if(x >= Frame.getScreenWidth() - img.getIconWidth()) {
-				x = (float) (Frame.getScreenWidth() - img.getIconWidth());
+			if(x >= Frame.getWidth() - img.getIconWidth()) {
+				x = (float) (Frame.getWidth() - img.getIconWidth());
 				dir = Direction.DOWN;
 				nextDir = Direction.LEFT;
-				game.descendreEnnemis();
+				game.bringDownEnemies();
 			}
 
 		} else if(dir == Direction.LEFT) {
@@ -111,7 +115,7 @@ public class EnemyEntity implements Entity {
 				x = 0;
 				dir = Direction.DOWN;
 				nextDir = Direction.RIGHT;
-				game.descendreEnnemis();
+				game.bringDownEnemies();
 			}
 		}
 	}
@@ -127,8 +131,8 @@ public class EnemyEntity implements Entity {
 					new Sound("AlienDestroyed.wav", 0.15).start();
 					game.removeEntity(this);
 					game.increaseScore(35);
-					if(rand.nextInt(10) == 0) {
-						if(rand.nextInt(3) == 0) {
+					if(rand.nextInt(25) == 0) {
+						if(rand.nextInt(5) == 0) {
 							game.addEntity(new Item(x, y, Bonus.LIFE, game));
 						} else {
 							game.addEntity(new Item(x, y, Bonus.MONEY, game));
@@ -139,31 +143,7 @@ public class EnemyEntity implements Entity {
 		}
 	}
 
-	public void update() {
-		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			this.shoot();
-		}
-	}
-
-	public void setToReach() {
+	public void goDown() {
 		toReach = (int) (y + this.getHitbox().getHeight());
-	}
-
-	public static ArrayList <EnemyEntity> generate(int count, int level, Game game) {
-		ArrayList <EnemyEntity> ennemies = new ArrayList <EnemyEntity>();
-		int x = 0;
-		int y = 0;
-
-		for(int i = 1; i < count + 1; i++) {
-			ennemies.add(new EnemyEntity((10+110*x), (10+110*y - 3*110), Sprite.resize(Sprite.generateSprite(level), 100, 90),	game));
-			if(i % 12 == 0) {
-				y++;
-				x = 0;
-			} else {
-				x++;
-			}
-		}
-
-		return ennemies;
 	}
 }
