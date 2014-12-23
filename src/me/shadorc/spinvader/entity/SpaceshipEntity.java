@@ -29,7 +29,7 @@ public class SpaceshipEntity implements Entity {
 		this.game = game;
 
 		speed = 25;
-		lifeMax = 25;
+		lifeMax = 5;
 		life = lifeMax;
 
 		lastShoot = 0;
@@ -52,6 +52,10 @@ public class SpaceshipEntity implements Entity {
 	@Override
 	public float getLife() {
 		return life;
+	}
+
+	public void heal(int i) {
+		life += i;
 	}
 
 	public float getMaximumLife() {

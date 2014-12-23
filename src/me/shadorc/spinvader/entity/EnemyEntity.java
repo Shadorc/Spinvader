@@ -7,6 +7,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
+import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
@@ -23,6 +24,7 @@ public class EnemyEntity implements Entity {
 
 	private ImageIcon img;
 	private static Direction dir;
+	private static Direction nextDir;
 
 	private int toReach;
 
@@ -35,13 +37,14 @@ public class EnemyEntity implements Entity {
 		rand = new Random();
 
 		speed = 5;
-		shootSpeed = 20;
+		shootSpeed = 15;
 		lastShoot = System.currentTimeMillis();
-		shootTime = rand.nextInt(5000)+1000;
-		life = 1;
+		shootTime = rand.nextInt(7500)+2500;
+		life = 3;
 		toReach = (int) (y+350);
 
-		dir = Direction.RIGHT;
+		dir = Direction.DOWN;
+		nextDir = Direction.RIGHT;
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class EnemyEntity implements Entity {
 	public void shoot() {
 		game.addEntity(new BulletEntity((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
 		lastShoot = System.currentTimeMillis();
-		shootTime = rand.nextInt(5000)+1000;
+		shootTime = rand.nextInt(7500)+2500;
 	}
 
 	@Override
@@ -82,12 +85,9 @@ public class EnemyEntity implements Entity {
 		if(dir == Direction.DOWN) {
 			y += (float) ((speed * delta) / 30);
 
-			if(Math.abs(toReach - y) < 0.1) {
-				if(x > 500) {
-					dir = Direction.LEFT;
-				} else {
-					dir = Direction.RIGHT;
-				}
+			if(toReach <= y) {
+				y = toReach;
+				dir = nextDir;
 			}
 
 			if(y >= (Frame.getScreenHeight() - img.getIconHeight())) {
@@ -98,54 +98,22 @@ public class EnemyEntity implements Entity {
 			x += (float) ((speed * delta) / 30);
 
 			if(x >= Frame.getScreenWidth() - img.getIconWidth()) {
-				dir = Direction.LEFT;
 				x = (float) (Frame.getScreenWidth() - img.getIconWidth());
 				dir = Direction.DOWN;
-				toReach = (int) (y + this.getHitbox().getHeight());
+				nextDir = Direction.LEFT;
+				game.descendreEnnemis();
 			}
 
 		} else if(dir == Direction.LEFT) {
 			x -= (float) ((speed * delta) / 30);
 
 			if(x <= 0) {
-				dir = Direction.RIGHT;
 				x = 0;
 				dir = Direction.DOWN;
-				toReach = (int) (y + this.getHitbox().getHeight());
+				nextDir = Direction.RIGHT;
+				game.descendreEnnemis();
 			}
 		}
-
-
-		/*
-		//If y ~= toReach
-		if(Math.abs(toReach - y) < 0.00001) {
-			if(dir == Direction.RIGHT) {
-				x += (float) ((speed * delta) / 30);
-			} else if(dir == Direction.LEFT) {
-				x -= (float) ((speed * delta) / 30);
-			}
-
-			if(x <= 0) {
-				dir = Direction.RIGHT;
-				x = 0;
-				toReach = (int) (y + this.getHitbox().getHeight());
-			} else if(x >= Frame.getScreenWidth() - img.getIconWidth()) {
-				dir = Direction.LEFT;
-				x = (float) (Frame.getScreenWidth() - img.getIconWidth());
-				toReach = (int) (y + this.getHitbox().getHeight());
-			}
-		} else {
-			y += (float) ((speed * delta) / 30);
-
-			if(y > toReach)	{
-				y = toReach;
-			}
-
-			if(y >= (Frame.getScreenHeight() - img.getIconHeight())) {
-				game.gameOver();
-			}
-		}
-		 */
 	}
 
 	@Override
@@ -156,10 +124,15 @@ public class EnemyEntity implements Entity {
 				game.removeEntity(en);
 
 				if(this.life <= 0) {
+					new Sound("AlienDestroyed.wav", 0.15).start();
 					game.removeEntity(this);
 					game.increaseScore(35);
 					if(rand.nextInt(10) == 0) {
-						game.addEntity(new Item(x, y, game));
+						if(rand.nextInt(3) == 0) {
+							game.addEntity(new Item(x, y, Bonus.LIFE, game));
+						} else {
+							game.addEntity(new Item(x, y, Bonus.MONEY, game));
+						}
 					}
 				}
 			}
@@ -170,6 +143,10 @@ public class EnemyEntity implements Entity {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
 			this.shoot();
 		}
+	}
+
+	public void setToReach() {
+		toReach = (int) (y + this.getHitbox().getHeight());
 	}
 
 	public static ArrayList <EnemyEntity> generate(int count, int level, Game game) {

@@ -13,6 +13,10 @@ public interface Entity {
 		ENEMY, SPACESHIP, BOSS;
 	}
 
+	public enum Bonus {
+		MONEY, LIFE;
+	}
+
 	public float getX();
 	public float getY();
 	public float getLife();

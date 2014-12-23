@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
 
+import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
@@ -17,14 +18,20 @@ public class Item implements Entity {
 
 	private float x, y;
 	private float speed;
+	private Bonus type;
 
-	Item(float x, float y, Game game) {
+	Item(float x, float y, Bonus type, Game game) {
 		this.x = x;
 		this.y = y;
+		this.type = type;
 		this.speed = 5;
 		this.game = game;
 
-		img = Sprite.resize(Sprite.getSprite("/img/dollar.png"), 50, 50);
+		if(type == Bonus.MONEY) {
+			img = Sprite.resize(Sprite.getSprite("/img/dollar.png"), 50, 50);
+		} else if(type == Bonus.LIFE) {
+			img = Sprite.resize(Sprite.getSprite("/img/life.png"), 50, 50);
+		}
 	}
 
 	@Override
@@ -56,7 +63,13 @@ public class Item implements Entity {
 	public void collidedWith(Entity en) {
 		if(en instanceof SpaceshipEntity) {
 			game.removeEntity(this);
-			game.increaseMoney(10);
+			if(type == Bonus.MONEY) {
+				game.increaseMoney(10);
+				new Sound("cash.wav", 0.20).start();
+			} else if(type == Bonus.LIFE){
+				game.increaseLife(1);
+				new Sound("life.wav", 0.20).start();
+			}
 		}
 	}
 

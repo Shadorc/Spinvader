@@ -41,7 +41,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	private static Sound music;
 
 	private boolean showHitbox = false;
-	private boolean showDebug = true;
+	private boolean showDebug = false;
 	private boolean gameOver = false;
 
 	private Thread th;
@@ -66,7 +66,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 		th = new Thread(this);
 
-		music = new Sound("Savant - Amerika.wav", 1);
+		music = new Sound("Savant - Spaceheart.wav", 1);
 		music.start();
 
 		this.addKeyListener(listener);
@@ -124,7 +124,6 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			infos.add(fps + " FPS");
 			infos.add("Used Memory: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
 			infos.add("Threads: " + Thread.activeCount());
-			infos.add("Keys: " + listener.getKeysPressed());
 
 			for(int i = 30; i < infos.size() * 30; i+=30) {
 				g2d.drawString(infos.get(i/30), 40, i);
@@ -162,6 +161,8 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	public void actionPerformed(ActionEvent arg0) {
 		this.repaint();
 
+		frame++;
+
 		if(gameOver) {
 			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
 				update.stop();
@@ -173,8 +174,6 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 		double delta = System.currentTimeMillis() - loopTime;
 		loopTime = System.currentTimeMillis();
-
-		frame++;
 
 		for(int key : listener.getKeysPressed()) {
 			if(key == KeyEvent.VK_ESCAPE)	System.exit(0);
@@ -212,9 +211,9 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void gameOver() {
-		//		music.stop();
 		gameOver = true;
-		//FIXME: Memory used when dying, find why
+		new Sound("Game Over.wav", 0.5).start();
+		//FIXME: Memory leaks when dying, find why
 	}
 
 	private boolean isEnemyAlive() {
@@ -248,10 +247,22 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		money += i;		
 	}
 
+	public void increaseLife(int i) {
+		spaceship.heal(i);
+	}
+
 	private int getCenteredText(Graphics g, String str) {
 		int stringLen = (int) g.getFontMetrics().getStringBounds(str, g).getWidth();
 		int start = Frame.getScreenWidth() / 2 - stringLen / 2;
 
 		return start;
+	}
+
+	public void descendreEnnemis() {
+		for(Entity en : entities) {
+			if(en instanceof EnemyEntity) {
+				((EnemyEntity) en).setToReach();
+			}
+		}
 	}
 }

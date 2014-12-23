@@ -11,7 +11,7 @@ public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
-
+	
 	public static void main(String[] args) {
 		frame = new Frame();
 	}
