@@ -25,6 +25,7 @@ import me.shadorc.spinvader.entity.BossEntity;
 import me.shadorc.spinvader.entity.EnemyEntity;
 import me.shadorc.spinvader.entity.Entity;
 import me.shadorc.spinvader.entity.SpaceshipEntity;
+import me.shadorc.spinvader.graphic.Frame.Mode;
 
 public class Game extends JPanel implements ActionListener, Runnable {
 
@@ -42,7 +43,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	private static Sound music;
 
 	private boolean showHitbox = false;
-	private boolean showDebug = false;
+	private boolean showDebug = true;
 	private boolean gameOver = false;
 
 	private Thread th;
@@ -55,7 +56,6 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	private ArrayList <Entity> entities;
 
 	Game() {
-
 		spaceship = new SpaceshipEntity(Frame.getWidth() / 2, Frame.getHeight() / 2, this);
 
 		entities = new ArrayList <Entity>();
@@ -67,7 +67,6 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		th = new Thread(this);
 
 		music = new Sound("Savant - Spaceheart.wav", 1);
-		music.start();
 
 		this.addKeyListener(listener);
 		this.setFocusable(true);
@@ -78,7 +77,6 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		this.setCursor(blankCursor);
 
 		update = new Timer(1, this);
-		update.start();
 	}
 
 	@Override
@@ -167,9 +165,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 		if(gameOver) {
 			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
-				update.stop();
-				music.stop();
-				Frame.setPanel(new Menu());
+				this.stop();
 			}
 			return;
 		}
@@ -178,7 +174,7 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		loopTime = System.currentTimeMillis();
 
 		for(int key : listener.getKeysPressed()) {
-			if(key == KeyEvent.VK_ESCAPE)	System.exit(0);
+			if(key == KeyEvent.VK_ESCAPE)	this.stop();
 			if(key == KeyEvent.VK_LEFT)		spaceship.moveLeft(delta);
 			if(key == KeyEvent.VK_RIGHT)	spaceship.moveRight(delta);
 			if(key == KeyEvent.VK_UP)		spaceship.moveForward(delta);
@@ -212,7 +208,17 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		}
 	}
 
-	//FIXME: Memory leaks when dying, find why
+	public void start() {
+		music.start();
+		update.start();
+	}
+
+	public void stop() {
+		update.stop();
+		music.stop();
+		Frame.setPanel(Mode.MENU);
+	}
+
 	public void gameOver() {
 		new Sound("Game Over.wav", 0.5).start();
 		gameOver = true;

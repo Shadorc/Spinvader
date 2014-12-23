@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -18,7 +20,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Menu extends JPanel implements ActionListener {
+import me.shadorc.spinvader.graphic.Frame.Mode;
+
+public class Menu extends JPanel implements ActionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,6 +36,7 @@ public class Menu extends JPanel implements ActionListener {
 
 	Menu() {
 		super(new GridLayout(3, 3));
+		this.addKeyListener(this);
 
 		background = new ImageIcon(this.getClass().getResource("/img/menu_background.jpg"));
 
@@ -108,11 +113,24 @@ public class Menu extends JPanel implements ActionListener {
 		JButton bu = (JButton) event.getSource();
 
 		if(bu == start) {
-			Frame.setPanel(new Game());
+			Frame.setPanel(Mode.GAME);
 		} else if(bu == options) {
-			Frame.setPanel(new Options());
+			Frame.setPanel(Mode.OPTIONS);
 		} else if(bu == quit) {
 			System.exit(0);
 		}
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {	}
 }

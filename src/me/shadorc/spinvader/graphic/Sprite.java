@@ -1,32 +1,26 @@
 package me.shadorc.spinvader.graphic;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 public class Sprite {
 
 	public static ImageIcon generateSprite(int level) {
 
-		BufferedImage img = null;
+		Image img = Sprite.getSprite("/img/invaders1.png").getImage();
 
-		//FIXME: Launch boss when no image available anymore
+		BufferedImage bu_img = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
-		//10px is the separation between two sprites
-		try {
-			img = ImageIO.read(new File(Sprite.class.getResource("/img/invaders1.png").toURI()));
-			img = img.getSubimage(img.getWidth() - 10*level - 55*level, 0, 55, 40);
-		} catch (IOException | URISyntaxException e) {
-			e.printStackTrace();
-			img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-		}
+		Graphics2D bGr = bu_img.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
 
-		return new ImageIcon(img);
+		bu_img = bu_img.getSubimage(bu_img.getWidth() - 10*level - 55*level, 0, 55, 40);
+
+		return new ImageIcon(bu_img);
 	}
 
 	public static ImageIcon resize(ImageIcon img, int width, int height) {

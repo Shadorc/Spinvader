@@ -36,7 +36,7 @@ public class EnemyEntity implements Entity {
 		rand = new Random();
 
 		speed = 5;
-		life = 1;
+		life = 2;
 
 		shootSpeed = 15;
 		randomTime = 7500;

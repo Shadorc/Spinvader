@@ -1,15 +1,23 @@
 package me.shadorc.spinvader.graphic;
 
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
+import me.shadorc.spinvader.graphic.Frame.Mode;
 
 public class Options extends JPanel implements KeyListener {
 
@@ -20,17 +28,52 @@ public class Options extends JPanel implements KeyListener {
 	private static JCheckBox antialias;
 
 	Options() {
-		super(new GridBagLayout());
+		super(new GridLayout(1, 2));
 
 		background = new ImageIcon(this.getClass().getResource("/img/menu_background.jpg"));
 
-		Font font = new Font("Consolas", Font.PLAIN, 30);
+		Font font;
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT,getClass().getResourceAsStream("/res/space_invaders.ttf")).deriveFont(Font.PLAIN, 50f);
+		} catch (FontFormatException | IOException e) {
+			font = new Font("Consolas", Font.PLAIN, 50);
+		}
+
+		font = font.deriveFont(30f);
 
 		antialias = new JCheckBox("Anti-aliasing");
-		antialias.setFont(font);
-		antialias.setOpaque(false);
 
-		this.add(antialias);
+		antialias.setFont(font);
+		antialias.setForeground(Color.WHITE);
+		antialias.setOpaque(false);
+		antialias.setFocusable(false);
+
+		font = font.deriveFont(50f);
+
+		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK, 4, true);
+		Border emptyBorder = BorderFactory.createEmptyBorder(250, 50, 250, 50);
+
+		TitledBorder titleBorder1 = BorderFactory.createTitledBorder(lineBorder, "Audio Settngs", TitledBorder.CENTER, TitledBorder.TOP);
+		TitledBorder titleBorder2 = BorderFactory.createTitledBorder(lineBorder, "Video Settings", TitledBorder.CENTER, TitledBorder.TOP);
+
+		titleBorder1.setTitleFont(font);
+		titleBorder2.setTitleFont(font);
+		titleBorder1.setTitleColor(Color.BLACK);
+		titleBorder2.setTitleColor(Color.BLACK);
+
+		Border border1 = BorderFactory.createCompoundBorder(emptyBorder, titleBorder1);
+		Border border2 = BorderFactory.createCompoundBorder(emptyBorder, titleBorder2);
+
+		JPanel video = new JPanel(new GridLayout(5, 1));
+		video.setOpaque(false);
+		video.setBorder(border1);
+		video.add(antialias);
+		this.add(video);
+
+		JPanel audio = new JPanel(new GridLayout(5, 1));
+		audio.setOpaque(false);
+		audio.setBorder(border2);
+		this.add(audio);
 
 		this.addKeyListener(this);
 	}
@@ -50,7 +93,7 @@ public class Options extends JPanel implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			Frame.setPanel(new Menu());
+			Frame.setPanel(Mode.MENU);
 		}
 	}
 
