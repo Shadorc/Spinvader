@@ -6,9 +6,12 @@ import java.awt.GraphicsEnvironment;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import me.shadorc.spinvader.Sound;
+
 public class Frame {
 
 	private static JFrame frame;
+	private static Sound music;
 
 	private static Options options;
 	private static Game game;
@@ -25,6 +28,9 @@ public class Frame {
 		options = new Options();
 		game = new Game();
 		menu = new Menu();
+
+		music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
+		music.start();
 
 		frame.setContentPane(menu);
 		frame.setUndecorated(true);
@@ -49,6 +55,7 @@ public class Frame {
 		} else if(mode == Mode.GAME) {
 			//TODO: Find better solution
 			System.gc(); //Avoid memory leaks when reloading several times the game
+			music.stop();
 			game = new Game();
 			frame.setContentPane(game);
 			game.start();

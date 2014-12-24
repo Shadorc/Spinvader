@@ -13,6 +13,7 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -26,6 +27,7 @@ public class Options extends JPanel implements KeyListener {
 	private ImageIcon background;
 
 	private static JCheckBox antialias;
+	private static JCheckBox fullscreen;
 
 	Options() {
 		super(new GridLayout(1, 2));
@@ -42,19 +44,28 @@ public class Options extends JPanel implements KeyListener {
 		font = font.deriveFont(30f);
 
 		antialias = new JCheckBox("Anti-aliasing");
-
 		antialias.setFont(font);
 		antialias.setForeground(Color.WHITE);
 		antialias.setOpaque(false);
 		antialias.setFocusable(false);
+
+		fullscreen = new JCheckBox("FullScreen");
+		fullscreen.setFont(font);
+		fullscreen.setForeground(Color.WHITE);
+		fullscreen.setOpaque(false);
+		fullscreen.setFocusable(false);
+
+		String[] items = {"800x600", "1024x768", "1152x864", "1280x720", "1280x768", "1280x800", "1280x960", "1280x1024", "1360x768", "1366x768", "1440x900", "1600x900", "1600x1024", "1600x1200", "1680x1050", "1920x1080"};
+		JComboBox <String> resolution = new JComboBox <String> (items);
+		resolution.setFocusable(false);
 
 		font = font.deriveFont(50f);
 
 		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK, 4, true);
 		Border emptyBorder = BorderFactory.createEmptyBorder(250, 50, 250, 50);
 
-		TitledBorder titleBorder1 = BorderFactory.createTitledBorder(lineBorder, "Audio Settngs", TitledBorder.CENTER, TitledBorder.TOP);
-		TitledBorder titleBorder2 = BorderFactory.createTitledBorder(lineBorder, "Video Settings", TitledBorder.CENTER, TitledBorder.TOP);
+		TitledBorder titleBorder1 = BorderFactory.createTitledBorder(lineBorder, "Video Settngs", TitledBorder.CENTER, TitledBorder.TOP);
+		TitledBorder titleBorder2 = BorderFactory.createTitledBorder(lineBorder, "Audio Settings", TitledBorder.CENTER, TitledBorder.TOP);
 
 		titleBorder1.setTitleFont(font);
 		titleBorder2.setTitleFont(font);
@@ -68,6 +79,8 @@ public class Options extends JPanel implements KeyListener {
 		video.setOpaque(false);
 		video.setBorder(border1);
 		video.add(antialias);
+		video.add(fullscreen);
+		video.add(resolution);
 		this.add(video);
 
 		JPanel audio = new JPanel(new GridLayout(5, 1));
