@@ -26,8 +26,8 @@ public class Options extends JPanel implements KeyListener {
 
 	private ImageIcon background;
 
-	private static JCheckBox antialias;
-	private static JCheckBox fullscreen;
+	private JCheckBox antialias;
+	private JCheckBox fullscreen;
 
 	Options() {
 		super(new GridLayout(1, 2));
@@ -99,7 +99,7 @@ public class Options extends JPanel implements KeyListener {
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 
-	public static boolean isAntialiasEnable() {
+	public boolean isAntialiasEnable() {
 		return antialias.isSelected();
 	}
 

@@ -7,17 +7,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import me.shadorc.spinvader.KListener;
 import me.shadorc.spinvader.Sound;
@@ -27,7 +23,7 @@ import me.shadorc.spinvader.entity.Entity;
 import me.shadorc.spinvader.entity.SpaceshipEntity;
 import me.shadorc.spinvader.graphic.Frame.Mode;
 
-public class Game extends JPanel implements ActionListener, Runnable {
+public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,13 +41,15 @@ public class Game extends JPanel implements ActionListener, Runnable {
 	private boolean showHitbox = false;
 	private boolean showDebug = true;
 	private boolean gameOver = false;
+	private boolean update = false;
 
-	private Thread th;
+	private Thread generation;
+	private Thread updated;
 
 	private double fpsTime = System.currentTimeMillis();
 	private double loopTime = System.currentTimeMillis();
-	private int fps = 0, frame = 0;
-	private Timer update;
+	private int fps = 0; 
+	private int frame = 0;
 
 	private ArrayList <Entity> entities;
 
@@ -64,7 +62,8 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		background = new ImageIcon(this.getClass().getResource("/img/background.png"));
 		listener = new KListener();
 
-		th = new Thread(this);
+		updated = new Thread(this);
+		generation = new Thread();
 
 		music = new Sound("Savant - Spaceheart.wav", 1);
 
@@ -75,8 +74,21 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 		this.setCursor(blankCursor);
+	}
 
-		update = new Timer(1, this);
+	@Override
+	public void run() {
+		while(update) {
+			this.update();
+			this.repaint();
+
+			//Without this, FPS go up to 200,000 but errors appear from everywhere
+			//			try {
+			//				Thread.sleep(1);
+			//			} catch (InterruptedException e) {
+			//				e.printStackTrace();
+			//			}
+		}
 	}
 
 	@Override
@@ -84,22 +96,20 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		if(Options.isAntialiasEnable()) {
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		}
+		//		if(Options.isAntialiasEnable()) {
+		//			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		//		}
 
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
-		//FIXME: If thread is generating enemies, concurrencial modification exception occured.
-		if(!th.isAlive()) {
-			for(Entity en : entities) {
-				g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
-				if(showHitbox) {
-					Rectangle re = en.getHitbox();
-					g.setColor(Color.RED);
-					g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
-				}
+		//Create a copy of entities array to avoid ConcurrentModificationException
+		for(Entity en : new ArrayList <Entity> (entities)) {
+			g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
+			if(showHitbox) {
+				Rectangle re = en.getHitbox();
+				g.setColor(Color.RED);
+				g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
 			}
 		}
 
@@ -149,19 +159,16 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			start = this.getCenteredText(g2d, sec); 
 			g2d.drawString(sec, start, Frame.getHeight()/2 + 50);
 		}
+	}
 
-		if(System.currentTimeMillis() - fpsTime >= 500) {
-			fps = frame * 2;
+	public void update() {
+		frame++;
+
+		if(System.currentTimeMillis() - fpsTime >= 1000) {
+			fps = frame;
 			frame = 0;
 			fpsTime = System.currentTimeMillis();
 		}
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		this.repaint();
-
-		frame++;
 
 		if(gameOver) {
 			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
@@ -173,7 +180,8 @@ public class Game extends JPanel implements ActionListener, Runnable {
 		double delta = System.currentTimeMillis() - loopTime;
 		loopTime = System.currentTimeMillis();
 
-		for(int key : listener.getKeysPressed()) {
+		//Create a copy of entities array to avoid ConcurrentModificationException
+		for(int key : new ArrayList <Integer> (listener.getKeysPressed())) {
 			if(key == KeyEvent.VK_ESCAPE)	this.stop();
 			if(key == KeyEvent.VK_LEFT)		spaceship.moveLeft(delta);
 			if(key == KeyEvent.VK_RIGHT)	spaceship.moveRight(delta);
@@ -184,9 +192,14 @@ public class Game extends JPanel implements ActionListener, Runnable {
 			if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
 		}
 
-		if(!th.isAlive() &&  !this.isEnemyAlive()) {
-			th = new Thread(this);
-			th.start();
+		if(!generation.isAlive() && !this.isEnemyAlive()) {
+			generation = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					generate();
+				}
+			});
+			generation.start();
 		}
 
 		for(int i = 0; i < entities.size(); i++) {
@@ -210,12 +223,13 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	public void start() {
 		music.start();
-		update.start();
+		update = true;
+		updated.start();
 	}
 
 	public void stop() {
-		update.stop();
 		music.stop();
+		update = false;
 		Frame.setPanel(Mode.MENU);
 	}
 
@@ -239,33 +253,6 @@ public class Game extends JPanel implements ActionListener, Runnable {
 
 	public void removeEntity(Entity en) {
 		entities.remove(en);
-	}
-
-	@Override
-	public void run() {
-
-		int count = 36;
-
-		int x = 0;
-		int y = 0;
-		int sep = 25; //Separation in pixels between two enemies
-
-		if(level <= 7) {
-			for(int i = 1; i < count + 1; i++) {
-				entities.add(new EnemyEntity((x*(110+sep)+40), (y*(80+sep) - 3*(80+sep)), Sprite.resize(Sprite.generateSprite(level), 110, 80), this));
-				if(i % 12 == 0) {
-					y++;
-					x = 0;
-				} else {
-					x++;
-				}
-			}
-		} else {
-			entities.add(new BossEntity(100, 50, this));
-			level = 1;
-		}
-
-		level++;
 	}
 
 	public void increaseScore(int i) {
@@ -293,5 +280,30 @@ public class Game extends JPanel implements ActionListener, Runnable {
 				((EnemyEntity) en).goDown();
 			}
 		}
+	}
+
+	private void generate() {
+		int count = 36;
+
+		int x = 0;
+		int y = 0;
+		int sep = 25; //Separation in pixels between two enemies
+
+		if(level <= 7) {
+			for(int i = 1; i < count + 1; i++) {
+				this.addEntity(new EnemyEntity((x*(110+sep)+40), (y*(80+sep) - 3*(80+sep)), Sprite.resize(Sprite.generateSprite(level), 110, 80), this));
+				if(i % 12 == 0) {
+					y++;
+					x = 0;
+				} else {
+					x++;
+				}
+			}
+		} else {
+			this.addEntity(new BossEntity(100, 50, this));
+			level = 1;
+		}
+
+		level++;	
 	}
 }
