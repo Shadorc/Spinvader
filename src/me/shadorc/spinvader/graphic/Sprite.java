@@ -10,8 +10,9 @@ public class Sprite {
 
 	public static ImageIcon generateSprite(int level) {
 
-		Image img = Sprite.getSprite("/img/invaders1.png").getImage();
+		Image img = Sprite.get("invaders1.png").getImage();
 
+		//Create BufferedImage to get sub image.
 		BufferedImage bu_img = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
 		Graphics2D bGr = bu_img.createGraphics();
@@ -27,11 +28,11 @@ public class Sprite {
 		return new ImageIcon(img.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 	}
 
-	public static ImageIcon getSprite(String path) {
-		return new ImageIcon(Sprite.class.getResource(path));
+	public static ImageIcon get(String name) {
+		return new ImageIcon(Sprite.class.getResource("/img/" + name));
 	}
 
-	public static ImageIcon getSprite(String path, int width, int height) {
-		return new ImageIcon(new ImageIcon(Sprite.class.getResource(path)).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+	public static ImageIcon get(String name, int width, int height) {
+		return new ImageIcon(Sprite.get(name).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 	}
 }

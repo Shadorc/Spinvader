@@ -17,7 +17,7 @@ public class Sound {
 	private FloatControl gainControl;
 
 	public Sound(String name, double gain) {
-		//gain : 0 - 1 : loudest
+		//gain : 0 - 1.14 : loudest
 		try {
 			clip = AudioSystem.getClip();
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource("/snd/" + name));
@@ -45,6 +45,10 @@ public class Sound {
 
 	public void stop() {
 		clip.stop();
+	}
+
+	public boolean isPlaying() {
+		return clip.isRunning();
 	}
 
 	public void setGain(double gain) {

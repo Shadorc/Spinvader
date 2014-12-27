@@ -29,9 +29,9 @@ public class Item implements Entity {
 		this.speed = 5;
 
 		if(type == Bonus.MONEY) {
-			img = Sprite.getSprite("/img/dollar.png", 50, 50);
+			img = Sprite.get("dollar.png", 50, 50);
 		} else if(type == Bonus.LIFE) {
-			img = Sprite.getSprite("/img/life.png", 50, 50);
+			img = Sprite.get("life.png", 50, 50);
 		}
 	}
 

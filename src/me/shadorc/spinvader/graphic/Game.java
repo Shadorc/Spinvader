@@ -59,13 +59,13 @@ public class Game extends JPanel implements Runnable {
 		entities = new ArrayList <Entity>();
 		entities.add(spaceship);
 
-		background = new ImageIcon(this.getClass().getResource("/img/background.png"));
+		background = Sprite.get("background.png");
 		listener = new KListener();
 
 		updated = new Thread(this);
 		generation = new Thread();
 
-		music = new Sound("Savant - Spaceheart.wav", 1);
+		music = new Sound("Savant - Spaceheart.wav", 0.5);
 
 		this.addKeyListener(listener);
 		this.setFocusable(true);
@@ -79,15 +79,15 @@ public class Game extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		while(update) {
+			//Without this, FPS go up to 200,000 but errors appear from everywhere
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
 			this.update();
 			this.repaint();
-
-			//Without this, FPS go up to 200,000 but errors appear from everywhere
-			//			try {
-			//				Thread.sleep(1);
-			//			} catch (InterruptedException e) {
-			//				e.printStackTrace();
-			//			}
 		}
 	}
 
@@ -132,7 +132,7 @@ public class Game extends JPanel implements Runnable {
 			infos.add("Life: " + spaceship.getLife());
 			infos.add("Entities: " + entities.size());
 			infos.add(fps + " FPS");
-			infos.add("Used Memory: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
+			infos.add("Memory used: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
 			infos.add("Threads: " + Thread.activeCount());
 
 			for(int i = 30; i < infos.size() * 30; i+=30) {

@@ -38,7 +38,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		super(new GridLayout(3, 3));
 		this.addKeyListener(this);
 
-		background = new ImageIcon(this.getClass().getResource("/img/menu_background.jpg"));
+		background = Sprite.get("menu_background.jpg");
 
 		this.add(new JLabel());
 		this.add(new JLabel());

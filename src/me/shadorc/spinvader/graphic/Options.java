@@ -32,7 +32,7 @@ public class Options extends JPanel implements KeyListener {
 	Options() {
 		super(new GridLayout(1, 2));
 
-		background = new ImageIcon(this.getClass().getResource("/img/menu_background.jpg"));
+		background = Sprite.get("menu_background.jpg");
 
 		Font font;
 		try {

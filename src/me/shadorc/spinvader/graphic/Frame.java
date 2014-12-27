@@ -52,15 +52,27 @@ public class Frame {
 
 		if(mode == Mode.OPTIONS) {
 			frame.setContentPane(options);
-		} else if(mode == Mode.GAME) {
+			if(!music.isPlaying()) {
+				music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
+				music.start();
+			}
+		} 
+
+		else if(mode == Mode.GAME) {
 			//TODO: Find better solution
 			System.gc(); //Avoid memory leaks when reloading several times the game
 			music.stop();
 			game = new Game();
 			frame.setContentPane(game);
 			game.start();
-		} else if(mode == Mode.MENU){
+		} 
+
+		else if(mode == Mode.MENU){
 			frame.setContentPane(menu);
+			if(!music.isPlaying()) {
+				music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
+				music.start();
+			}
 		}
 
 		frame.getContentPane().requestFocus();

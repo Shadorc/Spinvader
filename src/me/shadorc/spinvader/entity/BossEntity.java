@@ -31,7 +31,7 @@ public class BossEntity implements Entity {
 
 		rand = new Random();
 		dir = Direction.RIGHT;
-		img = Sprite.getSprite("/img/boss.png", 335, 170);
+		img = Sprite.get("boss.png", 335, 170);
 
 		speed = 15;
 		shootSpeed = 20;

@@ -26,7 +26,7 @@ public class BulletEntity implements Entity {
 		this.type = type;
 		this.game = game;
 
-		img = Sprite.getSprite("/img/bullet.png");
+		img = Sprite.get("bullet.png");
 	}
 
 	@Override
