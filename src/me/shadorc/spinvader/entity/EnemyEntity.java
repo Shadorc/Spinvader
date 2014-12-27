@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
+import me.shadorc.spinvader.graphic.Sprite;
 
 public class EnemyEntity implements Entity {
 
@@ -16,22 +17,26 @@ public class EnemyEntity implements Entity {
 	private Random rand;
 
 	private float x, y;
-	private double lastShoot;
-	private float speed, shootSpeed, shootTime;
-	private int randomTime, minTime;
 	private float life;
+	private float speed, shootSpeed, shootTime;
+	private double lastShoot;
+	private int randomTime, minTime;
+	private int toReach;
 
 	private ImageIcon img;
 	private static Direction dir;
 	private static Direction nextDir;
 
-	private int toReach;
+	private boolean dead;
+	private double animationStart;
 
 	public EnemyEntity(float x, float y, ImageIcon img, Game game) {
 		this.x = x;
 		this.y = y;
 		this.img = img;
 		this.game = game;
+
+		dead = false;
 
 		rand = new Random();
 
@@ -86,6 +91,13 @@ public class EnemyEntity implements Entity {
 	@Override
 	public void move(double delta) {
 
+		if(dead) {
+			if((System.currentTimeMillis() - animationStart) >= 100) {
+				game.removeEntity(this);
+			}
+			return;
+		}
+
 		if(dir == Direction.DOWN) {
 			y += (float) ((speed * delta) / 30);
 
@@ -97,8 +109,9 @@ public class EnemyEntity implements Entity {
 			if(y >= (Frame.getHeight() - img.getIconHeight())) {
 				game.gameOver();
 			}
+		} 
 
-		} else if(dir == Direction.RIGHT) {
+		else if(dir == Direction.RIGHT) {
 			x += (float) ((speed * delta) / 30);
 
 			if(x >= Frame.getWidth() - img.getIconWidth()) {
@@ -107,8 +120,9 @@ public class EnemyEntity implements Entity {
 				nextDir = Direction.LEFT;
 				game.bringDownEnemies();
 			}
+		} 
 
-		} else if(dir == Direction.LEFT) {
+		else if(dir == Direction.LEFT) {
 			x -= (float) ((speed * delta) / 30);
 
 			if(x <= 0) {
@@ -127,18 +141,27 @@ public class EnemyEntity implements Entity {
 				life--;
 				game.removeEntity(en);
 
-				if(this.life <= 0) {
-					new Sound("AlienDestroyed.wav", 0.15).start();
-					game.removeEntity(this);
-					game.increaseScore(35);
-					if(rand.nextInt(25) == 0) {
-						if(rand.nextInt(5) == 0) {
-							game.addEntity(new Item(x, y, Bonus.LIFE, game));
-						} else {
-							game.addEntity(new Item(x, y, Bonus.MONEY, game));
-						}
-					}
+				if(life <= 0) {
+					this.die();
 				}
+			}
+		}
+	}
+
+	private void die() {
+		dead = true;
+		animationStart = System.currentTimeMillis();
+
+		new Sound("AlienDestroyed.wav", 0.15).start();
+
+		img = Sprite.get("explosion.png", 110, 80);
+		game.increaseScore(35);
+
+		if(rand.nextInt(25) == 0) {
+			if(rand.nextInt(5) == 0) {
+				game.addEntity(new Item(x, y, Bonus.LIFE, game));
+			} else {
+				game.addEntity(new Item(x, y, Bonus.MONEY, game));
 			}
 		}
 	}

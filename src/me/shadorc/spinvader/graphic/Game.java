@@ -28,15 +28,16 @@ public class Game extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
 
 	private SpaceshipEntity spaceship;
+	private ArrayList <Entity> entities;
 
 	private ImageIcon background;
 	private KListener listener;
 
+	private Sound music;
+
 	private int score = 0;
 	private int money = 0;
 	private int level = 1;
-
-	private static Sound music;
 
 	private boolean showHitbox = false;
 	private boolean showDebug = true;
@@ -51,7 +52,6 @@ public class Game extends JPanel implements Runnable {
 	private int fps = 0; 
 	private int frame = 0;
 
-	private ArrayList <Entity> entities;
 
 	Game() {
 		spaceship = new SpaceshipEntity(Frame.getWidth() / 2, Frame.getHeight() / 2, this);
@@ -88,6 +88,15 @@ public class Game extends JPanel implements Runnable {
 
 			this.update();
 			this.repaint();
+
+			frame++;
+
+			if(System.currentTimeMillis() - fpsTime >= 1000) {
+				fps = frame;
+				frame = 0;
+				fpsTime = System.currentTimeMillis();
+			}
+
 		}
 	}
 
@@ -162,14 +171,6 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public void update() {
-		frame++;
-
-		if(System.currentTimeMillis() - fpsTime >= 1000) {
-			fps = frame;
-			frame = 0;
-			fpsTime = System.currentTimeMillis();
-		}
-
 		if(gameOver) {
 			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
 				this.stop();
