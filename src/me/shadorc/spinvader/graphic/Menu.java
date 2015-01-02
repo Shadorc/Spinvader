@@ -26,9 +26,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private ImageIcon background;
-
 	private String title = "Spinvader";
+
+	private ImageIcon background;
+	private Font font;
 
 	private JButton start;
 	private JButton options;
@@ -39,6 +40,12 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		this.addKeyListener(this);
 
 		background = Sprite.get("menu_background.jpg");
+
+		try {
+			font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/res/space_invaders.ttf")).deriveFont(Font.PLAIN, 200f);
+		} catch (FontFormatException | IOException e) {
+			font = new Font("Consolas", Font.PLAIN, 200);
+		}
 
 		this.add(new JLabel());
 		this.add(new JLabel());
@@ -94,11 +101,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
-		try {
-			g2d.setFont(Font.createFont(Font.TRUETYPE_FONT,getClass().getResourceAsStream("/res/space_invaders.ttf")).deriveFont(Font.PLAIN, 200f));
-		} catch (FontFormatException | IOException e) {
-			g2d.setFont(new Font("Consolas", Font.PLAIN, 200));
-		}
+		g2d.setFont(font);
 		g2d.setColor(Color.BLACK);
 
 		//Text centered

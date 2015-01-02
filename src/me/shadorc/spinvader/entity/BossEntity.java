@@ -111,8 +111,8 @@ public class BossEntity implements Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			game.addEntity(new BulletEntity((x + 50), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
-			game.addEntity(new BulletEntity((img.getIconWidth() - 50), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
+			game.addEntity(new BulletEntity((x + img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
+			game.addEntity(new BulletEntity((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
 
 			lastShoot = System.currentTimeMillis();
 			shootTime = rand.nextInt(1000)+500;
