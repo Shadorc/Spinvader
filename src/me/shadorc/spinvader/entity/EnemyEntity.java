@@ -152,13 +152,13 @@ public class EnemyEntity implements Entity {
 		dead = true;
 		animationStart = System.currentTimeMillis();
 
-		new Sound("AlienDestroyed.wav", 0.15).start();
+		new Sound("AlienDestroyed.wav", 0.10).start();
 
 		img = Sprite.get("explosion.png", 110, 80);
 		game.increaseScore(35);
 
-		if(rand.nextInt(25) == 0) {
-			if(rand.nextInt(5) == 0) {
+		if(rand.nextInt(20) == 0) {
+			if(rand.nextInt(3) == 0) {
 				game.addEntity(new Item(x, y, Bonus.LIFE, game));
 			} else {
 				game.addEntity(new Item(x, y, Bonus.MONEY, game));

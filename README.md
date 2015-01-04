@@ -4,6 +4,27 @@
 Spinvader is a Java 2D game that incorporates the basics of the legendary game Space Invader by adding some features.
 It is still in the development phase.
 
+<h2>Control :</h2>
+<ul>
+	<li>Movement : ZQSD</li>
+	<li>Shoot : Space</li>
+	<li>Show Hitbox : F4</li>
+	<li>Debug Mod : F3</li>
+</ul>
+
+<h2>Resources :</h2>
+<ul>
+	<li>Musics :</li>
+	<ul>
+		<li>Menu : B-Complex - Beatiful Lies</li>
+		<li>Game : Savant - Spaceheart</li>
+	</ul>
+	<li>Font :</li>
+	<ul>
+		<li>space_invaders.ttf</li>
+	</ul>
+</ul>
+
 <h2>TODO :</h2>
 <ul>
 	<li>Options

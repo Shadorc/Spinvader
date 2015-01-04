@@ -40,7 +40,7 @@ public class Game extends JPanel implements Runnable {
 	private int level = 1;
 
 	private boolean showHitbox = false;
-	private boolean showDebug = true;
+	private boolean showDebug = false;
 	private boolean gameOver = false;
 	private boolean update = false;
 
