@@ -14,9 +14,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class Sound {
 
 	private Clip clip;
+	private String name;
 	private FloatControl gainControl;
 
 	public Sound(String name, double gain) {
+
+		this.name = name;
+
 		//gain : 0 - 1.14 : loudest
 		try {
 			clip = AudioSystem.getClip();
@@ -45,6 +49,18 @@ public class Sound {
 
 	public void stop() {
 		clip.stop();
+	}
+
+	public void restart() {
+		if(!clip.isOpen()) {
+			try {
+				AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource("/snd/" + name));
+				clip.open(audioIn);
+			} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+				e.printStackTrace();
+			}
+		}
+		this.start();
 	}
 
 	public boolean isPlaying() {

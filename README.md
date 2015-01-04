@@ -16,7 +16,7 @@ It is still in the development phase.
 <ul>
 	<li>Musics :</li>
 	<ul>
-		<li>Menu : B-Complex - Beatiful Lies</li>
+		<li>Menu : B-Complex - Beautiful Lies</li>
 		<li>Game : Savant - Spaceheart</li>
 	</ul>
 	<li>Font :</li>
@@ -27,7 +27,8 @@ It is still in the development phase.
 
 <h2>TODO :</h2>
 <ul>
-	<li>Options
-	<li>Upgrades
-	<li>Difficulty
+	<li>Options</li>
+	<li>Upgrades</li>
+	<li>Difficulty</li>
+	<li>Adjust images size with screen size</li>
 </ul>

@@ -30,9 +30,9 @@ public class Frame {
 		menu = new Menu();
 
 		music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
-		music.start();
 
-		frame.setContentPane(menu);
+		setPanel(Mode.MENU);
+
 		frame.setUndecorated(true);
 		frame.pack();
 
@@ -53,8 +53,7 @@ public class Frame {
 		if(mode == Mode.OPTIONS) {
 			frame.setContentPane(options);
 			if(!music.isPlaying()) {
-				music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
-				music.start();
+				music.restart();
 			}
 		} 
 
@@ -70,11 +69,11 @@ public class Frame {
 		else if(mode == Mode.MENU){
 			frame.setContentPane(menu);
 			if(!music.isPlaying()) {
-				music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
-				music.start();
+				music.restart();
 			}
 		}
 
+		frame.getContentPane().setFocusable(true);
 		frame.getContentPane().requestFocus();
 		frame.getContentPane().revalidate();
 		frame.repaint();
