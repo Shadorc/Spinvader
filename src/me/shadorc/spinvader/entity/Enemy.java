@@ -2,7 +2,6 @@ package me.shadorc.spinvader.entity;
 
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 
@@ -11,10 +10,7 @@ import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
-public class EnemyEntity implements Entity {
-
-	private Game game;
-	private Random rand;
+public class Enemy implements Entity {
 
 	private float x, y;
 	private float life;
@@ -30,15 +26,12 @@ public class EnemyEntity implements Entity {
 	private boolean dead;
 	private double animationStart;
 
-	public EnemyEntity(float x, float y, ImageIcon img, Game game) {
+	public Enemy(float x, float y, ImageIcon img) {
 		this.x = x;
 		this.y = y;
 		this.img = img;
-		this.game = game;
 
 		dead = false;
-
-		rand = new Random();
 
 		speed = 5;
 		life = 2;
@@ -47,7 +40,7 @@ public class EnemyEntity implements Entity {
 		randomTime = 7500;
 		minTime = 2500;
 		lastShoot = System.currentTimeMillis();
-		shootTime = rand.nextInt(randomTime)+minTime;
+		shootTime = Game.rand(randomTime)+minTime;
 
 		toReach = (int) (y+400);
 		dir = Direction.DOWN;
@@ -55,13 +48,13 @@ public class EnemyEntity implements Entity {
 	}
 
 	@Override
-	public float getX() {
-		return x;
+	public int getX() {
+		return (int) x;
 	}
 
 	@Override
-	public float getY() {
-		return y;
+	public int getY() {
+		return (int) y;
 	}
 
 	@Override
@@ -82,9 +75,9 @@ public class EnemyEntity implements Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			game.addEntity(new BulletEntity((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY, game));
+			Game.addEntity(new Bullet((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
 			lastShoot = System.currentTimeMillis();
-			shootTime = rand.nextInt(randomTime)+minTime;
+			shootTime = Game.rand(randomTime)+minTime;
 		}
 	}
 
@@ -93,7 +86,7 @@ public class EnemyEntity implements Entity {
 
 		if(dead) {
 			if((System.currentTimeMillis() - animationStart) >= 100) {
-				game.removeEntity(this);
+				Game.removeEntity(this);
 			}
 			return;
 		}
@@ -107,7 +100,7 @@ public class EnemyEntity implements Entity {
 			}
 
 			if(y >= (Frame.getHeight() - img.getIconHeight())) {
-				game.gameOver();
+				Game.gameOver();
 			}
 		} 
 
@@ -118,7 +111,7 @@ public class EnemyEntity implements Entity {
 				x = (float) (Frame.getWidth() - img.getIconWidth());
 				dir = Direction.DOWN;
 				nextDir = Direction.LEFT;
-				game.bringDownEnemies();
+				Game.bringDownEnemies();
 			}
 		} 
 
@@ -129,17 +122,17 @@ public class EnemyEntity implements Entity {
 				x = 0;
 				dir = Direction.DOWN;
 				nextDir = Direction.RIGHT;
-				game.bringDownEnemies();
+				Game.bringDownEnemies();
 			}
 		}
 	}
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(en instanceof BulletEntity) {
-			if(((BulletEntity) en).getType() == Type.SPACESHIP) {
+		if(en instanceof Bullet) {
+			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				life--;
-				game.removeEntity(en);
+				Game.removeEntity(en);
 
 				if(life <= 0) {
 					this.die();
@@ -152,16 +145,16 @@ public class EnemyEntity implements Entity {
 		dead = true;
 		animationStart = System.currentTimeMillis();
 
-		new Sound("AlienDestroyed.wav", 0.10).start();
+		Sound.play("AlienDestroyed.wav", 0.10);
 
 		img = Sprite.get("explosion.png", 110, 80);
-		game.increaseScore(35);
+		Game.increaseScore(35);
 
-		if(rand.nextInt(20) == 0) {
-			if(rand.nextInt(3) == 0) {
-				game.addEntity(new Item(x, y, Bonus.LIFE, game));
+		if(Game.rand(20) == 0) {
+			if(Game.rand(3) == 0) {
+				Game.addEntity(new Item(x, y, Bonus.LIFE));
 			} else {
-				game.addEntity(new Item(x, y, Bonus.MONEY, game));
+				Game.addEntity(new Item(x, y, Bonus.MONEY));
 			}
 		}
 	}

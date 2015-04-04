@@ -26,7 +26,11 @@ public class KListener implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent event) {
-		keys.remove(keys.indexOf(event.getKeyCode()));
+		try {
+			keys.remove(keys.indexOf(event.getKeyCode()));
+		} catch(ArrayIndexOutOfBoundsException e) {
+			System.err.println("Error while deleting key.");
+		}
 	}
 
 	@Override

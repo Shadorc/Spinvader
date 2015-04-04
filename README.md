@@ -31,4 +31,5 @@ It is still in the development phase.
 	<li>Upgrades</li>
 	<li>Difficulty</li>
 	<li>Adjust images size with screen size</li>
+	<li>Scale image sprite with 1080/Frame.getHeight() scaling in Sprite.class</li>
 </ul>

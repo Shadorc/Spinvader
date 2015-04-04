@@ -10,9 +10,7 @@ import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
-public class SpaceshipEntity implements Entity {
-
-	private Game game;
+public class Spaceship implements Entity {
 
 	private float x, y;
 	private float speed;
@@ -23,10 +21,9 @@ public class SpaceshipEntity implements Entity {
 
 	private ImageIcon img;
 
-	public SpaceshipEntity(int x, int y, Game game) {
+	public Spaceship(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.game = game;
 
 		speed = 25;
 		lifeMax = 5;
@@ -40,13 +37,13 @@ public class SpaceshipEntity implements Entity {
 	}
 
 	@Override
-	public float getX() {
-		return x;
+	public int getX() {
+		return (int) x;
 	}
 
 	@Override
-	public float getY() {
-		return y;
+	public int getY() {
+		return (int) y;
 	}
 
 	@Override
@@ -76,16 +73,16 @@ public class SpaceshipEntity implements Entity {
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(en instanceof EnemyEntity) {
-			game.gameOver();
+		if(en instanceof Enemy) {
+			Game.gameOver();
 		}
 
-		else if(en instanceof BulletEntity) {
-			if(((BulletEntity) en).getType() == Type.ENEMY) {
+		else if(en instanceof Bullet) {
+			if(((Bullet) en).getType() == Type.ENEMY) {
 				life--;
-				game.removeEntity(en);
+				Game.removeEntity(en);
 				if(life <= 0) {
-					game.gameOver();
+					Game.gameOver();
 				}
 			}
 		}
@@ -94,18 +91,16 @@ public class SpaceshipEntity implements Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			game.addEntity(new BulletEntity(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP, game));
-			game.addEntity(new BulletEntity(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
-			game.addEntity(new BulletEntity(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP, game));
-			new Sound("spaceship_shoot.wav", 0.1).start();
+			Game.addEntity(new Bullet(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
+			Game.addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+			Game.addEntity(new Bullet(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+			Sound.play("spaceship_shoot.wav", 0.1);
 			lastShoot = System.currentTimeMillis();
 		}
 	}
 
 	@Override
-	public void move(double delta) {
-
-	}
+	public void move(double delta) { }
 
 	public void moveLeft(double delta) {
 		if(x >= 0) {

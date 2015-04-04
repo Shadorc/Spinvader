@@ -5,43 +5,44 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import me.shadorc.spinvader.KListener;
 import me.shadorc.spinvader.Sound;
-import me.shadorc.spinvader.entity.BossEntity;
-import me.shadorc.spinvader.entity.EnemyEntity;
+import me.shadorc.spinvader.entity.Boss;
+import me.shadorc.spinvader.entity.Enemy;
 import me.shadorc.spinvader.entity.Entity;
-import me.shadorc.spinvader.entity.SpaceshipEntity;
+import me.shadorc.spinvader.entity.Spaceship;
 import me.shadorc.spinvader.graphic.Frame.Mode;
 
 public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private SpaceshipEntity spaceship;
-	private ArrayList <Entity> entities;
+	private static Spaceship spaceship;
+	private static ArrayList <Entity> entities;
 
-	private ImageIcon background;
+	private Image background;
 	private KListener listener;
 
 	private Sound music;
 
-	private int score = 0;
-	private int money = 0;
+	private static int score = 0;
+	private static int money = 0;
 	private int level = 1;
 
 	private boolean showHitbox = false;
 	private boolean showDebug = false;
-	private boolean gameOver = false;
+	private static boolean gameOver = false;
 	private boolean update = false;
 
 	private Thread generation;
@@ -52,16 +53,16 @@ public class Game extends JPanel implements Runnable {
 	private int fps = 0; 
 	private int frame = 0;
 
-
 	Game() {
-		spaceship = new SpaceshipEntity(Frame.getWidth() / 2, Frame.getHeight() / 2, this);
-
+		super();
 		entities = new ArrayList <Entity>();
+
+		spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
 		entities.add(spaceship);
 
-		background = Sprite.get("background.png");
-		listener = new KListener();
+		background = Sprite.get("background.png").getImage();
 
+		listener = new KListener();
 		updated = new Thread(this);
 		generation = new Thread();
 
@@ -79,7 +80,6 @@ public class Game extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		while(update) {
-			//Without this, FPS go up to 200,000 but errors appear from everywhere
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
@@ -110,11 +110,11 @@ public class Game extends JPanel implements Runnable {
 		//			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		//		}
 
-		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
+		g2d.drawImage(background, 0, 0, this.getWidth(), this.getHeight(), null);
 
 		//Create a copy of entities array to avoid ConcurrentModificationException
 		for(Entity en : new ArrayList <Entity> (entities)) {
-			g2d.drawImage(en.getImage(), (int) en.getX(), (int) en.getY(), null);
+			g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
 			if(showHitbox) {
 				Rectangle re = en.getHitbox();
 				g.setColor(Color.RED);
@@ -183,14 +183,14 @@ public class Game extends JPanel implements Runnable {
 
 		//Create a copy of entities array to avoid ConcurrentModificationException
 		for(int key : new ArrayList <Integer> (listener.getKeysPressed())) {
-			if(key == KeyEvent.VK_ESCAPE)	this.stop();
-			if(key == KeyEvent.VK_LEFT)		spaceship.moveLeft(delta);
-			if(key == KeyEvent.VK_RIGHT)	spaceship.moveRight(delta);
-			if(key == KeyEvent.VK_UP)		spaceship.moveForward(delta);
-			if(key == KeyEvent.VK_DOWN)		spaceship.moveBackward(delta);
-			if(key == KeyEvent.VK_SPACE)	spaceship.shoot();
-			if(key == KeyEvent.VK_F3)		showDebug = !showDebug;
-			if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
+			if(key == KeyEvent.VK_ESCAPE)		this.stop();
+			else if(key == KeyEvent.VK_LEFT)	spaceship.moveLeft(delta);
+			else if(key == KeyEvent.VK_RIGHT)	spaceship.moveRight(delta);
+			else if(key == KeyEvent.VK_UP)		spaceship.moveForward(delta);
+			else if(key == KeyEvent.VK_DOWN)	spaceship.moveBackward(delta);
+			else if(key == KeyEvent.VK_SPACE)	spaceship.shoot();
+			else if(key == KeyEvent.VK_F3)		showDebug = !showDebug;
+			else if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
 		}
 
 		if(!generation.isAlive() && !this.isEnemyAlive()) {
@@ -203,18 +203,15 @@ public class Game extends JPanel implements Runnable {
 			generation.start();
 		}
 
-		for(int i = 0; i < entities.size(); i++) {
-			Entity en = entities.get(i);
-
+		for(Entity en : new ArrayList <Entity> (entities)) {
 			en.move(delta);
 
-			if(en instanceof EnemyEntity || en instanceof BossEntity) {
+			if(en instanceof Enemy || en instanceof Boss) {
 				en.shoot();
 			}
 
-			for(int o = 0; o < entities.size(); o++) {
-				Entity en1 = entities.get(o);
-				if(en.getHitbox().intersects(en1.getHitbox())) {
+			for(Entity en1 : new ArrayList <Entity> (entities)) {
+				if(en != en1 && en.getHitbox().intersects(en1.getHitbox())) {
 					en.collidedWith(en1);
 					en1.collidedWith(en);
 				}
@@ -231,40 +228,41 @@ public class Game extends JPanel implements Runnable {
 	public void stop() {
 		music.stop();
 		update = false;
+		gameOver = false;
 		Frame.setPanel(Mode.MENU);
 	}
 
-	public void gameOver() {
-		new Sound("Game Over.wav", 0.5).start();
+	public static void gameOver() {
+		Sound.play("Game Over.wav", 0.5);
 		gameOver = true;
 	}
 
 	private boolean isEnemyAlive() {
 		for(Entity en : entities) {
-			if(en instanceof EnemyEntity || en instanceof BossEntity) {
+			if(en instanceof Enemy || en instanceof Boss) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void addEntity(Entity en) {
+	public static void addEntity(Entity en) {
 		entities.add(en);
 	}
 
-	public void removeEntity(Entity en) {
+	public static void removeEntity(Entity en) {
 		entities.remove(en);
 	}
 
-	public void increaseScore(int i) {
+	public static void increaseScore(int i) {
 		score += i;		
 	}
 
-	public void increaseMoney(int i) {
+	public static void increaseMoney(int i) {
 		money += i;		
 	}
 
-	public void increaseLife(int i) {
+	public static void increaseLife(int i) {
 		spaceship.heal(i);
 	}
 
@@ -275,10 +273,10 @@ public class Game extends JPanel implements Runnable {
 		return start;
 	}
 
-	public void bringDownEnemies() {
+	public static void bringDownEnemies() {
 		for(Entity en : entities) {
-			if(en instanceof EnemyEntity) {
-				((EnemyEntity) en).goDown();
+			if(en instanceof Enemy) {
+				((Enemy) en).goDown();
 			}
 		}
 	}
@@ -292,7 +290,7 @@ public class Game extends JPanel implements Runnable {
 
 		if(level <= 7) {
 			for(int i = 1; i < count + 1; i++) {
-				this.addEntity(new EnemyEntity((x*(110+sep)+40), (y*(80+sep) - 3*(80+sep)), Sprite.resize(Sprite.generateSprite(level), 110, 80), this));
+				entities.add(new Enemy((x*(110+sep)+40), (y*(80+sep) - 3*(80+sep)), Sprite.resize(Sprite.generateSprite(level), 110, 80)));
 				if(i % 12 == 0) {
 					y++;
 					x = 0;
@@ -301,10 +299,14 @@ public class Game extends JPanel implements Runnable {
 				}
 			}
 		} else {
-			this.addEntity(new BossEntity(100, 50, this));
+			entities.add(new Boss(100, 50));
 			level = 1;
 		}
 
 		level++;	
+	}
+
+	public static int rand(int i) {
+		return new Random().nextInt(i);
 	}
 }

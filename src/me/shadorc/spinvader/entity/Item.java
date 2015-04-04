@@ -12,19 +12,16 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item implements Entity {
 
-	private Game game;
-
 	private float x, y;
 	private float speed;
 
 	private Bonus type;
 	private ImageIcon img;
 
-	Item(float x, float y, Bonus type, Game game) {
+	Item(float x, float y, Bonus type) {
 		this.x = x;
 		this.y = y;
 		this.type = type;
-		this.game = game;
 
 		this.speed = 5;
 
@@ -36,13 +33,13 @@ public class Item implements Entity {
 	}
 
 	@Override
-	public float getX() {
-		return x;
+	public int getX() {
+		return (int) x;
 	}
 
 	@Override
-	public float getY() {
-		return y;
+	public int getY() {
+		return (int) y;
 	}
 
 	@Override
@@ -62,14 +59,14 @@ public class Item implements Entity {
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(en instanceof SpaceshipEntity) {
-			game.removeEntity(this);
+		if(en instanceof Spaceship) {
+			Game.removeEntity(this);
 			if(type == Bonus.MONEY) {
-				game.increaseMoney(10);
-				new Sound("cash.wav", 0.20).start();
+				Game.increaseMoney(10);
+				Sound.play("cash.wav", 0.20);
 			} else if(type == Bonus.LIFE){
-				game.increaseLife(1);
-				new Sound("life.wav", 0.20).start();
+				Game.increaseLife(1);
+				Sound.play("life.wav", 0.20);
 			}
 		}
 	}
@@ -79,7 +76,7 @@ public class Item implements Entity {
 		y += (float) ((speed * delta) / 30);
 
 		if(y >= Frame.getHeight()) {
-			game.removeEntity(this);
+			Game.removeEntity(this);
 		}
 	}
 

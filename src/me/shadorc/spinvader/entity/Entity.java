@@ -17,8 +17,8 @@ public interface Entity {
 		MONEY, LIFE;
 	}
 
-	public float getX();
-	public float getY();
+	public int getX();
+	public int getY();
 	public float getLife();
 
 	public Rectangle getHitbox();

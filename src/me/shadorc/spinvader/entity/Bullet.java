@@ -9,34 +9,32 @@ import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
-public class BulletEntity implements Entity {
+public class Bullet implements Entity {
 
 	private float x, y;
 	private float speed;
 	private ImageIcon img;
 	private Direction dir;
 	private Type type;
-	private Game game;
 
-	BulletEntity(float x, float y, Direction dir, float speed, Type type, Game game) {
+	Bullet(float x, float y, Direction dir, float speed, Type type) {
 		this.x = x;
 		this.y = y;
 		this.dir = dir;
 		this.speed = speed;
 		this.type = type;
-		this.game = game;
 
 		img = Sprite.get("bullet.png");
 	}
 
 	@Override
-	public float getX() {
-		return x;
+	public int getX() {
+		return (int) x;
 	}
 
 	@Override
-	public float getY() {
-		return y;
+	public int getY() {
+		return (int) y;
 	}
 
 	@Override
@@ -50,14 +48,10 @@ public class BulletEntity implements Entity {
 
 	@Override
 	public void move(double delta) {
-		if(dir == Direction.UP) {
-			y -= (speed * delta) / 30;
-		} else if(dir == Direction.DOWN) {
-			y += (speed * delta) / 30;
-		}
+		y += (speed * delta) / 30 * (dir == Direction.DOWN ? 1 : -1);
 
 		if(y <= 0 || y >= Frame.getHeight()) {
-			game.removeEntity(this);
+			Game.removeEntity(this);
 		}
 	}
 

@@ -21,7 +21,6 @@ public class Sound {
 
 		this.name = name;
 
-		//gain : 0 - 1.14 : loudest
 		try {
 			clip = AudioSystem.getClip();
 			AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource("/snd/" + name));
@@ -41,6 +40,10 @@ public class Sound {
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void play(String name, double gain) {
+		new Sound(name, gain).start();
 	}
 
 	public void start() {
@@ -68,7 +71,6 @@ public class Sound {
 	}
 
 	public void setGain(double gain) {
-		float volume = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
-		gainControl.setValue(volume);
+		gainControl.setValue((float) (Math.log(gain) / Math.log(10.0) * 20.0));
 	}
 }

@@ -48,7 +48,6 @@ public class Frame {
 
 	public static void setPanel(Mode mode) {
 		frame.remove(frame.getContentPane());
-		frame.revalidate();
 
 		if(mode == Mode.OPTIONS) {
 			frame.setContentPane(options);
@@ -76,7 +75,7 @@ public class Frame {
 		frame.getContentPane().setFocusable(true);
 		frame.getContentPane().requestFocus();
 		frame.getContentPane().revalidate();
-		frame.repaint();
+		frame.getContentPane().repaint();
 	}
 
 	public static int getWidth() {
