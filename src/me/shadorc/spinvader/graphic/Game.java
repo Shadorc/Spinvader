@@ -189,9 +189,10 @@ public class Game extends JPanel implements Runnable {
 			else if(key == KeyEvent.VK_UP)		spaceship.moveForward(delta);
 			else if(key == KeyEvent.VK_DOWN)	spaceship.moveBackward(delta);
 			else if(key == KeyEvent.VK_SPACE)	spaceship.shoot();
-			else if(key == KeyEvent.VK_F3)		showDebug = !showDebug;
-			else if(key == KeyEvent.VK_F4)		showHitbox = !showHitbox;
 		}
+		
+		if(listener.wasKeyPressed(KeyEvent.VK_F3)) showDebug = !showDebug;
+		if(listener.wasKeyPressed(KeyEvent.VK_F4)) showHitbox = !showHitbox;
 
 		if(!generation.isAlive() && !this.isEnemyAlive()) {
 			generation = new Thread(new Runnable() {

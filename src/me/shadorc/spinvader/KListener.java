@@ -7,13 +7,23 @@ import java.util.ArrayList;
 public class KListener implements KeyListener {
 
 	private ArrayList <Integer> keys;
+	private ArrayList <Integer> keysPressed;
 
 	public KListener() {
 		keys = new ArrayList <Integer>();
+		keysPressed = new ArrayList <Integer> ();
 	}
 
 	public ArrayList <Integer> getKeysPressed() {
 		return keys;
+	}
+	
+	public boolean wasKeyPressed(int key) {
+		if(keysPressed.contains(key)) {
+			keysPressed.remove(keysPressed.indexOf(key));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -21,6 +31,9 @@ public class KListener implements KeyListener {
 		int key = event.getKeyCode();
 		if(!keys.contains(key)) {
 			keys.add(key);
+		}
+		if(!keysPressed.contains(key)) {
+			keysPressed.add(key);
 		}
 	}
 
