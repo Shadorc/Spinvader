@@ -288,22 +288,21 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	private void generate() {
-		int count = 36;
-
-		int x = 0;
-		int y = 0;
-		int sep = 25; //Separation in pixels between two enemies
+		int count = 36;				//Enemies
+		int line = 3;				//Lines
+		int column = count/line;	//Columns
+		int space = 50;				//Space without enemies
 
 		if(level <= 7) {
-			for(int i = 1; i < count + 1; i++) {
-				entities.add(new Enemy((x*(110+sep)+40), (y*(80+sep) - 3*(80+sep)), Sprite.resize(Sprite.generateSprite(level), 110, 80)));
-				if(i % 12 == 0) {
-					y++;
-					x = 0;
-				} else {
-					x++;
+			int xSize = (Frame.getWidth()-space)/column;
+			int ySize = (Frame.getHeight()/3)/line;
+
+			for(int y = 0; y < line; y++) {
+				for(int x = 0; x < column; x++) {
+					entities.add(new Enemy(xSize*x, ySize*y - Frame.getHeight()/3, Sprite.resize(Sprite.generateSprite(level), 110, 80)));
 				}
 			}
+
 		} else {
 			entities.add(new Boss(100, 50));
 			level = 1;

@@ -41,8 +41,6 @@ public class Frame {
 		scaleX = (float) (d.getWidth()/NORMAL_WIDTH);
 		scaleY = (float) (d.getHeight()/NORMAL_HEIGHT);
 
-		System.err.println(scaleX + " : " + scaleY);
-
 		setPanel(Mode.MENU);
 
 		frame.setUndecorated(true);
