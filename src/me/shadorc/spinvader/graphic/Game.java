@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
@@ -40,9 +41,9 @@ public class Game extends JPanel implements Runnable {
 	private static int money = 0;
 	private int level = 1;
 
+	private static boolean gameOver = false;
 	private boolean showHitbox = false;
 	private boolean showDebug = false;
-	private static boolean gameOver = false;
 	private boolean update = false;
 
 	private Thread generation;
@@ -96,7 +97,6 @@ public class Game extends JPanel implements Runnable {
 				frame = 0;
 				fpsTime = System.currentTimeMillis();
 			}
-
 		}
 	}
 
@@ -104,6 +104,9 @@ public class Game extends JPanel implements Runnable {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
+
+		AffineTransform transform = g2d.getTransform();
+		g2d.scale(Frame.getScaleX(), Frame.getScaleY());
 
 		//		if(Options.isAntialiasEnable()) {
 		//			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -168,6 +171,8 @@ public class Game extends JPanel implements Runnable {
 			start = this.getCenteredText(g2d, sec); 
 			g2d.drawString(sec, start, Frame.getHeight()/2 + 50);
 		}
+
+		g2d.setTransform(transform);
 	}
 
 	public void update() {
@@ -190,7 +195,7 @@ public class Game extends JPanel implements Runnable {
 			else if(key == KeyEvent.VK_DOWN)	spaceship.moveBackward(delta);
 			else if(key == KeyEvent.VK_SPACE)	spaceship.shoot();
 		}
-		
+
 		if(listener.wasKeyPressed(KeyEvent.VK_F3)) showDebug = !showDebug;
 		if(listener.wasKeyPressed(KeyEvent.VK_F4)) showHitbox = !showHitbox;
 

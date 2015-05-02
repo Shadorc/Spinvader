@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -111,6 +112,9 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 
+		AffineTransform transform = g2d.getTransform();
+		g2d.scale(Frame.getScaleX(), Frame.getScaleY());
+
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 
 		g2d.setFont(font);
@@ -121,6 +125,8 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		int start = Frame.getWidth() / 2 - stringLen / 2;
 
 		g2d.drawString(title, start, Frame.getHeight()/5);
+
+		g2d.setTransform(transform);
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package me.shadorc.spinvader.graphic;
 
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,6 +19,10 @@ public class Frame {
 	private static Game game;
 	private static Menu menu;
 
+	private final static int NORMAL_WIDTH = 1920;
+	private final static int NORMAL_HEIGHT = 1080;
+	private static float scaleX, scaleY;
+
 	public enum Mode {
 		OPTIONS, GAME, MENU;
 	}
@@ -30,6 +36,12 @@ public class Frame {
 		menu = new Menu();
 
 		music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
+
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		scaleX = (float) (d.getWidth()/NORMAL_WIDTH);
+		scaleY = (float) (d.getHeight()/NORMAL_HEIGHT);
+
+		System.err.println(scaleX + " : " + scaleY);
 
 		setPanel(Mode.MENU);
 
@@ -84,5 +96,13 @@ public class Frame {
 
 	public static int getHeight() {
 		return frame.getHeight();
+	}
+
+	public static float getScaleX() {
+		return scaleX;
+	}
+
+	public static float getScaleY() {
+		return scaleY;
 	}
 }
