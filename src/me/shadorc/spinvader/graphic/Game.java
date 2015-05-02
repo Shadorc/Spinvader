@@ -204,7 +204,7 @@ public class Game extends JPanel implements Runnable {
 			generation = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					generate(36*2);
+					generate(36);
 				}
 			});
 			generation.start();
@@ -290,23 +290,29 @@ public class Game extends JPanel implements Runnable {
 
 	private void generate(int enemies) {
 		if(level <= 7) {
-			int line = 3;				//Lines
-			int column = enemies/line;	//Columns
-			int blanck = 50;			//Space without enemies
-			int space = 20;				//Space between enemies
+			final int line = 3;					//Lines
+			final int column = enemies/line;	//Columns
+			final int blanck = 100;				//Space without enemies
+			final int space = 20;				//Space between enemies
 
-			ImageIcon enemySprite = Sprite.generateSprite(level); //Get the original sprite
+			//Get the original sprite
+			ImageIcon enemySprite = Sprite.generateSprite(level); 
 
-			int xSize = (Frame.getWidth()-blanck)/column;	//Space occupied by each enemy counting the blanck without enemies 
+			//Space occupied by each enemy counting the blanck without enemies 
+			int xSize = (Frame.getWidth()-blanck)/column;	
 
-			int enemyWidth = xSize - space; //Enemy width without space between them
+			//Enemy width without space between them
+			int enemyWidth = xSize - space; 
 
-			float scale = (float) enemySprite.getIconWidth() / enemyWidth; 
-			int enemyHeight = (int) (enemySprite.getIconHeight()*scale); //Resize enemy height depending upon its width
+			//Resize enemy height depending upon its width
+			float scale = (float) Math.max(enemySprite.getIconWidth(), enemyWidth) / Math.min(enemySprite.getIconWidth(), enemyWidth); 
+			int enemyHeight = (int) (enemySprite.getIconHeight()*scale); 
 
-			int ySize = enemyHeight + space; //Space occupied by each enemy counting the space between them 
+			//Space occupied by each enemy counting the space between them 
+			int ySize = enemyHeight + space; 
 
-			enemySprite = Sprite.resize(enemySprite, enemyWidth, enemyHeight); //Resize original sprite with new dimension
+			//Resize original sprite with new dimension
+			enemySprite = Sprite.resize(enemySprite, enemyWidth, enemyHeight); 
 
 			for(int y = 0; y < line; y++) {
 				for(int x = 0; x < column; x++) {
