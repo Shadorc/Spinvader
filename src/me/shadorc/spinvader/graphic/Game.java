@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import me.shadorc.spinvader.KListener;
@@ -203,7 +204,7 @@ public class Game extends JPanel implements Runnable {
 			generation = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					generate();
+					generate(36*2);
 				}
 			});
 			generation.start();
@@ -287,19 +288,29 @@ public class Game extends JPanel implements Runnable {
 		}
 	}
 
-	private void generate() {
-		int count = 36;				//Enemies
-		int line = 3;				//Lines
-		int column = count/line;	//Columns
-		int space = 50;				//Space without enemies
-
+	private void generate(int enemies) {
 		if(level <= 7) {
-			int xSize = (Frame.getWidth()-space)/column;
-			int ySize = (Frame.getHeight()/3)/line;
+			int line = 3;				//Lines
+			int column = enemies/line;	//Columns
+			int blanck = 50;			//Space without enemies
+			int space = 20;				//Space between enemies
+
+			ImageIcon enemySprite = Sprite.generateSprite(level); //Get the original sprite
+
+			int xSize = (Frame.getWidth()-blanck)/column;	//Space occupied by each enemy counting the blanck without enemies 
+
+			int enemyWidth = xSize - space; //Enemy width without space between them
+
+			float scale = (float) enemySprite.getIconWidth() / enemyWidth; 
+			int enemyHeight = (int) (enemySprite.getIconHeight()*scale); //Resize enemy height depending upon its width
+
+			int ySize = enemyHeight + space; //Space occupied by each enemy counting the space between them 
+
+			enemySprite = Sprite.resize(enemySprite, enemyWidth, enemyHeight); //Resize original sprite with new dimension
 
 			for(int y = 0; y < line; y++) {
 				for(int x = 0; x < column; x++) {
-					entities.add(new Enemy(xSize*x, ySize*y - Frame.getHeight()/3, Sprite.resize(Sprite.generateSprite(level), 110, 80)));
+					entities.add(new Enemy(xSize*x, ySize*y - Frame.getHeight()/3, enemySprite));
 				}
 			}
 
