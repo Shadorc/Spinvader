@@ -1,10 +1,12 @@
 package me.shadorc.spinvader.graphic;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +21,6 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import me.shadorc.spinvader.graphic.Frame.Mode;
@@ -41,7 +42,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 	private JButton selectedButton;
 
 	Menu() {
-		super(new GridLayout(3, 3));
+		super(new GridBagLayout());
 		this.addKeyListener(this);
 
 		background = Sprite.get("menu_background.jpg");
@@ -52,12 +53,8 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 			font = new Font("Consolas", Font.PLAIN, 200);
 		}
 
-		this.add(new JLabel());
-		this.add(new JLabel());
-		this.add(new JLabel());
-		this.add(new JLabel());
-
 		JPanel buttons = new JPanel(new GridLayout(3, 0, 0, 35));
+		buttons.setPreferredSize(new Dimension(700, 350));
 		buttons.setOpaque(false);
 
 		start = this.createButton(new JButton("Start"));
@@ -70,11 +67,6 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		buttons.add(quit);
 
 		this.add(buttons);
-
-		this.add(new JLabel());
-		this.add(new JLabel());
-		this.add(new JLabel());
-		this.add(new JLabel());
 	}		
 
 	private JButton createButton(JButton button) {
