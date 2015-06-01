@@ -30,30 +30,28 @@ public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Spaceship spaceship;
+	private static boolean gameOver = false;
+	private static boolean showHitbox = false;
+	private static boolean showDebug = false;
+	private static boolean update = false;
+
 	private static ArrayList <Entity> entities;
+	private static Spaceship spaceship;
+
+	private static int FPS_CAP = 60;
+	private static int score = 0;
+	private static int money = 0;
+	private static int level = 1;
 
 	private Image background;
 	private KListener listener;
 
+	private Thread updated;
+	private Thread generation;
+
 	private Sound music;
 
-	private static int score = 0;
-	private static int money = 0;
-	private int level = 1;
-
-	private static boolean gameOver = false;
-	private boolean showHitbox = false;
-	private boolean showDebug = false;
-	private boolean update = false;
-
-	private Thread generation;
-	private Thread updated;
-
-	private double fpsTime = System.currentTimeMillis();
-	private double loopTime = System.currentTimeMillis();
 	private int fps = 0; 
-	private int frame = 0;
 
 	Game() {
 		super();
@@ -65,6 +63,7 @@ public class Game extends JPanel implements Runnable {
 		background = Sprite.get("background.png").getImage();
 
 		listener = new KListener();
+
 		updated = new Thread(this);
 		generation = new Thread();
 
@@ -81,23 +80,22 @@ public class Game extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
+		double loopTime = System.currentTimeMillis();
+
 		while(update) {
 			try {
-				Thread.sleep(1);
+				Thread.sleep(1000/FPS_CAP);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
-			this.update();
+			double delta = System.currentTimeMillis() - loopTime;
+			loopTime = System.currentTimeMillis();
+
+			this.update(delta);
 			this.repaint();
 
-			frame++;
-
-			if(System.currentTimeMillis() - fpsTime >= 1000) {
-				fps = frame;
-				frame = 0;
-				fpsTime = System.currentTimeMillis();
-			}
+			fps = (int) (1000/delta);
 		}
 	}
 
@@ -176,16 +174,13 @@ public class Game extends JPanel implements Runnable {
 		g2d.setTransform(transform);
 	}
 
-	public void update() {
+	public void update(double delta) {
 		if(gameOver) {
 			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
 				this.stop();
 			}
 			return;
 		}
-
-		double delta = System.currentTimeMillis() - loopTime;
-		loopTime = System.currentTimeMillis();
 
 		//Create a copy of entities array to avoid ConcurrentModificationException
 		for(int key : new ArrayList <Integer> (listener.getKeysPressed())) {
