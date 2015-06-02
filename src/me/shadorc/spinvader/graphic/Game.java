@@ -41,7 +41,7 @@ public class Game extends JPanel implements Runnable {
 	private static int FPS_CAP = 60;
 	private static int score = 0;
 	private static int money = 0;
-	private static int level = 1;
+	private static int level = 0; //FIXME: level start at 1
 
 	private Image background;
 	private KListener listener;
@@ -284,7 +284,9 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	private void generate(int enemies) {
-		if(level <= 7) {
+		level++;	
+
+		if(level < 8) {
 			final int line = 3;					//Lines
 			final int column = enemies/line;	//Columns
 			final int blanck = 100;				//Space without enemies
@@ -315,12 +317,12 @@ public class Game extends JPanel implements Runnable {
 				}
 			}
 
-		} else {
+		} else if(level == 8) {
 			entities.add(new Boss(100, 50));
+
+		} else {
 			level = 1;
 		}
-
-		level++;	
 	}
 
 	public static int rand(int i) {
