@@ -176,21 +176,18 @@ public class Game extends JPanel implements Runnable {
 
 	public void update(double delta) {
 		if(gameOver) {
-			if(listener.getKeysPressed().contains(KeyEvent.VK_ESCAPE)) {
-				this.stop();
-			}
+			if(listener.wasKeyPressed(KeyEvent.VK_ESCAPE))	this.stop();
 			return;
 		}
 
-		//Create a copy of entities array to avoid ConcurrentModificationException
-		for(int key : new ArrayList <Integer> (listener.getKeysPressed())) {
-			if(key == KeyEvent.VK_ESCAPE)		this.stop();
-			else if(key == KeyEvent.VK_LEFT)	spaceship.moveLeft(delta);
-			else if(key == KeyEvent.VK_RIGHT)	spaceship.moveRight(delta);
-			else if(key == KeyEvent.VK_UP)		spaceship.moveForward(delta);
-			else if(key == KeyEvent.VK_DOWN)	spaceship.moveBackward(delta);
-			else if(key == KeyEvent.VK_SPACE)	spaceship.shoot();
 		}
+
+		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop();
+		if(listener.isKeyDown(KeyEvent.VK_LEFT))	spaceship.moveLeft(delta);
+		if(listener.isKeyDown(KeyEvent.VK_RIGHT))	spaceship.moveRight(delta);
+		if(listener.isKeyDown(KeyEvent.VK_UP))		spaceship.moveForward(delta);
+		if(listener.isKeyDown(KeyEvent.VK_DOWN))	spaceship.moveBackward(delta);
+		if(listener.isKeyDown(KeyEvent.VK_SPACE))	spaceship.shoot();
 
 		if(listener.wasKeyPressed(KeyEvent.VK_F3)) showDebug = !showDebug;
 		if(listener.wasKeyPressed(KeyEvent.VK_F4)) showHitbox = !showHitbox;

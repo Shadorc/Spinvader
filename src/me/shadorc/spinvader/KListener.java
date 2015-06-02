@@ -6,18 +6,18 @@ import java.util.ArrayList;
 
 public class KListener implements KeyListener {
 
-	private ArrayList <Integer> keys;
+	private ArrayList <Integer> keysDown;
 	private ArrayList <Integer> keysPressed;
 
 	public KListener() {
-		keys = new ArrayList <Integer>();
+		keysDown = new ArrayList <Integer>();
 		keysPressed = new ArrayList <Integer> ();
 	}
 
-	public ArrayList <Integer> getKeysPressed() {
-		return keys;
+	public boolean isKeyDown(int key) {
+		return keysDown.contains(key);
 	}
-	
+
 	public boolean wasKeyPressed(int key) {
 		if(keysPressed.contains(key)) {
 			keysPressed.remove(keysPressed.indexOf(key));
@@ -29,18 +29,14 @@ public class KListener implements KeyListener {
 	@Override
 	public void keyPressed(KeyEvent event) {
 		int key = event.getKeyCode();
-		if(!keys.contains(key)) {
-			keys.add(key);
-		}
-		if(!keysPressed.contains(key)) {
-			keysPressed.add(key);
-		}
+		if(!keysDown.contains(key))		keysDown.add(key);
+		if(!keysPressed.contains(key))	keysPressed.add(key);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent event) {
 		try {
-			keys.remove(keys.indexOf(event.getKeyCode()));
+			keysDown.remove(keysDown.indexOf(event.getKeyCode()));
 		} catch(ArrayIndexOutOfBoundsException e) {
 			System.err.println("Error while deleting key.");
 		}
