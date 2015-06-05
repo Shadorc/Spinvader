@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 
 public class Sprite {
 
-	public static ImageIcon generateSprite(int level) {
+	public static ImageIcon generateSprite() {
 
 		Image img = Sprite.get("invadersSprite.png").getImage();
 

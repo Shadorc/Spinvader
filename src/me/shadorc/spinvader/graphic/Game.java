@@ -293,7 +293,7 @@ public class Game extends JPanel implements Runnable {
 			final int space = 20;				//Space between enemies
 
 			//Get the original sprite
-			ImageIcon enemySprite = Sprite.generateSprite(level); 
+			ImageIcon enemySprite = Sprite.generateSprite(); 
 
 			//Space occupied by each enemy counting the blanck without enemies 
 			int xSize = (Frame.getWidth()-blanck)/column;	

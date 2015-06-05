@@ -35,7 +35,7 @@ public class Spaceship implements Entity {
 		shootSpeed = 50;
 		shootTime = 200;
 
-		fireMode = 1;
+		fireMode = 4;
 
 		img = Sprite.get("spaceship_normal.png", 150, 150);
 	}
