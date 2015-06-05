@@ -46,11 +46,11 @@ public class Game extends JPanel implements Runnable {
 	private static float scoreSize = 50;
 
 	private Image background;
-	private KListener listener;
 
 	private Thread updated;
 	private Thread generation;
 
+	private KListener listener;
 	private Sound music;
 
 	private int fps; 
@@ -63,13 +63,12 @@ public class Game extends JPanel implements Runnable {
 		entities.add(spaceship);
 
 		this.background = Sprite.get("background.png").getImage();
+		this.music = new Sound("Savant - Spaceheart.wav", 1);
 
 		this.listener = new KListener();
 
 		this.updated = new Thread(this);
 		this.generation = new Thread();
-
-		this.music = new Sound("Savant - Spaceheart.wav", 1);
 
 		this.fps = 0;
 
@@ -258,24 +257,13 @@ public class Game extends JPanel implements Runnable {
 		entities.remove(en);
 	}
 
-	public enum Stat {
-		SCORE, LIFE;
+	public static void incScore(int num) {
+		score += num;
+		scoreSize = 60;
 	}
 
-	public static void increase(Stat stat, int num) {
-		switch(stat) {
-			case SCORE:
-				score += num;
-				scoreSize = 60;
-				break;
-			case LIFE:
-				spaceship.heal(num);
-				break;
-		}
-	}
-
-	public static void setFireMode(int fireMode) {
-		spaceship.setFireMode(fireMode);
+	public static Spaceship getSpaceship() {
+		return spaceship;
 	}
 
 	public static void bringDownEnemies() {
