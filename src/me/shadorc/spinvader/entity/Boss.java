@@ -71,12 +71,8 @@ public class Boss implements Entity {
 					Sound.play("AlienDestroyed.wav", 0.15);
 					Game.delEntity(this);
 					Game.increase(Stat.SCORE, 300);
-					if(Game.rand(10) == 0) {
-						if(Game.rand(3) == 0) {
-							Game.addEntity(new Item(x, y, Bonus.LIFE));
-						} else {
-							Game.addEntity(new Item(x, y, Bonus.MONEY));
-						}
+					if(Game.rand(50) == 0) {
+						Game.addEntity(new Item(x, y, Bonus.LIFE));
 					}
 				}
 			}

@@ -40,7 +40,6 @@ public class Game extends JPanel implements Runnable {
 
 	private static int FPS_CAP = 60;
 	private static int score = 0;
-	private static int money = 0;
 	private static int level = 0;
 
 	private Image background;
@@ -133,7 +132,6 @@ public class Game extends JPanel implements Runnable {
 
 		ArrayList <String> statInfos = new ArrayList <String> ();
 		statInfos.add("Score : " + score);
-		statInfos.add("Money : " + money);
 
 		for(int i = 0; i < statInfos.size(); i++) {
 			g2d.drawString(statInfos.get(i), Frame.getWidth()-Text.getWidth(g2d, statInfos.get(i))-5, (i+1)*(5+Text.getHeight(g2d, statInfos.get(i))));
@@ -260,16 +258,13 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public enum Stat {
-		SCORE, MONEY, LIFE;
+		SCORE, LIFE;
 	}
 
 	public static void increase(Stat stat, int num) {
 		switch(stat) {
 			case SCORE:
-				score += num;	
-				break;
-			case MONEY:
-				money += num;		
+				score += num;
 				break;
 			case LIFE:
 				spaceship.heal(num);

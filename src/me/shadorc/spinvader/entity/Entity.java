@@ -14,7 +14,7 @@ public interface Entity {
 	}
 
 	public enum Bonus {
-		MONEY, LIFE;
+		LIFE;
 	}
 
 	public int getX();

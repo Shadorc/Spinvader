@@ -26,9 +26,7 @@ public class Item implements Entity {
 
 		this.speed = 5;
 
-		if(type == Bonus.MONEY) {
-			img = Sprite.get("dollar.png", 50, 50);
-		} else if(type == Bonus.LIFE) {
+		if(type == Bonus.LIFE) {
 			img = Sprite.get("life.png", 50, 50);
 		}
 	}
@@ -62,10 +60,7 @@ public class Item implements Entity {
 	public void collidedWith(Entity en) {
 		if(en instanceof Spaceship) {
 			Game.delEntity(this);
-			if(type == Bonus.MONEY) {
-				Game.increase(Stat.MONEY, 10);
-				Sound.play("cash.wav", 0.20);
-			} else if(type == Bonus.LIFE){
+			if(type == Bonus.LIFE){
 				Game.increase(Stat.LIFE, 1);
 				Sound.play("life.wav", 0.20);
 			}
