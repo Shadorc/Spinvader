@@ -10,7 +10,7 @@ public class Sprite {
 
 	public static ImageIcon generateSprite(int level) {
 
-		Image img = Sprite.get("invaders1.png").getImage();
+		Image img = Sprite.get("invadersSprite.png").getImage();
 
 		//Create BufferedImage to get sub image.
 		BufferedImage bu_img = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -19,7 +19,12 @@ public class Sprite {
 		bGr.drawImage(img, 0, 0, null);
 		bGr.dispose();
 
-		bu_img = bu_img.getSubimage(bu_img.getWidth() - 10*level - 55*level, 0, 55, 40);
+		int width = 50;
+		int height = 40;
+		int column = Game.rand(8);
+		int row = Game.rand(16);
+
+		bu_img = bu_img.getSubimage((column*width + 15*column), (row*height + 10*row), 55, 40);
 
 		return new ImageIcon(bu_img);
 	}
