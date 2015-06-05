@@ -50,7 +50,7 @@ public class Game extends JPanel implements Runnable {
 
 	private Sound music;
 
-	private int fps = 0; 
+	private int fps; 
 
 	Game() {
 		super();
@@ -59,14 +59,16 @@ public class Game extends JPanel implements Runnable {
 		spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
 		entities.add(spaceship);
 
-		background = Sprite.get("background.png").getImage();
+		this.background = Sprite.get("background.png").getImage();
 
-		listener = new KListener();
+		this.listener = new KListener();
 
-		updated = new Thread(this);
-		generation = new Thread();
+		this.updated = new Thread(this);
+		this.generation = new Thread();
 
-		music = new Sound("Savant - Spaceheart.wav", 1);
+		this.music = new Sound("Savant - Spaceheart.wav", 1);
+
+		this.fps = 0;
 
 		this.addKeyListener(listener);
 		this.setFocusable(true);
@@ -129,13 +131,7 @@ public class Game extends JPanel implements Runnable {
 
 		g2d.setFont(Text.getFont("space_age.ttf", 40));
 		g2d.setColor(Color.RED);
-
-		ArrayList <String> statInfos = new ArrayList <String> ();
-		statInfos.add("Score : " + score);
-
-		for(int i = 0; i < statInfos.size(); i++) {
-			g2d.drawString(statInfos.get(i), Frame.getWidth()-Text.getWidth(g2d, statInfos.get(i))-5, (i+1)*(5+Text.getHeight(g2d, statInfos.get(i))));
-		}
+		g2d.drawString("Score : " + score, Frame.getWidth()-Text.getWidth(g2d, "Score : " + score), Text.getHeight(g2d, "Score : " + score));
 
 		if(showDebug) {
 			int mb = 1024*1024;
