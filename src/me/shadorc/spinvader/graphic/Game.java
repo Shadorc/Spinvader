@@ -275,6 +275,10 @@ public class Game extends JPanel implements Runnable {
 		}
 	}
 
+	public static void setFireMode(int fireMode) {
+		spaceship.setFireMode(fireMode);
+	}
+
 	public static void bringDownEnemies() {
 		for(Entity en : entities) {
 			if(en instanceof Enemy) {

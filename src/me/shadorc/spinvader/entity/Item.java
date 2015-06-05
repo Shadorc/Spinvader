@@ -16,6 +16,8 @@ public class Item implements Entity {
 	private float x, y;
 	private float speed;
 
+	private int fireMode;
+
 	private Bonus type;
 	private ImageIcon img;
 
@@ -28,6 +30,10 @@ public class Item implements Entity {
 
 		if(type == Bonus.LIFE) {
 			img = Sprite.get("life.png", 50, 50);
+		}
+		else if(type == Bonus.FIREMODE) {
+			this.fireMode = Game.rand(3)+1;
+			img = Sprite.get("firemode_" + fireMode + ".png", 50, 50);
 		}
 	}
 
@@ -63,6 +69,9 @@ public class Item implements Entity {
 			if(type == Bonus.LIFE){
 				Game.increase(Stat.LIFE, 1);
 				Sound.play("life.wav", 0.20);
+			}
+			else if(type == Bonus.FIREMODE) {
+				Game.setFireMode(fireMode);
 			}
 		}
 	}

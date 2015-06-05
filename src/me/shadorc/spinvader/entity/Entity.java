@@ -14,7 +14,7 @@ public interface Entity {
 	}
 
 	public enum Bonus {
-		LIFE;
+		LIFE, FIREMODE;
 	}
 
 	public int getX();

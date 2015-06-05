@@ -151,8 +151,12 @@ public class Enemy implements Entity {
 		img = Sprite.get("explosion.png", 110, 80);
 		Game.increase(Stat.SCORE, 35);
 
-		if(Game.rand(50) == 0) {
+		int rand = Game.rand(50);
+
+		if(rand == 0) {
 			Game.addEntity(new Item(x, y, Bonus.LIFE));
+		} else if(rand > 48) {
+			Game.addEntity(new Item(x, y, Bonus.FIREMODE));
 		}
 	}
 
