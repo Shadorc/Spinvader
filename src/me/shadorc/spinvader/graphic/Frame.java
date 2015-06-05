@@ -35,7 +35,7 @@ public class Frame {
 		game = new Game();
 		menu = new Menu();
 
-		music = new Sound("B-Complex - Beautiful Lies.wav", 0.25);
+		music = new Sound("B-Complex - Beautiful Lies.wav", 0.1);
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		scaleX = (float) (d.getWidth()/NORMAL_WIDTH);

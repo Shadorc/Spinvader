@@ -41,7 +41,7 @@ public class Game extends JPanel implements Runnable {
 	private static int FPS_CAP = 60;
 	private static int score = 0;
 	private static int money = 0;
-	private static int level = 0; //FIXME: level start at 1
+	private static int level = 0;
 
 	private Image background;
 	private KListener listener;
@@ -67,7 +67,7 @@ public class Game extends JPanel implements Runnable {
 		updated = new Thread(this);
 		generation = new Thread();
 
-		music = new Sound("Savant - Spaceheart.wav", 0.5);
+		music = new Sound("Savant - Spaceheart.wav", 1);
 
 		this.addKeyListener(listener);
 		this.setFocusable(true);
@@ -160,14 +160,14 @@ public class Game extends JPanel implements Runnable {
 			g2d.setColor(Color.RED);
 
 			String fir = "GAME OVER !";
-			int start = this.getCenteredText(g2d, fir);
+			int start = Text.getTextCenterWidth(g2d, fir);
 			g.drawString(fir, start, Frame.getHeight()/2);
 
 			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
 			g2d.setColor(Color.WHITE);
 
 			String sec = "Press \"Esc\" to return to the menu.";
-			start = this.getCenteredText(g2d, sec); 
+			start = Text.getTextCenterWidth(g2d, sec); 
 			g2d.drawString(sec, start, Frame.getHeight()/2 + 50);
 		}
 
@@ -178,8 +178,6 @@ public class Game extends JPanel implements Runnable {
 		if(gameOver) {
 			if(listener.wasKeyPressed(KeyEvent.VK_ESCAPE))	this.stop();
 			return;
-		}
-
 		}
 
 		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop();
@@ -263,13 +261,6 @@ public class Game extends JPanel implements Runnable {
 
 	public static void increaseLife(int i) {
 		spaceship.heal(i);
-	}
-
-	private int getCenteredText(Graphics g, String str) {
-		int stringLen = (int) g.getFontMetrics().getStringBounds(str, g).getWidth();
-		int start = Frame.getWidth() / 2 - stringLen / 2;
-
-		return start;
 	}
 
 	public static void bringDownEnemies() {
