@@ -21,6 +21,8 @@ public class Spaceship implements Entity {
 
 	private ImageIcon img;
 
+	private int fireMode;
+
 	public Spaceship(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -32,6 +34,8 @@ public class Spaceship implements Entity {
 		lastShoot = 0;
 		shootSpeed = 50;
 		shootTime = 200;
+
+		fireMode = 1;
 
 		img = Sprite.get("spaceship_normal.png", 150, 150);
 	}
@@ -55,6 +59,14 @@ public class Spaceship implements Entity {
 		if(life < lifeMax) {
 			life += i;
 		}
+	}
+
+	public void setFireMode(int fireMode) {
+		this.fireMode = fireMode;
+	}
+
+	public int getFireMode() {
+		return fireMode;
 	}
 
 	public float getMaximumLife() {
@@ -91,9 +103,27 @@ public class Spaceship implements Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			Game.addEntity(new Bullet(x + img.getIconWidth() / 2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
-			Game.addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
-			Game.addEntity(new Bullet(x + img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+			switch(fireMode) {
+				case 1:
+					Game.addEntity(new Bullet(x + img.getIconWidth()/2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
+					break;
+				case 2:
+					Game.addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Game.addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					break;
+				case 3:
+					Game.addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Game.addEntity(new Bullet(x+img.getIconWidth()/2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Game.addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					break;
+				case 4:
+					Game.addEntity(new Bullet(x, y+img.getIconHeight(), Direction.UP, shootSpeed, Type.SPACESHIP));
+					Game.addEntity(new Bullet(x+img.getIconWidth()/3, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Game.addEntity(new Bullet(x+img.getIconWidth()-(img.getIconWidth()/3), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Game.addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight(), Direction.UP, shootSpeed, Type.SPACESHIP));
+					break;
+			}
+
 			Sound.play("spaceship_shoot.wav", 0.1);
 			lastShoot = System.currentTimeMillis();
 		}

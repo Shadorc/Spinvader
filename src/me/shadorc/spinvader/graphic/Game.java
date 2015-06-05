@@ -258,7 +258,7 @@ public class Game extends JPanel implements Runnable {
 	public static void increase(Stat stat, int num) {
 		switch(stat) {
 			case SCORE:
-				score += num;		
+				score += num;	
 				break;
 			case MONEY:
 				money += num;		
