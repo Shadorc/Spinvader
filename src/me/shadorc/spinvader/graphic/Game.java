@@ -39,8 +39,10 @@ public class Game extends JPanel implements Runnable {
 	private static Spaceship spaceship;
 
 	private static int FPS_CAP = 60;
-	private static int score = 0;
 	private static int level = 0;
+
+	private static int score = 0;
+	private static float scoreSize = 50;
 
 	private Image background;
 	private KListener listener;
@@ -129,9 +131,9 @@ public class Game extends JPanel implements Runnable {
 		g2d.setColor(Color.GREEN);
 		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getHeight());
 
-		g2d.setFont(Text.getFont("space_age.ttf", 40));
+		g2d.setFont(Text.getFont("space_age.ttf", (int) scoreSize));
 		g2d.setColor(Color.RED);
-		g2d.drawString("Score : " + score, Frame.getWidth()-Text.getWidth(g2d, "Score : " + score), Text.getHeight(g2d, "Score : " + score));
+		g2d.drawString("Score : " + score, Frame.getWidth()-Text.getWidth(g2d, "Score : " + score)-10, Text.getHeight(g2d, "Score : " + score));
 
 		if(showDebug) {
 			int mb = 1024*1024;
@@ -180,6 +182,10 @@ public class Game extends JPanel implements Runnable {
 		if(gameOver) {
 			if(listener.wasKeyPressed(KeyEvent.VK_ESCAPE))	this.stop();
 			return;
+		}
+
+		if(scoreSize > 50) {
+			scoreSize -= delta/20;
 		}
 
 		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop();
@@ -261,6 +267,7 @@ public class Game extends JPanel implements Runnable {
 		switch(stat) {
 			case SCORE:
 				score += num;
+				scoreSize = 60;
 				break;
 			case LIFE:
 				spaceship.heal(num);
