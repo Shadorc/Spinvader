@@ -8,7 +8,6 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
-import me.shadorc.spinvader.graphic.Game.Stat;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item implements Entity {
@@ -32,8 +31,7 @@ public class Item implements Entity {
 			img = Sprite.get("life.png", 50, 50);
 		}
 		else if(type == Bonus.FIREMODE) {
-			//TODO: Don't be possible to drop firemode lower than the actual one
-			this.fireMode = Game.rand(3)+1;
+			this.fireMode = Game.getSpaceship().getFireMode()+1;
 			img = Sprite.get("firemode_" + fireMode + ".png", 50, 50);
 		}
 	}
@@ -68,11 +66,11 @@ public class Item implements Entity {
 		if(en instanceof Spaceship) {
 			Game.delEntity(this);
 			if(type == Bonus.LIFE){
-				Game.increase(Stat.LIFE, 1);
+				Game.getSpaceship().heal(1);
 				Sound.play("life.wav", 0.20);
 			}
 			else if(type == Bonus.FIREMODE) {
-				Game.setFireMode(fireMode);
+				Game.getSpaceship().setFireMode(fireMode);
 			}
 		}
 	}
