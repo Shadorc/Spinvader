@@ -128,26 +128,34 @@ public class Game extends JPanel implements Runnable {
 		g2d.setColor(Color.GREEN);
 		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getHeight());
 
-		g2d.setFont(new Font("Consolas", Font.BOLD, 20));
+		g2d.setFont(Text.getFont("space_age.ttf", 40));
 		g2d.setColor(Color.RED);
-		g2d.drawString("Score : " + score, Frame.getWidth() - 150, 30);
-		g2d.drawString("Money : " + money, Frame.getWidth() - 150, 60);
+
+		ArrayList <String> statInfos = new ArrayList <String> ();
+		statInfos.add("Score : " + score);
+		statInfos.add("Money : " + money);
+
+		for(int i = 0; i < statInfos.size(); i++) {
+			g2d.drawString(statInfos.get(i), Frame.getWidth()-Text.getWidth(g2d, statInfos.get(i))-5, (i+1)*(5+Text.getHeight(g2d, statInfos.get(i))));
+		}
 
 		if(showDebug) {
 			int mb = 1024*1024;
 			Runtime runtime = Runtime.getRuntime();
 
-			ArrayList <String> infos = new ArrayList <String> ();
-			infos.add("Resolution: " + Frame.getWidth() + "x" + Frame.getHeight());
-			infos.add("Level: " + level);
-			infos.add("Life: " + spaceship.getLife());
-			infos.add("Entities: " + entities.size());
-			infos.add(fps + " FPS");
-			infos.add("Memory used: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
-			infos.add("Threads: " + Thread.activeCount());
+			g2d.setFont(Text.getFont("Consolas", 20));
 
-			for(int i = 30; i < infos.size() * 30; i+=30) {
-				g2d.drawString(infos.get(i/30), 40, i);
+			ArrayList <String> debugInfos = new ArrayList <String> ();
+			debugInfos.add("Resolution: " + Frame.getWidth() + "x" + Frame.getHeight());
+			debugInfos.add("Level: " + level);
+			debugInfos.add("Life: " + spaceship.getLife());
+			debugInfos.add("Entities: " + entities.size());
+			debugInfos.add(fps + " FPS");
+			debugInfos.add("Memory used: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
+			debugInfos.add("Threads: " + Thread.activeCount());
+
+			for(int i = 0; i < debugInfos.size(); i++) {
+				g2d.drawString(debugInfos.get(i), 40, (i+1)*(5+Text.getHeight(g2d, debugInfos.get(i))));
 			}
 		}
 
