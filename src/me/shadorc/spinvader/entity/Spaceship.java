@@ -80,7 +80,7 @@ public class Spaceship implements Entity {
 		else if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.ENEMY) {
 				life--;
-				Game.removeEntity(en);
+				Game.delEntity(en);
 				if(life <= 0) {
 					Game.gameOver();
 				}

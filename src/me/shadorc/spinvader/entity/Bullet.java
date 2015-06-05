@@ -51,7 +51,7 @@ public class Bullet implements Entity {
 		y += (speed * delta) / 30 * (dir == Direction.DOWN ? 1 : -1);
 
 		if(y <= 0 || y >= Frame.getHeight()) {
-			Game.removeEntity(this);
+			Game.delEntity(this);
 		}
 	}
 

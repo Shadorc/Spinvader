@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
+import me.shadorc.spinvader.graphic.Game.Stat;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Boss implements Entity {
@@ -64,12 +65,12 @@ public class Boss implements Entity {
 		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				life--;
-				Game.removeEntity(en);
+				Game.delEntity(en);
 
 				if(this.life <= 0) {
 					Sound.play("AlienDestroyed.wav", 0.15);
-					Game.removeEntity(this);
-					Game.increaseScore(300);
+					Game.delEntity(this);
+					Game.increase(Stat.SCORE, 300);
 					if(Game.rand(10) == 0) {
 						if(Game.rand(3) == 0) {
 							Game.addEntity(new Item(x, y, Bonus.LIFE));

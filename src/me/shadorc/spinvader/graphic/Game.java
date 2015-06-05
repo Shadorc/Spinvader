@@ -187,8 +187,8 @@ public class Game extends JPanel implements Runnable {
 		if(listener.isKeyDown(KeyEvent.VK_DOWN))	spaceship.moveBackward(delta);
 		if(listener.isKeyDown(KeyEvent.VK_SPACE))	spaceship.shoot();
 
-		if(listener.wasKeyPressed(KeyEvent.VK_F3)) showDebug = !showDebug;
-		if(listener.wasKeyPressed(KeyEvent.VK_F4)) showHitbox = !showHitbox;
+		if(listener.wasKeyPressed(KeyEvent.VK_F3)) 	showDebug = !showDebug;
+		if(listener.wasKeyPressed(KeyEvent.VK_F4)) 	showHitbox = !showHitbox;
 
 		if(!generation.isAlive() && !this.isEnemyAlive()) {
 			generation = new Thread(new Runnable() {
@@ -247,20 +247,26 @@ public class Game extends JPanel implements Runnable {
 		entities.add(en);
 	}
 
-	public static void removeEntity(Entity en) {
+	public static void delEntity(Entity en) {
 		entities.remove(en);
 	}
 
-	public static void increaseScore(int i) {
-		score += i;		
+	public enum Stat {
+		SCORE, MONEY, LIFE;
 	}
 
-	public static void increaseMoney(int i) {
-		money += i;		
-	}
-
-	public static void increaseLife(int i) {
-		spaceship.heal(i);
+	public static void increase(Stat stat, int num) {
+		switch(stat) {
+			case SCORE:
+				score += num;		
+				break;
+			case MONEY:
+				money += num;		
+				break;
+			case LIFE:
+				spaceship.heal(num);
+				break;
+		}
 	}
 
 	public static void bringDownEnemies() {

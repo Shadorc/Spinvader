@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
+import me.shadorc.spinvader.graphic.Game.Stat;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Enemy implements Entity {
@@ -86,7 +87,7 @@ public class Enemy implements Entity {
 
 		if(dead) {
 			if((System.currentTimeMillis() - animationStart) >= 100) {
-				Game.removeEntity(this);
+				Game.delEntity(this);
 			}
 			return;
 		}
@@ -132,7 +133,7 @@ public class Enemy implements Entity {
 		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				life--;
-				Game.removeEntity(en);
+				Game.delEntity(en);
 
 				if(life <= 0) {
 					this.die();
@@ -148,7 +149,7 @@ public class Enemy implements Entity {
 		Sound.play("AlienDestroyed.wav", 0.10);
 
 		img = Sprite.get("explosion.png", 110, 80);
-		Game.increaseScore(35);
+		Game.increase(Stat.SCORE, 35);
 
 		if(Game.rand(20) == 0) {
 			if(Game.rand(3) == 0) {

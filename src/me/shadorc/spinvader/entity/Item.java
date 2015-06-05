@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
+import me.shadorc.spinvader.graphic.Game.Stat;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item implements Entity {
@@ -60,12 +61,12 @@ public class Item implements Entity {
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof Spaceship) {
-			Game.removeEntity(this);
+			Game.delEntity(this);
 			if(type == Bonus.MONEY) {
-				Game.increaseMoney(10);
+				Game.increase(Stat.MONEY, 10);
 				Sound.play("cash.wav", 0.20);
 			} else if(type == Bonus.LIFE){
-				Game.increaseLife(1);
+				Game.increase(Stat.LIFE, 1);
 				Sound.play("life.wav", 0.20);
 			}
 		}
@@ -76,7 +77,7 @@ public class Item implements Entity {
 		y += (float) ((speed * delta) / 30);
 
 		if(y >= Frame.getHeight()) {
-			Game.removeEntity(this);
+			Game.delEntity(this);
 		}
 	}
 
