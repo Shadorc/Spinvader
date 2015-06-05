@@ -34,7 +34,7 @@ public class Enemy implements Entity {
 
 		dead = false;
 
-		speed = 5;
+		speed = 2;
 		life = 2;
 
 		shootSpeed = 15;

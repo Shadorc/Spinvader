@@ -2,13 +2,11 @@ package me.shadorc.spinvader.graphic;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -34,14 +32,7 @@ public class Options extends JPanel implements KeyListener {
 
 		background = Sprite.get("menu_background.jpg");
 
-		Font font;
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT,getClass().getResourceAsStream("/res/space_invaders.ttf")).deriveFont(Font.PLAIN, 50f);
-		} catch (FontFormatException | IOException e) {
-			font = new Font("Consolas", Font.PLAIN, 50);
-		}
-
-		font = font.deriveFont(30f);
+		Font font = Text.getFont("space_invaders.ttf", 30);
 
 		antialias = new JCheckBox("Anti-aliasing");
 		antialias.setFont(font);

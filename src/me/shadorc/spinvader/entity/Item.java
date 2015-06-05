@@ -32,6 +32,7 @@ public class Item implements Entity {
 			img = Sprite.get("life.png", 50, 50);
 		}
 		else if(type == Bonus.FIREMODE) {
+			//TODO: Don't be possible to drop firemode lower than the actual one
 			this.fireMode = Game.rand(3)+1;
 			img = Sprite.get("firemode_" + fireMode + ".png", 50, 50);
 		}

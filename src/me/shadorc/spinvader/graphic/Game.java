@@ -33,8 +33,9 @@ public class Game extends JPanel implements Runnable {
 	private static boolean gameOver = false;
 	private static boolean showHitbox = false;
 	private static boolean showDebug = false;
-	private static boolean update = false;
+	private static boolean isRunning = false;
 
+	private static ArrayList <Entity> entitiesBuffer;
 	private static ArrayList <Entity> entities;
 	private static Spaceship spaceship;
 
@@ -85,20 +86,21 @@ public class Game extends JPanel implements Runnable {
 	public void run() {
 		double loopTime = System.currentTimeMillis();
 
-		while(update) {
+		while(isRunning) {
+			double delta = System.currentTimeMillis() - loopTime;
+			loopTime = System.currentTimeMillis();
+
+			fps = (int) (1000/delta);
+			entitiesBuffer = new ArrayList <Entity> (entities);
+
+			this.update(delta);
+			this.repaint();
+
 			try {
 				Thread.sleep(1000/FPS_CAP);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-			double delta = System.currentTimeMillis() - loopTime;
-			loopTime = System.currentTimeMillis();
-
-			this.update(delta);
-			this.repaint();
-
-			fps = (int) (1000/delta);
 		}
 	}
 
@@ -118,7 +120,7 @@ public class Game extends JPanel implements Runnable {
 		g2d.drawImage(background, 0, 0, this.getWidth(), this.getHeight(), null);
 
 		//Create a copy of entities array to avoid ConcurrentModificationException
-		for(Entity en : new ArrayList <Entity> (entities)) {
+		for(Entity en : entitiesBuffer) {
 			g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
 			if(showHitbox) {
 				Rectangle re = en.getHitbox();
@@ -145,7 +147,7 @@ public class Game extends JPanel implements Runnable {
 			debugInfos.add("Resolution: " + Frame.getWidth() + "x" + Frame.getHeight());
 			debugInfos.add("Level: " + level);
 			debugInfos.add("Life: " + spaceship.getLife());
-			debugInfos.add("Entities: " + entities.size());
+			debugInfos.add("Entities: " + entitiesBuffer.size());
 			debugInfos.add(fps + " FPS");
 			debugInfos.add("Memory used: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
 			debugInfos.add("Threads: " + Thread.activeCount());
@@ -163,16 +165,14 @@ public class Game extends JPanel implements Runnable {
 			g2d.setFont(new Font("Consolas", Font.BOLD, 200));
 			g2d.setColor(Color.RED);
 
-			String fir = "GAME OVER !";
-			int start = Text.getTextCenterWidth(g2d, fir);
-			g.drawString(fir, start, Frame.getHeight()/2);
+			String text = "GAME OVER !";
+			g.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/2);
 
 			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
 			g2d.setColor(Color.WHITE);
 
-			String sec = "Press \"Esc\" to return to the menu.";
-			start = Text.getTextCenterWidth(g2d, sec); 
-			g2d.drawString(sec, start, Frame.getHeight()/2 + 50);
+			text = "Press \"Esc\" to return to the menu.";
+			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/2 + 50);
 		}
 
 		g2d.setTransform(transform);
@@ -184,9 +184,8 @@ public class Game extends JPanel implements Runnable {
 			return;
 		}
 
-		if(scoreSize > 50) {
-			scoreSize -= delta/20;
-		}
+		//Score bumping
+		if(scoreSize > 50)	scoreSize -= delta/20;
 
 		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop();
 		if(listener.isKeyDown(KeyEvent.VK_LEFT))	spaceship.moveLeft(delta);
@@ -208,14 +207,14 @@ public class Game extends JPanel implements Runnable {
 			generation.start();
 		}
 
-		for(Entity en : new ArrayList <Entity> (entities)) {
+		for(Entity en : entitiesBuffer) {
 			en.move(delta);
 
 			if(en instanceof Enemy || en instanceof Boss) {
 				en.shoot();
 			}
 
-			for(Entity en1 : new ArrayList <Entity> (entities)) {
+			for(Entity en1 : entitiesBuffer) {
 				if(en != en1 && en.getHitbox().intersects(en1.getHitbox())) {
 					en.collidedWith(en1);
 					en1.collidedWith(en);
@@ -226,13 +225,13 @@ public class Game extends JPanel implements Runnable {
 
 	public void start() {
 		music.start();
-		update = true;
+		isRunning = true;
 		updated.start();
 	}
 
 	public void stop() {
 		music.stop();
-		update = false;
+		isRunning = false;
 		gameOver = false;
 		Frame.setPanel(Mode.MENU);
 	}
@@ -243,7 +242,7 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	private boolean isEnemyAlive() {
-		for(Entity en : entities) {
+		for(Entity en : entitiesBuffer) {
 			if(en instanceof Enemy || en instanceof Boss) {
 				return true;
 			}
@@ -251,11 +250,11 @@ public class Game extends JPanel implements Runnable {
 		return false;
 	}
 
-	public static void addEntity(Entity en) {
+	public synchronized static void addEntity(Entity en) {
 		entities.add(en);
 	}
 
-	public static void delEntity(Entity en) {
+	public synchronized static void delEntity(Entity en) {
 		entities.remove(en);
 	}
 
@@ -280,7 +279,7 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public static void bringDownEnemies() {
-		for(Entity en : entities) {
+		for(Entity en : entitiesBuffer) {
 			if(en instanceof Enemy) {
 				((Enemy) en).goDown();
 			}
@@ -317,12 +316,12 @@ public class Game extends JPanel implements Runnable {
 
 			for(int y = 0; y < line; y++) {
 				for(int x = 0; x < column; x++) {
-					entities.add(new Enemy(xSize*x, ySize*y - Frame.getHeight()/3, enemySprite));
+					Game.addEntity(new Enemy(xSize*x, ySize*y - Frame.getHeight()/3, enemySprite));
 				}
 			}
 
 		} else if(level == 8) {
-			entities.add(new Boss(100, 50));
+			Game.addEntity(new Boss(100, 50));
 
 		} else {
 			level = 1;

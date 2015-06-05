@@ -3,7 +3,6 @@ package me.shadorc.spinvader.graphic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
@@ -15,7 +14,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.io.IOException;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
@@ -34,12 +32,12 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 	private ImageIcon background;
 	private Font font;
 
+	private JButton selectedButton;
 	private JButton start;
 	private JButton options;
 	private JButton quit;
-	private double sleep = System.currentTimeMillis();
 
-	private JButton selectedButton;
+	private double sleep = System.currentTimeMillis();
 
 	Menu() {
 		super(new GridBagLayout());
@@ -47,19 +45,16 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		background = Sprite.get("menu_background.jpg");
 
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/res/space_invaders.ttf")).deriveFont(Font.PLAIN, 200f);
-		} catch (FontFormatException | IOException e) {
-			font = new Font("Consolas", Font.PLAIN, 200);
-		}
+		font = Text.getFont("space_invaders.ttf", 200);
 
 		JPanel buttons = new JPanel(new GridLayout(3, 0, 0, 35));
 		buttons.setPreferredSize(new Dimension(700, 350));
 		buttons.setOpaque(false);
 
-		start = this.createButton(new JButton("Start"));
-		options = this.createButton(new JButton("Options"));
-		quit = this.createButton(new JButton("Quit"));
+		start = this.createButton("Start");
+		options = this.createButton("Options");
+		quit = this.createButton("Quit");
+
 		selectedButton = start;
 
 		buttons.add(start);
@@ -69,8 +64,8 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		this.add(buttons);
 	}		
 
-	private JButton createButton(JButton button) {
-		String name = button.getText();
+	private JButton createButton(String name) {
+		JButton button = new JButton();		
 		button.setText("<html><font size=7 color=red>" + name.substring(0, 1) + "<font color=black>" + name.substring(1));
 
 		button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
@@ -111,12 +106,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		g2d.setFont(font);
 		g2d.setColor(Color.BLACK);
-
-		//Text centered
-		int stringLen = (int) g2d.getFontMetrics().getStringBounds(title, g2d).getWidth();
-		int start = Frame.getWidth() / 2 - stringLen / 2;
-
-		g2d.drawString(title, start, Frame.getHeight()/5);
+		g2d.drawString(title, Text.getTextCenterWidth(g2d, title), Frame.getHeight()/5);
 
 		g2d.setTransform(transform);
 	}
