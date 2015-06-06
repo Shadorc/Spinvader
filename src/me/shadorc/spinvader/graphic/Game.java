@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 
 import me.shadorc.spinvader.KListener;
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.entity.Boss;
 import me.shadorc.spinvader.entity.Enemy;
 import me.shadorc.spinvader.entity.Entity;
@@ -165,13 +166,25 @@ public class Game extends JPanel implements Runnable {
 			g2d.setColor(Color.RED);
 
 			String text = "GAME OVER !";
-			g.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/2);
+			g.drawString(text, Text.getTextCenterWidth(g2d, text), Text.getHeight(g2d, text)+50);
+
+			g2d.setFont(Text.getFont("space_age.ttf", 50));
+			g2d.setColor(Color.WHITE);
+
+			ArrayList <Integer> scores = Storage.getScores();
+			for(int i = 0; i < scores.size(); i++) {
+				String str = (i+1) + ". " + scores.get(i);
+				int textHeight = Text.getHeight(g2d, str)+5;
+				//Frame.getHeight()/2 : Frame center
+				//(textHeight*scores.size())/2 : Leaderboard height 
+				g2d.drawString(str, Text.getTextCenterWidth(g2d, str), Frame.getHeight()/2 - (textHeight*scores.size())/2 + (textHeight*i));
+			}
 
 			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
 			g2d.setColor(Color.WHITE);
 
 			text = "Press \"Esc\" to return to the menu.";
-			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/2 + 50);
+			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()-(Frame.getHeight()/4));
 		}
 
 		g2d.setTransform(transform);
@@ -214,7 +227,7 @@ public class Game extends JPanel implements Runnable {
 			}
 
 			for(Entity en1 : entitiesBuffer) {
-				if(en != en1 && en.getHitbox().intersects(en1.getHitbox())) {
+				if(!en.equals(en1) && en.getHitbox().intersects(en1.getHitbox())) {
 					en.collidedWith(en1);
 					en1.collidedWith(en);
 				}
