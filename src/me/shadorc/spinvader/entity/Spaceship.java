@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
-import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Spaceship implements Entity {
@@ -86,15 +85,15 @@ public class Spaceship implements Entity {
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof Enemy) {
-			Game.gameOver();
+			Frame.getGame().gameOver();
 		}
 
 		else if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.ENEMY) {
 				life--;
-				Game.delEntity(en);
+				Frame.getGame().delEntity(en);
 				if(life <= 0) {
-					Game.gameOver();
+					Frame.getGame().gameOver();
 				}
 			}
 		}
@@ -105,22 +104,22 @@ public class Spaceship implements Entity {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
 			switch(fireMode) {
 				case 1:
-					Game.addEntity(new Bullet(x + img.getIconWidth()/2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x + img.getIconWidth()/2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
 					break;
 				case 2:
-					Game.addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
-					Game.addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
 					break;
 				case 3:
-					Game.addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
-					Game.addEntity(new Bullet(x+img.getIconWidth()/2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
-					Game.addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth()/2, y, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
 					break;
 				case 4:
-					Game.addEntity(new Bullet(x, y+img.getIconHeight(), Direction.UP, shootSpeed, Type.SPACESHIP));
-					Game.addEntity(new Bullet(x+img.getIconWidth()/3, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
-					Game.addEntity(new Bullet(x+img.getIconWidth()-(img.getIconWidth()/3), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
-					Game.addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight(), Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x, y+img.getIconHeight(), Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth()/3, y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth()-(img.getIconWidth()/3), y+img.getIconHeight()/2, Direction.UP, shootSpeed, Type.SPACESHIP));
+					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight(), Direction.UP, shootSpeed, Type.SPACESHIP));
 					break;
 			}
 

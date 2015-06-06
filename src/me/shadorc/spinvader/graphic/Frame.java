@@ -67,8 +67,6 @@ public class Frame {
 		} 
 
 		else if(mode == Mode.GAME) {
-			//TODO: Find better solution
-			System.gc(); //Avoid memory leaks when reloading several times the game
 			music.stop();
 			game = new Game();
 			frame.setContentPane(game);
@@ -86,6 +84,10 @@ public class Frame {
 		frame.getContentPane().requestFocus();
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
+	}
+
+	public static Game getGame() {
+		return game;
 	}
 
 	public static int getWidth() {

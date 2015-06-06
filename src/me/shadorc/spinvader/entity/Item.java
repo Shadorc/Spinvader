@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
-import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item implements Entity {
@@ -31,7 +30,7 @@ public class Item implements Entity {
 			img = Sprite.get("life.png", 50, 50);
 		}
 		else if(type == Bonus.FIREMODE) {
-			this.fireMode = Game.getSpaceship().getFireMode()+1;
+			this.fireMode = Frame.getGame().getSpaceship().getFireMode()+1;
 			img = Sprite.get("firemode_" + fireMode + ".png", 50, 50);
 		}
 	}
@@ -64,13 +63,13 @@ public class Item implements Entity {
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof Spaceship) {
-			Game.delEntity(this);
+			Frame.getGame().delEntity(this);
 			if(type == Bonus.LIFE){
-				Game.getSpaceship().heal(1);
+				Frame.getGame().getSpaceship().heal(1);
 				Sound.play("life.wav", 0.20);
 			}
 			else if(type == Bonus.FIREMODE) {
-				Game.getSpaceship().setFireMode(fireMode);
+				Frame.getGame().getSpaceship().setFireMode(fireMode);
 			}
 		}
 	}
@@ -80,7 +79,7 @@ public class Item implements Entity {
 		y += (float) ((speed * delta) / 30);
 
 		if(y >= Frame.getHeight()) {
-			Game.delEntity(this);
+			Frame.getGame().delEntity(this);
 		}
 	}
 

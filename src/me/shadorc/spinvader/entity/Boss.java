@@ -64,14 +64,14 @@ public class Boss implements Entity {
 		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				life--;
-				Game.delEntity(en);
+				Frame.getGame().delEntity(en);
 
 				if(this.life <= 0) {
 					Sound.play("AlienDestroyed.wav", 0.15);
-					Game.delEntity(this);
-					Game.incScore(300);
+					Frame.getGame().delEntity(this);
+					Frame.getGame().incScore(300);
 					if(Game.rand(50) == 0) {
-						Game.addEntity(new Item(x, y, Bonus.LIFE));
+						Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
 					}
 				}
 			}
@@ -95,8 +95,8 @@ public class Boss implements Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			Game.addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
-			Game.addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
+			Frame.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
+			Frame.getGame().addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
 
 			lastShoot = System.currentTimeMillis();
 			shootTime = Game.rand(1000)+500;

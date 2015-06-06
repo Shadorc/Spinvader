@@ -75,7 +75,7 @@ public class Enemy implements Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			Game.addEntity(new Bullet((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
+			Frame.getGame().addEntity(new Bullet((x + img.getIconWidth()/2), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
 			lastShoot = System.currentTimeMillis();
 			shootTime = Game.rand(randomTime)+minTime;
 		}
@@ -86,7 +86,7 @@ public class Enemy implements Entity {
 
 		if(dead) {
 			if((System.currentTimeMillis() - animationStart) >= 100) {
-				Game.delEntity(this);
+				Frame.getGame().delEntity(this);
 			}
 			return;
 		}
@@ -100,7 +100,7 @@ public class Enemy implements Entity {
 			}
 
 			if(y >= (Frame.getHeight() - img.getIconHeight())) {
-				Game.gameOver();
+				Frame.getGame().gameOver();
 			}
 		} 
 
@@ -111,7 +111,7 @@ public class Enemy implements Entity {
 				x = (float) (Frame.getWidth() - img.getIconWidth());
 				dir = Direction.DOWN;
 				nextDir = Direction.LEFT;
-				Game.bringDownEnemies();
+				Frame.getGame().bringDownEnemies();
 			}
 		} 
 
@@ -122,7 +122,7 @@ public class Enemy implements Entity {
 				x = 0;
 				dir = Direction.DOWN;
 				nextDir = Direction.RIGHT;
-				Game.bringDownEnemies();
+				Frame.getGame().bringDownEnemies();
 			}
 		}
 	}
@@ -132,7 +132,7 @@ public class Enemy implements Entity {
 		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				life--;
-				Game.delEntity(en);
+				Frame.getGame().delEntity(en);
 
 				if(life <= 0) {
 					this.die();
@@ -148,14 +148,14 @@ public class Enemy implements Entity {
 		Sound.play("AlienDestroyed.wav", 0.10);
 
 		img = Sprite.get("explosion.png", 110, 80);
-		Game.incScore(35);
+		Frame.getGame().incScore(35);
 
 		int rand = Game.rand(50);
 
 		if(rand == 0) {
-			Game.addEntity(new Item(x, y, Bonus.LIFE));
-		} else if(rand > 30 && Game.getSpaceship().getFireMode() < 4) {
-			Game.addEntity(new Item(x, y, Bonus.FIREMODE));
+			Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
+		} else if(rand > 30 && Frame.getGame().getSpaceship().getFireMode() < 4) {
+			Frame.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
 		}
 	}
 

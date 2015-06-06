@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.graphic.Frame;
-import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Bullet implements Entity {
@@ -51,7 +50,7 @@ public class Bullet implements Entity {
 		y += (speed * delta) / 30 * (dir == Direction.DOWN ? 1 : -1);
 
 		if(y <= 0 || y >= Frame.getHeight()) {
-			Game.delEntity(this);
+			Frame.getGame().delEntity(this);
 		}
 	}
 
