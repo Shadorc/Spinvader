@@ -236,8 +236,11 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public static void gameOver() {
-		Sound.play("Game Over.wav", 0.5);
-		gameOver = true;
+		if(!gameOver) {
+			Sound.play("Game Over.wav", 0.5);
+			Storage.saveData(score);
+			gameOver = true;
+		}
 	}
 
 	private boolean isEnemyAlive() {
