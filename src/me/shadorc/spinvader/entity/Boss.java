@@ -1,85 +1,42 @@
 package me.shadorc.spinvader.entity;
 
-import java.awt.Image;
-import java.awt.Rectangle;
-
-import javax.swing.ImageIcon;
-
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
-public class Boss implements Entity {
+public class Boss extends Entity {
 
-	private float x, y;
-	private float speed, shootSpeed, shootTime;
+	private float speed;
+
+	private float bulletSpeed, reloadTime;
 	private double lastShoot;
-	private float life;
 
-	private ImageIcon img;
 	private Direction dir;
 
+	private boolean dead;
+	private double animationStart;
+
 	public Boss(float x, float y) {
-		this.x = x;
-		this.y = y;
+		super(x, y, 50, Sprite.get("boss.png", 335, 170));
 
-		dir = Direction.RIGHT;
-		img = Sprite.get("boss.png", 335, 170);
+		this.dir = Direction.RIGHT;
 
-		speed = 15;
-		shootSpeed = 20;
-		lastShoot = System.currentTimeMillis();
-		shootTime = Game.rand(1000)+500;
-		life = 50;
-	}
+		this.dead = false;
 
-	@Override
-	public int getX() {
-		return (int) x;
-	}
-
-	@Override
-	public int getY() {
-		return (int) y;
-	}
-
-	@Override
-	public float getLife() {
-		return life;
-	}
-
-	@Override
-	public Rectangle getHitbox() {
-		return new Rectangle((int) x, (int) y, img.getIconWidth(), img.getIconHeight());
-	}
-
-	@Override
-	public Image getImage() {
-		return img.getImage();
-	}
-
-	@Override
-	public void collidedWith(Entity en) {
-		if(en instanceof Bullet) {
-			if(((Bullet) en).getType() == Type.SPACESHIP) {
-				life--;
-				Frame.getGame().delEntity(en);
-
-				if(this.life <= 0) {
-					Sound.play("AlienDestroyed.wav", 0.15);
-					Frame.getGame().delEntity(this);
-					Frame.getGame().incScore(300);
-					if(Game.rand(50) == 0) {
-						Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
-					}
-				}
-			}
-		}
+		this.speed = 15;
+		this.bulletSpeed = 20;
+		this.lastShoot = 0;
+		this.reloadTime = this.generateShootTime();
 	}
 
 	@Override
 	public void move(double delta) {
+		if(dead) {
+			if((System.currentTimeMillis() - animationStart) >= 100)	Frame.getGame().delEntity(this);
+			return;
+		}
+
 		x += (float) ((speed * delta) / 30) * (dir == Direction.RIGHT ? 1 : -1);
 
 		if(dir == Direction.RIGHT && x >= Frame.getWidth() - img.getIconWidth()) {
@@ -94,12 +51,37 @@ public class Boss implements Entity {
 
 	@Override
 	public void shoot() {
-		if((System.currentTimeMillis() - lastShoot) >= shootTime) {
-			Frame.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
-			Frame.getGame().addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), Direction.DOWN, shootSpeed, Type.ENEMY));
+		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
+			Frame.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
+			Frame.getGame().addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
 
 			lastShoot = System.currentTimeMillis();
-			shootTime = Game.rand(1000)+500;
+			reloadTime = this.generateShootTime();
 		}
+	}
+
+	@Override
+	public void collidedWith(Entity en) {
+		if(!dead && (en instanceof Bullet)) {
+			if(((Bullet) en).getType() == Type.SPACESHIP) {
+				this.takeDamage(1);
+				Frame.getGame().delEntity(en);
+			}
+		}
+	}
+
+	@Override
+	public void die() {
+		dead = true;
+		animationStart = System.currentTimeMillis();
+		img = Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight());
+
+		Sound.play("AlienDestroyed.wav", 0.10);
+		Frame.getGame().incScore(300);
+		Item.generate(x, y);
+	}
+
+	private int generateShootTime() {
+		return Game.rand(1000)+500;
 	}
 }

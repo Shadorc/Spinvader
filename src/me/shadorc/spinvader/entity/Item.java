@@ -1,63 +1,29 @@
 package me.shadorc.spinvader.entity;
 
-import java.awt.Image;
-import java.awt.Rectangle;
-
-import javax.swing.ImageIcon;
-
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 
-public class Item implements Entity {
+public class Item extends Entity {
 
-	private float x, y;
 	private float speed;
-
 	private int fireMode;
-
 	private Bonus type;
-	private ImageIcon img;
 
 	Item(float x, float y, Bonus type) {
-		this.x = x;
-		this.y = y;
-		this.type = type;
+		super(x, y, 0, null);
 
+		this.type = type;
 		this.speed = 5;
 
 		if(type == Bonus.LIFE) {
-			img = Sprite.get("life.png", 50, 50);
+			this.img = Sprite.get("life.png", 50, 50);
 		}
 		else if(type == Bonus.FIREMODE) {
 			this.fireMode = Frame.getGame().getSpaceship().getFireMode()+1;
-			img = Sprite.get("firemode_" + fireMode + ".png", 50, 50);
+			this.img = Sprite.get("firemode_" + fireMode + ".png", 50, 50);
 		}
-	}
-
-	@Override
-	public int getX() {
-		return (int) x;
-	}
-
-	@Override
-	public int getY() {
-		return (int) y;
-	}
-
-	@Override
-	public float getLife() {
-		return 0;
-	}
-
-	@Override
-	public Rectangle getHitbox() {
-		return new Rectangle((int) x, (int) y, img.getIconWidth(), img.getIconHeight());
-	}
-
-	@Override
-	public Image getImage() {
-		return img.getImage();
 	}
 
 	@Override
@@ -83,6 +49,12 @@ public class Item implements Entity {
 		}
 	}
 
-	@Override
-	public void shoot() {	}
+	public static void generate(float x, float y) {
+		int rand = Game.rand(100);
+		if(rand == 0) {
+			Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
+		} else if(rand > 95 && Frame.getGame().getSpaceship().getFireMode() < 4) {
+			Frame.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
+		}
+	}
 }
