@@ -14,9 +14,6 @@ public class Boss extends Entity {
 
 	private Direction dir;
 
-	private boolean dead;
-	private double animationStart;
-
 	public Boss(float x, float y) {
 		super(x, y, 50, Sprite.get("boss.png", 335, 170));
 
@@ -26,17 +23,10 @@ public class Boss extends Entity {
 
 		this.dir = Direction.RIGHT;
 		this.speed = 15;
-
-		this.dead = false;
 	}
 
 	@Override
 	public void move(double delta) {
-		if(dead) {
-			if((System.currentTimeMillis() - animationStart) >= 100)	Frame.getGame().delEntity(this);
-			return;
-		}
-
 		x += (float) ((speed * delta) / 30) * (dir == Direction.RIGHT ? 1 : -1);
 
 		if(dir == Direction.RIGHT && x >= Frame.getWidth() - img.getIconWidth()) {
@@ -62,7 +52,7 @@ public class Boss extends Entity {
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(!dead && (en instanceof Bullet)) {
+		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				this.takeDamage(1);
 				Frame.getGame().delEntity(en);
@@ -72,11 +62,9 @@ public class Boss extends Entity {
 
 	@Override
 	public void die() {
-		dead = true;
-		animationStart = System.currentTimeMillis();
-		img = Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight());
-
 		Sound.play("AlienDestroyed.wav", 0.10);
+		Frame.getGame().addSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100);
+		Frame.getGame().delEntity(this);
 		Frame.getGame().incScore(300);
 		Item.generate(x, y);
 	}

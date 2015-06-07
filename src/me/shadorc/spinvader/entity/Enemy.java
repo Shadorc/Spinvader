@@ -19,13 +19,8 @@ public class Enemy extends Entity {
 	private static Direction dir;
 	private static Direction nextDir;
 
-	private double animationStart;
-	private boolean dead;
-
 	public Enemy(float x, float y, ImageIcon img) {
 		super(x, y, (float) Math.pow(Frame.getGame().getLevel(), 2), img);
-
-		dead = false;
 
 		toReach = (int) (y+400);
 		speed = 2;
@@ -40,11 +35,6 @@ public class Enemy extends Entity {
 
 	@Override
 	public void move(double delta) {
-		if(dead) {
-			if((System.currentTimeMillis() - animationStart) >= 100)	Frame.getGame().delEntity(this);
-			return;
-		}
-
 		switch(dir) {
 			case DOWN:
 				y += (float) ((speed * delta) / 30);
@@ -95,7 +85,7 @@ public class Enemy extends Entity {
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(!dead && en instanceof Bullet) {
+		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				this.takeDamage(1);
 				Frame.getGame().delEntity(en);
@@ -106,11 +96,9 @@ public class Enemy extends Entity {
 
 	@Override
 	public void die() {
-		dead = true;
-		animationStart = System.currentTimeMillis();
-		img = Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight());
-
 		Sound.play("AlienDestroyed.wav", 0.10);
+		Frame.getGame().addSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100);
+		Frame.getGame().delEntity(this);
 		Frame.getGame().incScore(35);
 		Item.generate(x, y);
 	}

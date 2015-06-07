@@ -43,9 +43,11 @@ public class Game extends JPanel implements Runnable {
 
 	private ArrayList <Entity> entitiesBuffer;
 	private ArrayList <Entity> entities;
-	private Spaceship spaceship;
 
-	private ArrayList <Ellipse2D> explosions;
+	private ArrayList <AnimatedSprite> animatedSprites;
+	private ArrayList <AnimatedSprite> spritesBuffer;
+
+	private Spaceship spaceship;
 
 	private KListener listener;
 	private Image background;
@@ -66,8 +68,7 @@ public class Game extends JPanel implements Runnable {
 		this.gameOver = false;
 
 		this.entities = new ArrayList <Entity>();
-
-		this.explosions = new ArrayList <Ellipse2D> ();
+		this.animatedSprites = new ArrayList <AnimatedSprite> ();
 
 		this.spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
 		this.entities.add(spaceship);
@@ -103,6 +104,7 @@ public class Game extends JPanel implements Runnable {
 
 			fps = (int) (1000/delta);
 			entitiesBuffer = new ArrayList <Entity> (entities);
+			spritesBuffer = new ArrayList <AnimatedSprite> (animatedSprites);
 
 			this.update(delta);
 			this.repaint();
@@ -139,9 +141,8 @@ public class Game extends JPanel implements Runnable {
 			}
 		}
 
-		g2d.setPaint(new Color(1, 0, 0, 0.5f));
-		for(Ellipse2D ellipse : explosions) {
-			g2d.draw(ellipse);
+		for(AnimatedSprite sprite : spritesBuffer) {
+			g2d.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), null);
 		}
 
 		//Life bar
@@ -252,6 +253,10 @@ public class Game extends JPanel implements Runnable {
 				}
 			}
 		}
+
+		for(AnimatedSprite sprite : spritesBuffer) {
+			sprite.update();
+		}
 	}
 
 	public void start() {
@@ -290,6 +295,14 @@ public class Game extends JPanel implements Runnable {
 
 	public synchronized void delEntity(Entity en) {
 		entities.remove(en);
+	}
+
+	public synchronized void addSprite(float x, float y, ImageIcon img, float duration) {
+		animatedSprites.add(new AnimatedSprite(x, y, img, duration));
+	}
+
+	public synchronized void delSprite(AnimatedSprite sprite) {
+		animatedSprites.remove(sprite);
 	}
 
 	public void incScore(int num) {
@@ -357,17 +370,18 @@ public class Game extends JPanel implements Runnable {
 
 	public void explosion(float x, float y, float radius) {
 		Ellipse2D zone = new Ellipse2D.Double(x-radius/2, y-radius/2, radius, radius);
+
 		for(Entity en : entitiesBuffer) {
 			if(zone.intersects(en.getHitbox()) && en instanceof Enemy) {
-				//				((Enemy) en).takeDamage(2 * (float) Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2)));
-				((Enemy) en).takeDamage(100);
+				double distance = Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2));
+				((Enemy) en).takeDamage((float) distance/200);
 			}
 		}
-		explosions.add(zone);
+
+		this.addSprite(x-radius/2, y-radius/2, Sprite.get("explosion.png", (int) radius, (int) radius), 100);
 	}
 
 	public static int rand(int i) {
 		return rand.nextInt(i);
-
 	}
 }
