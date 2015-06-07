@@ -89,7 +89,9 @@ public class Enemy extends Entity {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				this.takeDamage(1);
 				Frame.getGame().delEntity(en);
-				Frame.getGame().explosion(en.getX(), en.getY(), 250);
+				if(Frame.getGame().getSpaceship().hasExplosiveAmmo()) {
+					Frame.getGame().explosion(en.getX(), en.getY(), 250);
+				}
 			}
 		}
 	}

@@ -11,37 +11,22 @@ public class Spaceship extends Entity {
 
 	private double lastShoot;
 	private int bulletSpeed, reloadTime;
+
+	private boolean explosiveAmmo;
 	private int fireMode;
 
 	public Spaceship(int x, int y) {
 		super(x, y, 5, Sprite.get("spaceship.png", 150, 150));
 
 		speed = 25;
-
 		lifeMax = 5;
 
 		bulletSpeed = 50;
-		lastShoot = 0;
 		reloadTime = 200;
+		lastShoot = 0;
+
 		fireMode = 1;
-	}
-
-	public void heal(int i) {
-		if(life < lifeMax) {
-			life += i;
-		}
-	}
-
-	public void setFireMode(int fireMode) {
-		this.fireMode = fireMode;
-	}
-
-	public int getFireMode() {
-		return fireMode;
-	}
-
-	public float getMaximumLife() {
-		return lifeMax;
+		explosiveAmmo = false;
 	}
 
 	@Override
@@ -114,5 +99,31 @@ public class Spaceship extends Entity {
 		if(y <= Frame.getHeight() - img.getIconHeight()) {
 			y += (speed * delta) / 30;
 		}
+	}
+
+	public void heal(int i) {
+		if(life < lifeMax) {
+			life += i;
+		}
+	}
+
+	public void setFireMode(int fireMode) {
+		this.fireMode = fireMode;
+	}
+
+	public void activeBomb() {
+		explosiveAmmo = true;
+	}
+
+	public int getFireMode() {
+		return fireMode;
+	}
+
+	public float getMaximumLife() {
+		return lifeMax;
+	}
+
+	public boolean hasExplosiveAmmo() {
+		return explosiveAmmo;
 	}
 }
