@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
@@ -43,6 +44,8 @@ public class Game extends JPanel implements Runnable {
 	private ArrayList <Entity> entities;
 	private Spaceship spaceship;
 
+	private ArrayList <Ellipse2D> explosions;
+
 	private KListener listener;
 	private Image background;
 	private Sound music;
@@ -62,6 +65,8 @@ public class Game extends JPanel implements Runnable {
 		this.gameOver = false;
 
 		this.entities = new ArrayList <Entity>();
+
+		this.explosions = new ArrayList <Ellipse2D> ();
 
 		this.spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
 		this.entities.add(spaceship);
@@ -129,9 +134,14 @@ public class Game extends JPanel implements Runnable {
 			g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
 			if(showHitbox) {
 				Rectangle re = en.getHitbox();
-				g.setColor(Color.RED);
-				g.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
+				g2d.setColor(Color.RED);
+				g2d.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
 			}
+		}
+
+		g2d.setPaint(new Color(1, 0, 0, 0.5f));
+		for(Ellipse2D ellipse : explosions) {
+			g2d.draw(ellipse);
 		}
 
 		//Life bar
@@ -290,7 +300,7 @@ public class Game extends JPanel implements Runnable {
 	public Spaceship getSpaceship() {
 		return spaceship;
 	}
-	
+
 	public int getLevel() {
 		return level;
 	}
@@ -343,6 +353,17 @@ public class Game extends JPanel implements Runnable {
 		} else {
 			level = 1;
 		}
+	}
+
+	public void explosion(float x, float y, float radius) {
+		Ellipse2D zone = new Ellipse2D.Double(x-radius/2, y-radius/2, radius, radius);
+		for(Entity en : entitiesBuffer) {
+			if(zone.intersects(en.getHitbox()) && en instanceof Enemy) {
+				//				((Enemy) en).takeDamage(2 * (float) Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2)));
+				((Enemy) en).takeDamage(100);
+			}
+		}
+		explosions.add(zone);
 	}
 
 	public static int rand(int i) {
