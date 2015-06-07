@@ -40,6 +40,7 @@ public class Game extends JPanel implements Runnable {
 
 	private boolean isRunning;
 	private boolean gameOver;
+	private boolean highScore;
 
 	private ArrayList <Entity> entitiesBuffer;
 	private ArrayList <Entity> entities;
@@ -56,6 +57,8 @@ public class Game extends JPanel implements Runnable {
 	private float scoreSize;
 	private int level;
 	private int score;
+	private int multiplicator;
+	private double multiTime;
 	private int fps;
 
 	private Thread generation;
@@ -77,6 +80,7 @@ public class Game extends JPanel implements Runnable {
 		this.background = Sprite.get("background.png").getImage();
 		this.music = new Sound("Savant - Spaceheart.wav", 1);
 
+		this.multiplicator = 1;
 		this.scoreSize = 50;
 		this.level = 0;
 		this.score = 0;
@@ -153,11 +157,18 @@ public class Game extends JPanel implements Runnable {
 		g2d.setColor(Color.RED);
 		g2d.drawString("Score : " + score, Frame.getWidth()-Text.getWidth(g2d, "Score : " + score)-10, Text.getHeight(g2d, "Score : " + score));
 
+		if(multiplicator > 1) {
+			g2d.setFont(Text.getFont("space_age.ttf", (int) scoreSize*2));
+			g2d.setColor(Color.YELLOW);
+			g2d.drawString("X" + multiplicator, Frame.getWidth()-Text.getWidth(g2d, "X" + multiplicator)-10, Text.getHeight(g2d, "X" + multiplicator)+20);
+		}
+
 		if(showDebug) {
 			int mb = 1024*1024;
 			Runtime runtime = Runtime.getRuntime();
 
 			g2d.setFont(Text.getFont("Consolas", 20));
+			g2d.setColor(Color.RED);
 
 			ArrayList <String> debugInfos = new ArrayList <String> ();
 			debugInfos.add("Resolution: " + Frame.getWidth() + "x" + Frame.getHeight());
@@ -178,11 +189,19 @@ public class Game extends JPanel implements Runnable {
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
 			g2d.fillRect(0, 0, Frame.getWidth(), Frame.getHeight());
 
-			g2d.setFont(new Font("Consolas", Font.BOLD, 200));
+			g2d.setFont(Text.getFont("space_age.ttf", 200));
 			g2d.setColor(Color.RED);
 
 			String text = "GAME OVER !";
 			g.drawString(text, Text.getTextCenterWidth(g2d, text), Text.getHeight(g2d, text)+50);
+
+			if(highScore) {
+				g2d.setFont(Text.getFont("space_age.ttf", 100));
+				g2d.setColor(Color.GREEN);
+
+				text = "HIGHSCORE !";
+				g.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/3);
+			}
 
 			g2d.setFont(Text.getFont("space_age.ttf", 50));
 			g2d.setColor(Color.WHITE);
@@ -199,10 +218,10 @@ public class Game extends JPanel implements Runnable {
 			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
 			g2d.setColor(Color.WHITE);
 
-			text = "Press \"Esc\" to return to the menu.";
+			text = "Press \"Esc\" to return to the menu";
 			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()-(Frame.getHeight()/4));
 
-			text = "Press \"Enter\" to restart.";
+			text = "Press \"Enter\" to restart";
 			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()-(Frame.getHeight()/4)+Text.getHeight(g2d, text));
 		}
 
@@ -218,6 +237,7 @@ public class Game extends JPanel implements Runnable {
 
 		//Score bumping
 		if(scoreSize > 50)	scoreSize -= delta/20;
+		if(System.currentTimeMillis() - multiTime > 1000) multiplicator = 1;
 
 		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop(false);
 		if(listener.isKeyDown(KeyEvent.VK_LEFT))	spaceship.moveLeft(delta);
@@ -275,6 +295,7 @@ public class Game extends JPanel implements Runnable {
 	public void gameOver() {
 		if(!gameOver) {
 			Sound.play("Game Over.wav", 0.5);
+			highScore = Storage.getScores().isEmpty() || (score > Storage.getScores().get(0));
 			Storage.saveData(score);
 			gameOver = true;
 		}
@@ -306,7 +327,9 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public void incScore(int num) {
-		score += num;
+		multiplicator++;
+		multiTime = System.currentTimeMillis();
+		score += num*multiplicator;
 		scoreSize = 60;
 	}
 
