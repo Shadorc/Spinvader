@@ -159,7 +159,9 @@ public class Game extends JPanel implements Runnable {
 
 		if(multiplicator > 1) {
 			g2d.setFont(Text.getFont("space_age.ttf", (int) scoreSize*2));
-			g2d.setColor(Color.YELLOW);
+			float alpha = (float) (1-(System.currentTimeMillis()-multiTime)/1000);
+			if(alpha < 0) alpha = 0;
+			g2d.setPaint(new Color(1, 1, 0, alpha));
 			g2d.drawString("X" + multiplicator, Frame.getWidth()-Text.getWidth(g2d, "X" + multiplicator)-10, Text.getHeight(g2d, "X" + multiplicator)+20);
 		}
 
