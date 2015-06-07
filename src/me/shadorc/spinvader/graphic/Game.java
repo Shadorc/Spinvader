@@ -32,6 +32,7 @@ public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static Random rand = new Random();
 	private static int FPS_CAP = 60;
 
 	private static boolean showHitbox = false;
@@ -129,7 +130,6 @@ public class Game extends JPanel implements Runnable {
 
 		g2d.drawImage(background, 0, 0, this.getWidth(), this.getHeight(), null);
 
-		//Create a copy of entities array to avoid ConcurrentModificationException
 		for(Entity en : entitiesBuffer) {
 			g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
 			if(showHitbox) {
@@ -367,6 +367,7 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public static int rand(int i) {
-		return new Random().nextInt(i);
+		return rand.nextInt(i);
+
 	}
 }

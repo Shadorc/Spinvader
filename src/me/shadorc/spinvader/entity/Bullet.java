@@ -10,12 +10,12 @@ public class Bullet extends Entity {
 	private Direction dir;
 	private Type type;
 
-	Bullet(float x, float y, float speed, Direction dir, Type type) {
+	public Bullet(float x, float y, float speed, Direction dir, Type type) {
 		super(x, y, 0, Sprite.get("bullet.png"));
 
-		this.dir = dir;
 		this.speed = speed;
 		this.type = type;
+		this.dir = dir;
 	}
 
 	@Override

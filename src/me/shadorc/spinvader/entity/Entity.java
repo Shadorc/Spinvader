@@ -26,8 +26,8 @@ public class Entity {
 	public Entity(float x, float y, float life, ImageIcon img) {
 		this.x = x;
 		this.y = y;
-		this.img = img;
 		this.life = life;
+		this.img = img;
 	}
 
 	public int getX() {

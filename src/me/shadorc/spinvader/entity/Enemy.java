@@ -27,13 +27,13 @@ public class Enemy extends Entity {
 
 		dead = false;
 
+		toReach = (int) (y+400);
 		speed = 2;
 
+		reloadTime = this.generateShootTime();
 		bulletSpeed = 15;
 		lastShoot = 0;
-		reloadTime = this.generateShootTime();
 
-		toReach = (int) (y+400);
 		dir = Direction.DOWN;
 		nextDir = Direction.RIGHT;
 	}

@@ -20,14 +20,14 @@ public class Boss extends Entity {
 	public Boss(float x, float y) {
 		super(x, y, 50, Sprite.get("boss.png", 335, 170));
 
-		this.dir = Direction.RIGHT;
-
-		this.dead = false;
-
-		this.speed = 15;
+		this.reloadTime = this.generateShootTime();
 		this.bulletSpeed = 20;
 		this.lastShoot = 0;
-		this.reloadTime = this.generateShootTime();
+
+		this.dir = Direction.RIGHT;
+		this.speed = 15;
+
+		this.dead = false;
 	}
 
 	@Override
