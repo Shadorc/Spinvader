@@ -290,6 +290,10 @@ public class Game extends JPanel implements Runnable {
 	public Spaceship getSpaceship() {
 		return spaceship;
 	}
+	
+	public int getLevel() {
+		return level;
+	}
 
 	public void bringDownEnemies() {
 		for(Entity en : entitiesBuffer) {

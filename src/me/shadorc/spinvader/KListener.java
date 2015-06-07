@@ -38,7 +38,7 @@ public class KListener implements KeyListener {
 		try {
 			keysDown.remove(keysDown.indexOf(event.getKeyCode()));
 		} catch(ArrayIndexOutOfBoundsException e) {
-			System.err.println("Error while deleting key.");
+			System.err.println(event.getKeyCode() + " doesn't exist in " + keysDown);
 		}
 	}
 

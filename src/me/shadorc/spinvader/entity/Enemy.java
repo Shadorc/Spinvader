@@ -34,7 +34,7 @@ public class Enemy implements Entity {
 		dead = false;
 
 		speed = 2;
-		life = 2;
+		life = (float) Math.pow(Frame.getGame().getLevel(), 2);
 
 		shootSpeed = 15;
 		randomTime = 7500;
@@ -150,11 +150,11 @@ public class Enemy implements Entity {
 		img = Sprite.get("explosion.png", 110, 80);
 		Frame.getGame().incScore(35);
 
-		int rand = Game.rand(50);
+		int rand = Game.rand(100);
 
 		if(rand == 0) {
 			Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
-		} else if(rand > 30 && Frame.getGame().getSpaceship().getFireMode() < 4) {
+		} else if(rand > 95 && Frame.getGame().getSpaceship().getFireMode() < 4) {
 			Frame.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
 		}
 	}
