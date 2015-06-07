@@ -66,7 +66,7 @@ public class Item extends Entity {
 	}
 
 	public static void generate(float x, float y) {
-		switch (Game.rand(25)) {
+		switch (Game.rand(100)) {
 			case 0:
 				Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
 				break;
