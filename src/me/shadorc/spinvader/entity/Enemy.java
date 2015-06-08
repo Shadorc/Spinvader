@@ -100,7 +100,7 @@ public class Enemy extends Entity {
 	@Override
 	public void die() {
 		Sound.play("AlienDestroyed.wav", 0.10);
-		Frame.getGame().addSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100);
+		Frame.getGame().addSprite(x, y, Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY())), 100);
 		Frame.getGame().delEntity(this);
 		Frame.getGame().incScore(35);
 		Item.generate(x, y);
