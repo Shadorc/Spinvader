@@ -6,7 +6,7 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class Spaceship extends Entity {
 
-	private float speed;
+	private float speedX, speedY;
 	private float lifeMax;
 
 	private double lastShoot;
@@ -18,7 +18,8 @@ public class Spaceship extends Entity {
 	public Spaceship(int x, int y) {
 		super(x, y, 5, Sprite.get("spaceship.png", 150, 150));
 
-		speed = 25;
+		speedX = 25 * Frame.getScaleX();
+		speedY = 25 * Frame.getScaleY();
 		lifeMax = 5;
 
 		bulletSpeed = 50;
@@ -79,25 +80,25 @@ public class Spaceship extends Entity {
 
 	public void moveLeft(double delta) {
 		if(x >= 0) {
-			x -= (speed * delta) / 30;
+			x -= (speedX * delta) / 30;
 		}
 	}
 
 	public void moveRight(double delta) {
 		if(x <= Frame.getWidth() - img.getIconWidth()) {
-			x += (speed * delta) / 30;
+			x += (speedX * delta) / 30;
 		}
 	}
 
 	public void moveForward(double delta) {
 		if(y >= 0) {
-			y -= (speed * delta) / 30;
+			y -= (speedY * delta) / 30;
 		}
 	}
 
 	public void moveBackward(double delta) {
 		if(y <= Frame.getHeight() - img.getIconHeight()) {
-			y += (speed * delta) / 30;
+			y += (speedY * delta) / 30;
 		}
 	}
 

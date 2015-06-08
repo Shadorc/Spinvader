@@ -9,7 +9,7 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class Enemy extends Entity {
 
-	private float speed;
+	private float speedX, speedY;
 
 	private float bulletSpeed, reloadTime;
 	private double lastShoot;
@@ -22,9 +22,10 @@ public class Enemy extends Entity {
 	public Enemy(float x, float y, ImageIcon img) {
 		super(x, y, (float) Math.pow(Frame.getGame().getLevel(), 2), img);
 
-		toReach = (int) (y+400);
-		speed = 2;
-
+		toReach = (int) (y+400*Frame.getScaleY());
+		speedX = 2 * Frame.getScaleX();
+		speedY = 2 * Frame.getScaleY();
+		
 		reloadTime = this.generateShootTime();
 		bulletSpeed = 15;
 		lastShoot = System.currentTimeMillis();
@@ -37,7 +38,7 @@ public class Enemy extends Entity {
 	public void move(double delta) {
 		switch(dir) {
 			case DOWN:
-				y += (float) ((speed * delta) / 30);
+				y += (float) ((speedY * delta) / 30);
 
 				if(toReach <= y) {
 					y = toReach;
@@ -48,7 +49,7 @@ public class Enemy extends Entity {
 				break;
 
 			case LEFT:
-				x -= (float) ((speed * delta) / 30);
+				x -= (float) ((speedX * delta) / 30);
 
 				if(x <= 0) {
 					x = 0;
@@ -59,7 +60,7 @@ public class Enemy extends Entity {
 				break;
 
 			case RIGHT:
-				x += (float) ((speed * delta) / 30);
+				x += (float) ((speedX * delta) / 30);
 
 				if(x >= Frame.getWidth() - img.getIconWidth()) {
 					x = (float) (Frame.getWidth() - img.getIconWidth());

@@ -22,7 +22,7 @@ public class Boss extends Entity {
 		this.lastShoot = System.currentTimeMillis();
 
 		this.dir = Direction.RIGHT;
-		this.speed = 15;
+		this.speed = 15 * Frame.getScaleX();
 	}
 
 	@Override
