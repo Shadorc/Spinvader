@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
@@ -124,10 +125,10 @@ public class Game extends JPanel implements Runnable {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		//		if(Options.isAntialiasEnable()) {
-		//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		//		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		//		}
+		if(Options.isAntialiasEnable()) {
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		}
 
 		g2d.drawImage(background, 0, 0, this.getWidth(), this.getHeight(), null);
 

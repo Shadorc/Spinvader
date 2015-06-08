@@ -27,8 +27,8 @@ public class Options extends JPanel implements KeyListener {
 
 	private ImageIcon background;
 
-	private JCheckBox antialias;
-	private JCheckBox fullscreen;
+	private static JCheckBox antialias = new JCheckBox("Anti-aliasing", true);
+	private static JCheckBox fullscreen = new JCheckBox("FullScreen", true);
 
 	Options() {
 		super(new GridLayout(1, 2));
@@ -37,13 +37,11 @@ public class Options extends JPanel implements KeyListener {
 
 		Font font = Text.createFont("space_invaders.ttf", 30);
 
-		antialias = new JCheckBox("Anti-aliasing", true);
 		antialias.setFont(font);
 		antialias.setForeground(Color.WHITE);
 		antialias.setOpaque(false);
 		antialias.setFocusable(false);
 
-		fullscreen = new JCheckBox("FullScreen", true);
 		fullscreen.setFont(font);
 		fullscreen.setForeground(Color.WHITE);
 		fullscreen.setOpaque(false);
@@ -98,7 +96,7 @@ public class Options extends JPanel implements KeyListener {
 		g2d.drawImage(background.getImage(), 0, 0, this.getWidth(), this.getHeight(), null);
 	}
 
-	public boolean isAntialiasEnable() {
+	public static boolean isAntialiasEnable() {
 		return antialias.isSelected();
 	}
 
