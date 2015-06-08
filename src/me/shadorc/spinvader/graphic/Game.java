@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -125,9 +124,6 @@ public class Game extends JPanel implements Runnable {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		AffineTransform transform = g2d.getTransform();
-		g2d.scale(Frame.getScaleX(), Frame.getScaleY());
-
 		//		if(Options.isAntialiasEnable()) {
 		//			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		//			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -225,8 +221,6 @@ public class Game extends JPanel implements Runnable {
 			text = "Press \"Enter\" to restart";
 			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()-(Frame.getHeight()/4)+Text.getHeight(g2d, text));
 		}
-
-		g2d.setTransform(transform);
 	}
 
 	public void update(double delta) {

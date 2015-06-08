@@ -38,6 +38,8 @@ public class Sprite {
 	}
 
 	public static ImageIcon get(String name, int width, int height) {
+		width *= Frame.getScaleX();
+		height *= Frame.getScaleY();
 		return new ImageIcon(Sprite.get(name).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
 	}
 }

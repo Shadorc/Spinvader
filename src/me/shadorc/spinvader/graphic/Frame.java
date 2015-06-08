@@ -1,9 +1,7 @@
 package me.shadorc.spinvader.graphic;
 
-import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -19,8 +17,8 @@ public class Frame {
 	private static Game game;
 	private static Menu menu;
 
-	private final static int NORMAL_WIDTH = 1920;
-	private final static int NORMAL_HEIGHT = 1080;
+	private final static float NORMAL_WIDTH = 1920;
+	private final static float NORMAL_HEIGHT = 1080;
 	private static float scaleX, scaleY;
 
 	public enum Mode {
@@ -31,24 +29,25 @@ public class Frame {
 		frame = new JFrame("Spinvader");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
+		//		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
+		scaleX = (float) (screen.getDisplayMode().getWidth()/NORMAL_WIDTH);
+		scaleY = (float) (screen.getDisplayMode().getHeight()/NORMAL_HEIGHT);
+
 		options = new Options();
 		game = new Game();
 		menu = new Menu();
 
 		music = new Sound("B-Complex - Beautiful Lies.wav", 0.1);
 
-		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		scaleX = (float) (d.getWidth()/NORMAL_WIDTH);
-		scaleY = (float) (d.getHeight()/NORMAL_HEIGHT);
-
 		setPanel(Mode.MENU);
 
 		frame.setUndecorated(true);
 		frame.pack();
 
-		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		if(device.isFullScreenSupported()) {
-			device.setFullScreenWindow(frame);
+		if(screen.isFullScreenSupported()) {
+			screen.setFullScreenWindow(frame);
 		} else {
 			JOptionPane.showMessageDialog(null, "Le mode plein ecran n'est pas disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
