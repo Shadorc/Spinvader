@@ -47,7 +47,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		font = Text.createFont("space_invaders.ttf", 200);
 
 		JPanel buttons = new JPanel(new GridLayout(3, 0, 0, 35));
-		buttons.setPreferredSize(new Dimension(700, 350));
+		buttons.setPreferredSize(new Dimension((int) (700*Frame.getScaleX()), (int) (350*Frame.getScaleY())));
 		buttons.setOpaque(false);
 
 		start = this.createButton("Start");
@@ -64,8 +64,9 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 	}		
 
 	private JButton createButton(String name) {
-		JButton button = new JButton();		
-		button.setText("<html><font size=7 color=red>" + name.substring(0, 1) + "<font color=black>" + name.substring(1));
+		JButton button = new JButton();	
+		int size = (int) (7*Frame.getScaleX());
+		button.setText("<html><font size=" + size + " color=red>" + name.substring(0, 1) + "<font color=black>" + name.substring(1));
 
 		button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
 		button.setBackground(Color.WHITE);
