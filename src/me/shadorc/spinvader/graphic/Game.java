@@ -125,8 +125,8 @@ public class Game extends JPanel implements Runnable {
 		Graphics2D g2d = (Graphics2D) g;
 
 		//		if(Options.isAntialiasEnable()) {
-		//			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		//			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		//		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		//		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		//		}
 
 		g2d.drawImage(background, 0, 0, this.getWidth(), this.getHeight(), null);
@@ -146,7 +146,7 @@ public class Game extends JPanel implements Runnable {
 
 		//Life bar
 		g2d.setColor(Color.GREEN);
-		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getHeight());
+		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), (int) (30*Frame.getScaleY()), Frame.getHeight());
 
 		g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize));
 		g2d.setColor(Color.RED);
