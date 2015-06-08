@@ -62,25 +62,21 @@ public class Options extends JPanel implements KeyListener {
 		resolution.setOpaque(false);
 		resolution.setFocusable(false);
 
-		font = font.deriveFont(50f);
+		font = Text.createFont("space_invaders.ttf", 50);
 
 		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK, 4, true);
-		Border emptyBorder = BorderFactory.createEmptyBorder(250, 50, 250, 50);
 
 		TitledBorder titleBorder1 = BorderFactory.createTitledBorder(lineBorder, "Video Settngs", TitledBorder.CENTER, TitledBorder.TOP);
-		TitledBorder titleBorder2 = BorderFactory.createTitledBorder(lineBorder, "Audio Settings", TitledBorder.CENTER, TitledBorder.TOP);
-
 		titleBorder1.setTitleFont(font);
-		titleBorder2.setTitleFont(font);
 		titleBorder1.setTitleColor(Color.BLACK);
-		titleBorder2.setTitleColor(Color.BLACK);
 
-		Border border1 = BorderFactory.createCompoundBorder(emptyBorder, titleBorder1);
-		Border border2 = BorderFactory.createCompoundBorder(emptyBorder, titleBorder2);
+		TitledBorder titleBorder2 = BorderFactory.createTitledBorder(lineBorder, "Audio Settings", TitledBorder.CENTER, TitledBorder.TOP);
+		titleBorder2.setTitleFont(font);
+		titleBorder2.setTitleColor(Color.BLACK);
 
 		JPanel video = new JPanel(new GridLayout(5, 1));
 		video.setOpaque(false);
-		video.setBorder(border1);
+		video.setBorder(titleBorder1);
 		video.add(antialias);
 		video.add(fullscreen);
 		video.add(resolution);
@@ -88,7 +84,7 @@ public class Options extends JPanel implements KeyListener {
 
 		JPanel audio = new JPanel(new GridLayout(5, 1));
 		audio.setOpaque(false);
-		audio.setBorder(border2);
+		audio.setBorder(titleBorder2);
 		this.add(audio);
 
 		this.addKeyListener(this);
