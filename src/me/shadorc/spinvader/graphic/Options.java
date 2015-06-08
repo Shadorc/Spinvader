@@ -34,13 +34,13 @@ public class Options extends JPanel implements KeyListener {
 
 		Font font = Text.createFont("space_invaders.ttf", 30);
 
-		antialias = new JCheckBox("Anti-aliasing");
+		antialias = new JCheckBox("Anti-aliasing", true);
 		antialias.setFont(font);
 		antialias.setForeground(Color.WHITE);
 		antialias.setOpaque(false);
 		antialias.setFocusable(false);
 
-		fullscreen = new JCheckBox("FullScreen");
+		fullscreen = new JCheckBox("FullScreen", true);
 		fullscreen.setFont(font);
 		fullscreen.setForeground(Color.WHITE);
 		fullscreen.setOpaque(false);
