@@ -1,12 +1,15 @@
 package me.shadorc.spinvader.graphic;
 
 import java.awt.Color;
+import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -46,8 +49,15 @@ public class Options extends JPanel implements KeyListener {
 		fullscreen.setOpaque(false);
 		fullscreen.setFocusable(false);
 
-		String[] items = {"800x600", "1024x768", "1152x864", "1280x720", "1280x768", "1280x800", "1280x960", "1280x1024", "1360x768", "1366x768", "1440x900", "1600x900", "1600x1024", "1600x1200", "1680x1050", "1920x1080"};
-		JComboBox <String> resolution = new JComboBox <String> (items);
+		ArrayList <String> sizes = new ArrayList <String> ();
+		for(DisplayMode dm : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDisplayModes()) {
+			String size = dm.getWidth() + "x" + dm.getHeight();
+			if(!sizes.contains(size)) {
+				sizes.add(size);
+			}
+		}
+
+		JComboBox <String> resolution = new JComboBox <String> (sizes.toArray(new String[sizes.size()]));
 		resolution.setBorder(BorderFactory.createEmptyBorder(25, 0, 25, 0));
 		resolution.setOpaque(false);
 		resolution.setFocusable(false);
