@@ -19,7 +19,7 @@ public class Boss extends Entity {
 
 		this.reloadTime = this.generateShootTime();
 		this.bulletSpeed = 20;
-		this.lastShoot = 0;
+		this.lastShoot = System.currentTimeMillis();
 
 		this.dir = Direction.RIGHT;
 		this.speed = 15;

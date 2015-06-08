@@ -27,7 +27,7 @@ public class Enemy extends Entity {
 
 		reloadTime = this.generateShootTime();
 		bulletSpeed = 15;
-		lastShoot = 0;
+		lastShoot = System.currentTimeMillis();
 
 		dir = Direction.DOWN;
 		nextDir = Direction.RIGHT;
