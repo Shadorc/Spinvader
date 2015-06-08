@@ -20,13 +20,16 @@ public class Text {
 		return (int) g.getFontMetrics().getStringBounds(text, g).getHeight();
 	}
 
-	public static Font getFont(String name, int size) {
-		Font font;
+	public static Font createFont(String name, int size) {
+		size *= Frame.getScaleX();
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, Frame.class.getResourceAsStream("/res/" + name)).deriveFont(Font.PLAIN, size);
+			return Font.createFont(Font.TRUETYPE_FONT, Frame.class.getResourceAsStream("/res/" + name)).deriveFont(Font.PLAIN, size);
 		} catch (FontFormatException | IOException e) {
-			font = new Font("Consolas", Font.PLAIN, size);
+			return new Font("Consolas", Font.PLAIN, size);
 		}
-		return font;
+	}
+
+	public static Font getFont(String name, int size) {
+		return new Font(name, Font.BOLD, (int) (size*Frame.getScaleX()));
 	}
 }

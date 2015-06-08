@@ -45,7 +45,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		background = Sprite.get("menu_background.jpg");
 
-		font = Text.getFont("space_invaders.ttf", 200);
+		font = Text.createFont("space_invaders.ttf", 200);
 
 		JPanel buttons = new JPanel(new GridLayout(3, 0, 0, 35));
 		buttons.setPreferredSize(new Dimension(700, 350));

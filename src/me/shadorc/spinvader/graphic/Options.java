@@ -32,7 +32,7 @@ public class Options extends JPanel implements KeyListener {
 
 		background = Sprite.get("menu_background.jpg");
 
-		Font font = Text.getFont("space_invaders.ttf", 30);
+		Font font = Text.createFont("space_invaders.ttf", 30);
 
 		antialias = new JCheckBox("Anti-aliasing");
 		antialias.setFont(font);

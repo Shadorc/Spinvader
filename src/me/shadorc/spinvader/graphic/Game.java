@@ -2,7 +2,6 @@ package me.shadorc.spinvader.graphic;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -153,12 +152,12 @@ public class Game extends JPanel implements Runnable {
 		g2d.setColor(Color.GREEN);
 		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), 30, Frame.getHeight());
 
-		g2d.setFont(Text.getFont("space_age.ttf", (int) scoreSize));
+		g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize));
 		g2d.setColor(Color.RED);
 		g2d.drawString("Score : " + score, Frame.getWidth()-Text.getWidth(g2d, "Score : " + score)-10, Text.getHeight(g2d, "Score : " + score));
 
 		if(multiplicator > 1) {
-			g2d.setFont(Text.getFont("space_age.ttf", (int) scoreSize*2));
+			g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize*2));
 			float alpha = (float) (1-(System.currentTimeMillis()-multiTime)/1000);
 			if(alpha < 0) alpha = 0;
 			g2d.setPaint(new Color(1, 1, 0, alpha));
@@ -169,7 +168,7 @@ public class Game extends JPanel implements Runnable {
 			int mb = 1024*1024;
 			Runtime runtime = Runtime.getRuntime();
 
-			g2d.setFont(Text.getFont("Consolas", 20));
+			g2d.setFont(Text.createFont("Consolas", 20));
 			g2d.setColor(Color.RED);
 
 			ArrayList <String> debugInfos = new ArrayList <String> ();
@@ -191,21 +190,21 @@ public class Game extends JPanel implements Runnable {
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
 			g2d.fillRect(0, 0, Frame.getWidth(), Frame.getHeight());
 
-			g2d.setFont(Text.getFont("space_age.ttf", 200));
+			g2d.setFont(Text.createFont("space_age.ttf", 200));
 			g2d.setColor(Color.RED);
 
 			String text = "GAME OVER !";
 			g.drawString(text, Text.getTextCenterWidth(g2d, text), Text.getHeight(g2d, text)+50);
 
 			if(highScore) {
-				g2d.setFont(Text.getFont("space_age.ttf", 100));
+				g2d.setFont(Text.createFont("space_age.ttf", 100));
 				g2d.setColor(Color.GREEN);
 
 				text = "HIGHSCORE !";
 				g.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/3);
 			}
 
-			g2d.setFont(Text.getFont("space_age.ttf", 50));
+			g2d.setFont(Text.createFont("space_age.ttf", 50));
 			g2d.setColor(Color.WHITE);
 
 			ArrayList <Integer> scores = Storage.getScores();
@@ -217,7 +216,7 @@ public class Game extends JPanel implements Runnable {
 				g2d.drawString(str, Text.getTextCenterWidth(g2d, str), Frame.getHeight()/2 - (textHeight*scores.size())/2 + (textHeight*i));
 			}
 
-			g2d.setFont(new Font("Consolas", Font.BOLD, 30));
+			g2d.setFont(Text.getFont("Consolas", 30));
 			g2d.setColor(Color.WHITE);
 
 			text = "Press \"Esc\" to return to the menu";
