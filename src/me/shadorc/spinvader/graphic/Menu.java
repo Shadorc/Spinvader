@@ -64,13 +64,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 	}		
 
 	private JButton createButton(String name) {
-		JButton button = new JButton();	
-		int size = (int) (7*Frame.getScaleX());
-		button.setText("<html><font size=" + size + " color=red>" + name.substring(0, 1) + "<font color=black>" + name.substring(1));
-
+		JButton button = new JButton(name);	
+		button.setFont(Text.createFont("space_age.ttf", 50));
 		button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
 		button.setBackground(Color.WHITE);
-
 		button.setFocusable(false);
 		button.addActionListener(this);
 		button.addMouseListener(new MouseAdapter() {
