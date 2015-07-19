@@ -1,5 +1,6 @@
 package me.shadorc.spinvader.graphic;
 
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
@@ -19,7 +20,6 @@ public class Frame {
 
 	private final static float NORMAL_WIDTH = 1920;
 	private final static float NORMAL_HEIGHT = 1080;
-	private static float scaleX, scaleY;
 
 	public enum Mode {
 		OPTIONS, GAME, MENU;
@@ -29,30 +29,19 @@ public class Frame {
 		frame = new JFrame("Spinvader");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];
-		//		GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-
-		scaleX = (float) (screen.getDisplayMode().getWidth()/NORMAL_WIDTH);
-		scaleY = (float) (screen.getDisplayMode().getHeight()/NORMAL_HEIGHT);
-
 		options = new Options();
 		game = new Game();
 		menu = new Menu();
 
 		music = new Sound("B-Complex - Beautiful Lies.wav", 0.1);
 
-		setPanel(Mode.MENU);
+		Frame.setPanel(Mode.MENU);
 
-		frame.setUndecorated(true);
 		frame.pack();
+		frame.setMinimumSize(new Dimension(800, 600));
+		frame.setLocationRelativeTo(null);
 
-		if(screen.isFullScreenSupported()) {
-			screen.setFullScreenWindow(frame);
-		} else {
-			JOptionPane.showMessageDialog(null, "Le mode plein ecran n'est pas disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
-		}
-
-		frame.setVisible(true);
+		Frame.setFullscreen(true);
 	}
 
 	public static void setPanel(Mode mode) {
@@ -89,6 +78,21 @@ public class Frame {
 		return game;
 	}
 
+	public static void setFullscreen(boolean activate) {
+		frame.dispose();
+		frame.setUndecorated(activate);
+		if(Frame.getScreen().isFullScreenSupported()) {
+			Frame.getScreen().setFullScreenWindow(activate ? frame : null);
+		} else {
+			JOptionPane.showMessageDialog(null, "Le mode plein ecran n'est pas disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
+		}
+		frame.setVisible(true);
+	}
+
+	public static GraphicsDevice getScreen() {
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+	}
+
 	public static int getWidth() {
 		return frame.getWidth();
 	}
@@ -98,10 +102,10 @@ public class Frame {
 	}
 
 	public static float getScaleX() {
-		return scaleX;
+		return (float) (Frame.getScreen().getDisplayMode().getWidth()/NORMAL_WIDTH);
 	}
 
 	public static float getScaleY() {
-		return scaleY;
+		return (float) (Frame.getScreen().getDisplayMode().getHeight()/NORMAL_HEIGHT);
 	}
 }

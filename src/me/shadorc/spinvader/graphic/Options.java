@@ -5,8 +5,9 @@ import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import javax.swing.border.TitledBorder;
 
 import me.shadorc.spinvader.graphic.Frame.Mode;
 
-public class Options extends JPanel implements KeyListener {
+public class Options extends JPanel implements KeyListener, ItemListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,12 +44,13 @@ public class Options extends JPanel implements KeyListener {
 		antialias.setFocusable(false);
 
 		fullscreen.setFont(font);
+		fullscreen.addItemListener(this);
 		fullscreen.setForeground(Color.WHITE);
 		fullscreen.setOpaque(false);
 		fullscreen.setFocusable(false);
 
 		ArrayList <String> sizes = new ArrayList <String> ();
-		for(DisplayMode dm : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0].getDisplayModes()) {
+		for(DisplayMode dm : Frame.getScreen().getDisplayModes()) {
 			String size = dm.getWidth() + "x" + dm.getHeight();
 			if(!sizes.contains(size)) {
 				sizes.add(size);
@@ -112,4 +114,11 @@ public class Options extends JPanel implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {	}
+
+	@Override
+	public void itemStateChanged(ItemEvent event) {
+		if(event.getSource() == fullscreen) {
+			Frame.setFullscreen(event.getStateChange() == ItemEvent.SELECTED);
+		}
+	}
 }
