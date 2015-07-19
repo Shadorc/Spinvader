@@ -11,7 +11,7 @@ public class Bullet extends Entity {
 	private Type type;
 
 	public Bullet(float x, float y, float speed, Direction dir, Type type) {
-		super(x, y, 0, Sprite.get("bullet.png"));
+		super(x, y, 0, Sprite.get("bullet.png", 5, 22));
 
 		this.speed = speed * Frame.getScaleY();
 		this.type = type;
