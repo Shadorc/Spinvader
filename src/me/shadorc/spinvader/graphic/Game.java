@@ -76,7 +76,7 @@ public class Game extends JPanel implements Runnable {
 		this.entities.add(spaceship);
 
 		this.listener = new KListener();
-		this.background = Sprite.get("background.png").getImage();
+		this.background = Sprite.get("background.jpg").getImage();
 		this.music = new Sound("Savant - Spaceheart.wav", 1);
 
 		this.multiplicator = 1;
