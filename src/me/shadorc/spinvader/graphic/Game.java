@@ -292,7 +292,7 @@ public class Game extends JPanel implements Runnable {
 		if(!gameOver) {
 			Sound.play("Game Over.wav", 0.5);
 			highScore = Storage.getScores().isEmpty() || (score > Storage.getScores().get(0));
-			Storage.saveData(score);
+			Storage.addScore(score);
 			gameOver = true;
 		}
 	}

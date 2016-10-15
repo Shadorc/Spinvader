@@ -1,64 +1,97 @@
 package me.shadorc.spinvader;
 
-import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class Storage {
 
-	private static File file = new File("data");
+	private static final File DATA_FILE = new File("scores.dat");
 
-	public static void saveData(Integer score) {
-		BufferedWriter writer = null;
+	private static void initHistory() {
+		ObjectOutputStream objOut = null;
 		try {
-			ArrayList <Integer> scores = getScores();
-			scores.add(score);
+			DATA_FILE.createNewFile();
 
-			Collections.sort(scores);
-			Collections.reverse(scores);
-
-			writer = new BufferedWriter(new FileWriter(file));
-
-			for(int i = 0; i < scores.size() && i < 5; i++) {
-				writer.write(scores.get(i) + "\n");
-			}
+			objOut = new ObjectOutputStream(new FileOutputStream(DATA_FILE));
+			objOut.writeObject(new Integer[0]);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 
 		} finally {
 			try {
-				if(writer != null) writer.close();
+				if(objOut != null) objOut.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static ArrayList <Integer> getScores() {
-		ArrayList <Integer> scores = new ArrayList <Integer> ();
+	public static void addScore(int score) {
+		if(!DATA_FILE.exists()) initHistory();
 
+		ObjectInputStream objIn = null;
+		ObjectOutputStream objOut = null;
 		try {
-			file.createNewFile();
+			objIn = new ObjectInputStream(new FileInputStream(DATA_FILE));
+			ArrayList <Integer> scores = new ArrayList <Integer> (Arrays.asList((Integer[]) objIn.readObject()));
 
-			String text = new String(Files.readAllBytes(Paths.get(file.getPath())), StandardCharsets.UTF_8);
-			if(!text.isEmpty()) {
-				for(String sc : text.split("\n")) {
-					scores.add(Integer.parseInt(sc));
-				}
-			}
-		} catch (IOException e) {
+			scores.add(score);
+			Collections.sort(scores);
+			Collections.reverse(scores);
+			scores = new ArrayList <Integer> (scores.subList(0, (scores.size() > 5) ? 5 : scores.size()));
+
+			objOut = new ObjectOutputStream(new FileOutputStream(DATA_FILE));
+			objOut.writeObject(scores.toArray(new Integer[scores.size()]));
+
+		} catch (EOFException ignore) {
+			//End of file, ignore it
+
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
+
+		} finally {
+			try {
+				if(objIn != null) objIn.close();
+				if(objOut != null) objOut.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static ArrayList<Integer> getScores() {
+		if(!DATA_FILE.exists())	initHistory();
+
+		ArrayList <Integer> scores = new ArrayList<Integer>();
+
+		ObjectInputStream objIn = null;
+		try {
+			objIn = new ObjectInputStream(new FileInputStream(DATA_FILE));
+			scores = new ArrayList <Integer> (Arrays.asList((Integer[]) objIn.readObject()));
+
+		} catch (EOFException ignore) {
+			//End of file, ignore it
+
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+
+		} finally {
+			try {
+				if(objIn != null) objIn.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
-		Collections.sort(scores);
-		Collections.reverse(scores);
 		return scores;
 	}
 }
