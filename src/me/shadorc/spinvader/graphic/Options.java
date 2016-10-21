@@ -34,8 +34,8 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 
 	private ImageIcon background;
 
-	private static JCheckBox antialias = new JCheckBox("Anti-aliasing", true);
-	private static JCheckBox fullscreen = new JCheckBox("FullScreen", true);
+	private JCheckBox antialias, fullscreen;
+	private JSlider musicVolSlider, soundVolSlider;
 
 	Options() {
 		super(new GridLayout(1, 2));
@@ -44,6 +44,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 
 		Font font = Text.createFont("space_invaders.ttf", 30);
 
+		antialias = new JCheckBox("Anti-aliasing", true);
 		antialias.setSelected(Storage.isEnable(Data.ANTIALIASING_ENABLE));
 		antialias.setFont(font);
 		antialias.addItemListener(this);
@@ -51,6 +52,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		antialias.setOpaque(false);
 		antialias.setFocusable(false);
 
+		fullscreen = new JCheckBox("FullScreen", true);
 		fullscreen.setSelected(Storage.isEnable(Data.FULLSCREEN_ENABLE));
 		fullscreen.setFont(font);
 		fullscreen.addItemListener(this);
@@ -58,25 +60,25 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		fullscreen.setOpaque(false);
 		fullscreen.setFocusable(false);
 
-		JSlider musicVolume = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.MUSIC_VOLUME)));
-		musicVolume.addChangeListener(this);
-		musicVolume.setFocusable(false);
-		musicVolume.setOpaque(false);
-		musicVolume.setMajorTickSpacing(10);
-		musicVolume.setMinorTickSpacing(1);
-		musicVolume.setPaintTicks(true);
-		musicVolume.setPaintLabels(true);
-		musicVolume.setForeground(Color.WHITE);
-		
-		JSlider soundVolume = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.SOUND_VOLUME)));
-		soundVolume.addChangeListener(this);
-		soundVolume.setFocusable(false);
-		soundVolume.setOpaque(false);
-		soundVolume.setMajorTickSpacing(10);
-		soundVolume.setMinorTickSpacing(1);
-		soundVolume.setPaintTicks(true);
-		soundVolume.setPaintLabels(true);
-		soundVolume.setForeground(Color.WHITE);
+		musicVolSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.MUSIC_VOLUME)));
+		musicVolSlider.addChangeListener(this);
+		musicVolSlider.setFocusable(false);
+		musicVolSlider.setOpaque(false);
+		musicVolSlider.setMajorTickSpacing(10);
+		musicVolSlider.setMinorTickSpacing(1);
+		musicVolSlider.setPaintTicks(true);
+		musicVolSlider.setPaintLabels(true);
+		musicVolSlider.setForeground(Color.WHITE);
+
+		soundVolSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.SOUND_VOLUME)));
+		soundVolSlider.addChangeListener(this);
+		soundVolSlider.setFocusable(false);
+		soundVolSlider.setOpaque(false);
+		soundVolSlider.setMajorTickSpacing(10);
+		soundVolSlider.setMinorTickSpacing(1);
+		soundVolSlider.setPaintTicks(true);
+		soundVolSlider.setPaintLabels(true);
+		soundVolSlider.setForeground(Color.WHITE);
 
 		ArrayList <String> sizes = new ArrayList <String> ();
 		for(DisplayMode dm : Frame.getScreen().getDisplayModes()) {
@@ -114,8 +116,8 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		JPanel audioOptionsPanel = new JPanel(new GridLayout(5, 1));
 		audioOptionsPanel.setOpaque(false);
 		audioOptionsPanel.setBorder(audioCompoundBorder);
-		audioOptionsPanel.add(musicVolume);
-		audioOptionsPanel.add(soundVolume);
+		audioOptionsPanel.add(musicVolSlider);
+		audioOptionsPanel.add(soundVolSlider);
 		this.add(audioOptionsPanel);
 
 		this.addKeyListener(this);
@@ -155,6 +157,11 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 
 	@Override
 	public void stateChanged(ChangeEvent event) {
-		Storage.save(Data.MUSIC_VOLUME, ((JSlider) event.getSource()).getValue());
+		if(event.getSource() == musicVolSlider) {
+			Storage.save(Data.MUSIC_VOLUME, ((JSlider) event.getSource()).getValue());
+		}
+		else if(event.getSource() == soundVolSlider) {
+			Storage.save(Data.SOUND_VOLUME, ((JSlider) event.getSource()).getValue());
+		}
 	}
 }
