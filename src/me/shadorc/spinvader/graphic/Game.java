@@ -26,13 +26,15 @@ import me.shadorc.spinvader.entity.Enemy;
 import me.shadorc.spinvader.entity.Entity;
 import me.shadorc.spinvader.entity.Spaceship;
 import me.shadorc.spinvader.graphic.Frame.Mode;
+import me.shadorc.spinvader.sprites.AnimatedSprite;
+import me.shadorc.spinvader.sprites.Effect;
 
 public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static Random rand = new Random();
-	private static int FPS_CAP = 60;
+	private static int FPS_CAP = 100;
 
 	private static boolean showHitbox = false;
 	private static boolean showDebug = false;
@@ -44,8 +46,8 @@ public class Game extends JPanel implements Runnable {
 	private ArrayList <Entity> entitiesBuffer;
 	private ArrayList <Entity> entities;
 
-	private ArrayList <AnimatedSprite> animatedSprites;
-	private ArrayList <AnimatedSprite> spritesBuffer;
+	private ArrayList <Effect> effectsBuffer;
+	private ArrayList <Effect> effects;
 
 	private Spaceship spaceship;
 
@@ -70,7 +72,7 @@ public class Game extends JPanel implements Runnable {
 		this.gameOver = false;
 
 		this.entities = new ArrayList <Entity>();
-		this.animatedSprites = new ArrayList <AnimatedSprite> ();
+		this.effects = new ArrayList <Effect> ();
 
 		this.spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
 		this.entities.add(spaceship);
@@ -141,8 +143,8 @@ public class Game extends JPanel implements Runnable {
 			}
 		}
 
-		for(AnimatedSprite sprite : spritesBuffer) {
-			g2d.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), null);
+		for(Effect effect : effectsBuffer) {
+			effect.render(g2d);
 		}
 
 		//Life bar
@@ -155,9 +157,8 @@ public class Game extends JPanel implements Runnable {
 
 		if(multiplicator > 1) {
 			g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize*2));
-			float alpha = (float) (1-(System.currentTimeMillis()-multiTime)/1000);
-			if(alpha < 0) alpha = 0;
-			g2d.setPaint(new Color(1, 1, 0, alpha));
+			float alpha = (float) (1-Math.min(1, (System.currentTimeMillis()-multiTime)/1000));
+			g2d.setColor(new Color(1, 1, 0, alpha));
 			g2d.drawString("X" + multiplicator, Frame.getWidth()-Text.getWidth(g2d, "X" + multiplicator)-10, Text.getHeight(g2d, "X" + multiplicator)+20);
 		}
 
@@ -270,8 +271,8 @@ public class Game extends JPanel implements Runnable {
 			}
 		}
 
-		for(AnimatedSprite sprite : spritesBuffer) {
-			sprite.update();
+		for(Effect effect : effectsBuffer) {
+			effect.update();
 		}
 	}
 
@@ -314,12 +315,12 @@ public class Game extends JPanel implements Runnable {
 		entities.remove(en);
 	}
 
-	public synchronized void addSprite(float x, float y, ImageIcon img, float duration) {
-		animatedSprites.add(new AnimatedSprite(x, y, img, duration));
+	public synchronized void addEffect(Effect effect) {
+		effects.add(effect);
 	}
 
-	public synchronized void delSprite(AnimatedSprite sprite) {
-		animatedSprites.remove(sprite);
+	public synchronized void delEffect(Effect effect) {
+		effects.remove(effect);
 	}
 
 	public void incScore(int num) {
@@ -397,7 +398,8 @@ public class Game extends JPanel implements Runnable {
 			}
 		}
 
-		this.addSprite(x-radius/2, y-radius/2, Sprite.get("explosion.png", (int) radius, (int) radius), 100);
+		Effect explosion = new AnimatedSprite(x-radius/2, y-radius/2, Sprite.get("explosion.png", (int) radius, (int) radius), 100);
+		this.addEffect(explosion);
 	}
 
 	public static int rand(int i) {

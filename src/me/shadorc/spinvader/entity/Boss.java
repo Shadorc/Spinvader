@@ -4,6 +4,7 @@ import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
+import me.shadorc.spinvader.sprites.AnimatedSprite;
 
 public class Boss extends Entity {
 
@@ -63,7 +64,7 @@ public class Boss extends Entity {
 	@Override
 	public void die() {
 		Sound.play("AlienDestroyed.wav", 0.10);
-		Frame.getGame().addSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100);
+		Frame.getGame().addEffect(new AnimatedSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100));
 		Frame.getGame().delEntity(this);
 		Frame.getGame().incScore(300);
 		Item.generate(x, y);

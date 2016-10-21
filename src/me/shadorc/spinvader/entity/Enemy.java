@@ -6,6 +6,7 @@ import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
+import me.shadorc.spinvader.sprites.AnimatedSprite;
 
 public class Enemy extends Entity {
 
@@ -100,7 +101,7 @@ public class Enemy extends Entity {
 	@Override
 	public void die() {
 		Sound.play("AlienDestroyed.wav", 0.10);
-		Frame.getGame().addSprite(x, y, Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY())), 100);
+		Frame.getGame().addEffect(new AnimatedSprite(x, y, Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY())), 100));
 		Frame.getGame().delEntity(this);
 		Frame.getGame().incScore(35);
 		Item.generate(x, y);
