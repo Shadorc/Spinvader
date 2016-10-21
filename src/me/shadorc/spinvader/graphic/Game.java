@@ -44,11 +44,11 @@ public class Game extends JPanel implements Runnable {
 	private boolean isGameOver;
 	private boolean isNewRecord;
 
-	private ArrayList <Entity> entitiesBuffer;
 	private ArrayList <Entity> entities;
-
-	private ArrayList <Effect> effectsBuffer;
 	private ArrayList <Effect> effects;
+
+	private ArrayList <Entity> entitiesBuffer;
+	private ArrayList <Effect> effectsBuffer;
 
 	private Spaceship spaceship;
 
@@ -56,11 +56,11 @@ public class Game extends JPanel implements Runnable {
 	private Image background;
 	private Sound music;
 
+	private int multiplicator;
+	private double multiTime;
 	private float scoreSize;
 	private int level;
 	private int score;
-	private int multiplicator;
-	private double multiTime;
 	private int fps;
 
 	private Thread generation;
@@ -74,6 +74,9 @@ public class Game extends JPanel implements Runnable {
 
 		this.entities = new ArrayList <Entity> ();
 		this.effects = new ArrayList <Effect> ();
+
+		this.entitiesBuffer = new ArrayList <Entity> ();
+		this.effectsBuffer = new ArrayList <Effect> ();
 
 		this.spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
 		this.entities.add(spaceship);
