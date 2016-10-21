@@ -101,21 +101,25 @@ public class Game extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
-		double loopTime = System.currentTimeMillis();
+		long loopTime = System.nanoTime();
 
 		while(isRunning) {
-			double delta = System.currentTimeMillis() - loopTime;
-			loopTime = System.currentTimeMillis();
+			double delta = (System.nanoTime() - loopTime)/Math.pow(10, 6); //Converto to ms
+			loopTime = System.nanoTime();
 
-			fps = (int) (1000/delta);
+			fps = (int) Math.round(1000/delta);
 			entitiesBuffer = new ArrayList <Entity> (entities);
-			spritesBuffer = new ArrayList <AnimatedSprite> (animatedSprites);
+			effectsBuffer = new ArrayList <Effect> (effects);
 
 			this.update(delta);
 			this.repaint();
 
 			try {
-				Thread.sleep(1000/FPS_CAP);
+				long elapsedNano = System.nanoTime() - loopTime;	//Time to render in ms
+				long totalNanoToSleep = (long) Math.max(0, (Math.pow(10, 9)/FPS_CAP - elapsedNano));	//Time to sleep to match FPS_CAP
+				long msToSleep = (long) Math.floor(totalNanoToSleep/Math.pow(10, 6));
+				int nanoToSleep = (int) (totalNanoToSleep - msToSleep*Math.pow(10, 6));
+				Thread.sleep(msToSleep, nanoToSleep);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
