@@ -100,7 +100,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		g2d.setFont(font);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString(title, Text.getTextCenterWidth(g2d, title), Frame.getHeight()/5);
+		g2d.drawString(title, Text.getCenterWidth(g2d, title), Frame.getHeight()/5);
 	}
 
 	@Override

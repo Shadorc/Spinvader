@@ -3,6 +3,7 @@ package me.shadorc.spinvader.entity;
 import javax.swing.ImageIcon;
 
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
@@ -46,7 +47,7 @@ public class Enemy extends Entity {
 					dir = nextDir;
 				}
 
-				if(y >= (Frame.getHeight() - img.getIconHeight()))	Frame.getGame().gameOver();
+				if(y >= (Frame.getHeight() - img.getIconHeight())) Frame.getGame().gameOver();
 				break;
 
 			case LEFT:
@@ -100,7 +101,7 @@ public class Enemy extends Entity {
 
 	@Override
 	public void die() {
-		Sound.play("AlienDestroyed.wav", 0.10);
+		Sound.play("AlienDestroyed.wav", 0.10, Data.SOUND_VOLUME);
 		Frame.getGame().addEffect(new AnimatedSprite(x, y, Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY())), 100));
 		Frame.getGame().delEntity(this);
 		Frame.getGame().incScore(35);
@@ -108,7 +109,7 @@ public class Enemy extends Entity {
 	}
 
 	private int generateShootTime() {
-		return Game.rand(7500)+2500;
+		return Game.rand(6500)+3500;
 	}
 
 	public void goDown() {

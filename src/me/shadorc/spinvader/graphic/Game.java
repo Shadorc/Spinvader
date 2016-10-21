@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import me.shadorc.spinvader.KListener;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage;
+import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.entity.Boss;
 import me.shadorc.spinvader.entity.Enemy;
 import me.shadorc.spinvader.entity.Entity;
@@ -40,8 +41,8 @@ public class Game extends JPanel implements Runnable {
 	private boolean showDebug = true;
 
 	private boolean isRunning;
-	private boolean gameOver;
-	private boolean highScore;
+	private boolean isGameOver;
+	private boolean isNewRecord;
 
 	private ArrayList <Entity> entitiesBuffer;
 	private ArrayList <Entity> entities;
@@ -63,15 +64,15 @@ public class Game extends JPanel implements Runnable {
 	private int fps;
 
 	private Thread generation;
-	private Thread updated;
+	private Thread runningThread;
 
 	Game() {
 		super();
 
 		this.isRunning = false;
-		this.gameOver = false;
+		this.isGameOver = false;
 
-		this.entities = new ArrayList <Entity>();
+		this.entities = new ArrayList <Entity> ();
 		this.effects = new ArrayList <Effect> ();
 
 		this.spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
@@ -79,7 +80,7 @@ public class Game extends JPanel implements Runnable {
 
 		this.listener = new KListener();
 		this.background = Sprite.get("background.jpg").getImage();
-		this.music = new Sound("Savant - Spaceheart.wav", 1);
+		this.music = new Sound("Savant - Spaceheart.wav", 1, Data.MUSIC_VOLUME);
 
 		this.multiplicator = 1;
 		this.scoreSize = 50;
@@ -88,7 +89,7 @@ public class Game extends JPanel implements Runnable {
 		this.fps = 0;
 
 		this.generation = new Thread();
-		this.updated = new Thread(this);
+		this.runningThread = new Thread(this);
 
 		this.addKeyListener(listener);
 		this.setFocusable(true);
@@ -129,7 +130,7 @@ public class Game extends JPanel implements Runnable {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		if(Options.isAntialiasEnable()) {
+		if(Storage.isEnable(Data.ANTIALIASING_ENABLE)) {
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING , RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		}
@@ -139,9 +140,9 @@ public class Game extends JPanel implements Runnable {
 		for(Entity en : entitiesBuffer) {
 			g2d.drawImage(en.getImage(), en.getX(), en.getY(), null);
 			if(showHitbox) {
-				Rectangle re = en.getHitbox();
+				Rectangle hitbox = en.getHitbox();
 				g2d.setColor(Color.RED);
-				g2d.drawRect((int) re.getX(), (int) re.getY(), (int) re.getWidth(), (int) re.getHeight());
+				g2d.drawRect((int) hitbox.getX(), (int) hitbox.getY(), (int) hitbox.getWidth(), (int) hitbox.getHeight());
 			}
 		}
 
@@ -151,11 +152,12 @@ public class Game extends JPanel implements Runnable {
 
 		//Life bar
 		g2d.setColor(Color.GREEN);
-		g2d.fillRect(0, (int) ((Frame.getHeight()/spaceship.getMaximumLife())*(spaceship.getMaximumLife()-spaceship.getLife())), (int) (30*Frame.getScaleY()), Frame.getHeight());
+		g2d.fillRect(0, (int) ((Frame.getHeight()*(spaceship.getMaximumLife()-spaceship.getLife()))/spaceship.getMaximumLife()), (int) (30*Frame.getScaleY()), Frame.getHeight());
 
+		String sc = "Score : " + score;
 		g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize));
 		g2d.setColor(Color.RED);
-		g2d.drawString("Score : " + score, Frame.getWidth()-Text.getWidth(g2d, "Score : " + score)-10, Text.getHeight(g2d, "Score : " + score));
+		g2d.drawString(sc, Frame.getWidth()-Text.getWidth(g2d, sc)-10, Text.getHeight(g2d, sc));
 
 		if(multiplicator > 1) {
 			g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize*2));
@@ -185,7 +187,7 @@ public class Game extends JPanel implements Runnable {
 			}
 		}
 
-		if(gameOver) {
+		if(isGameOver) {
 			//Transparent filter to darken the game 
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
 			g2d.fillRect(0, 0, Frame.getWidth(), Frame.getHeight());
@@ -193,15 +195,15 @@ public class Game extends JPanel implements Runnable {
 			g2d.setFont(Text.createFont("space_age.ttf", 200));
 			g2d.setColor(Color.RED);
 
-			String text = "GAME OVER !";
-			g.drawString(text, Text.getTextCenterWidth(g2d, text), Text.getHeight(g2d, text)+50);
+			String gameOver = "GAME OVER !";
+			g.drawString(gameOver, Text.getCenterWidth(g2d, gameOver), Text.getHeight(g2d, gameOver)+50);
 
-			if(highScore) {
+			if(isNewRecord) {
 				g2d.setFont(Text.createFont("space_age.ttf", 100));
 				g2d.setColor(Color.GREEN);
 
-				text = "HIGHSCORE !";
-				g.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()/3);
+				String highscore = "HIGHSCORE !";
+				g.drawString(highscore, Text.getCenterWidth(g2d, highscore), Frame.getHeight()/3);
 			}
 
 			g2d.setFont(Text.createFont("space_age.ttf", 50));
@@ -209,26 +211,24 @@ public class Game extends JPanel implements Runnable {
 
 			ArrayList <Integer> scores = Storage.getScores();
 			for(int i = 0; i < scores.size(); i++) {
-				String str = (i+1) + ". " + scores.get(i);
-				int textHeight = Text.getHeight(g2d, str)+5;
-				//Frame.getHeight()/2 : Frame center
-				//(textHeight*scores.size())/2 : Leaderboard height 
-				g2d.drawString(str, Text.getTextCenterWidth(g2d, str), Frame.getHeight()/2 - (textHeight*scores.size())/2 + (textHeight*i));
+				String str_score = (i+1) + ". " + scores.get(i);
+				int textHeight = Text.getHeight(g2d, str_score)+5;
+				g2d.drawString(str_score, Text.getCenterWidth(g2d, str_score), (Frame.getHeight()+textHeight*(2*i-scores.size()))/2);
 			}
 
 			g2d.setFont(Text.getFont("Consolas", 30));
 			g2d.setColor(Color.WHITE);
 
-			text = "Press \"Esc\" to return to the menu";
-			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()-(Frame.getHeight()/4));
+			String str_goHome = "Press \"Esc\" to return to the menu";
+			g2d.drawString(str_goHome, Text.getCenterWidth(g2d, str_goHome), 3*Frame.getHeight()/4);
 
-			text = "Press \"Enter\" to restart";
-			g2d.drawString(text, Text.getTextCenterWidth(g2d, text), Frame.getHeight()-(Frame.getHeight()/4)+Text.getHeight(g2d, text));
+			String str_restart = "Press \"Enter\" to restart";
+			g2d.drawString(str_restart, Text.getCenterWidth(g2d, str_restart), 3*Frame.getHeight()/4+Text.getHeight(g2d, str_restart));
 		}
 	}
 
 	public void update(double delta) {
-		if(gameOver) {
+		if(isGameOver) {
 			if(listener.wasKeyPressed(KeyEvent.VK_ESCAPE))	this.stop(false);
 			if(listener.wasKeyPressed(KeyEvent.VK_ENTER))	this.stop(true);
 			return;
@@ -281,22 +281,22 @@ public class Game extends JPanel implements Runnable {
 	public void start() {
 		music.start();
 		isRunning = true;
-		updated.start();
+		runningThread.start();
 	}
 
 	public void stop(boolean restart) {
 		music.stop();
 		isRunning = false;
-		gameOver = false;
+		isGameOver = false;
 		Frame.setPanel(restart ? Mode.GAME : Mode.MENU);
 	}
 
 	public void gameOver() {
-		if(!gameOver) {
-			Sound.play("Game Over.wav", 0.5);
-			highScore = Storage.getScores().isEmpty() || (score > Storage.getScores().get(0));
+		if(!isGameOver) {
+			Sound.play("Game Over.wav", 0.5, Data.MUSIC_VOLUME);
+			isNewRecord = Storage.getScores().isEmpty() || (score > Storage.getScores().get(0));
 			Storage.addScore(score);
-			gameOver = true;
+			isGameOver = true;
 		}
 	}
 

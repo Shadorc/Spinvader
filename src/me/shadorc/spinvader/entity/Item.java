@@ -1,6 +1,7 @@
 package me.shadorc.spinvader.entity;
 
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
@@ -50,7 +51,7 @@ public class Item extends Entity {
 
 				case LIFE:
 					Frame.getGame().getSpaceship().heal(1);
-					Sound.play("life.wav", 0.20);
+					Sound.play("life.wav", 0.20, Data.SOUND_VOLUME);
 					break;
 			}
 		}

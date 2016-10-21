@@ -10,7 +10,7 @@ public class KListener implements KeyListener {
 	private ArrayList <Integer> keysPressed;
 
 	public KListener() {
-		keysDown = new ArrayList <Integer>();
+		keysDown = new ArrayList <Integer> ();
 		keysPressed = new ArrayList <Integer> ();
 	}
 

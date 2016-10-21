@@ -7,9 +7,8 @@ import java.io.IOException;
 
 public class Text {
 
-	public static int getTextCenterWidth(Graphics g, String text) {
-		double textWidth = g.getFontMetrics().getStringBounds(text, g).getWidth();
-		return (int) (Frame.getWidth()/2 - textWidth/2);
+	public static int getCenterWidth(Graphics g, String text) {
+		return (int) (Frame.getWidth()-Text.getWidth(g, text))/2;
 	}
 
 	public static int getWidth(Graphics g, String text) {
@@ -23,7 +22,7 @@ public class Text {
 	public static Font createFont(String name, int size) {
 		size *= Frame.getScaleX();
 		try {
-			return Font.createFont(Font.TRUETYPE_FONT, Frame.class.getResourceAsStream("/res/" + name)).deriveFont(Font.PLAIN, size);
+			return Font.createFont(Font.TRUETYPE_FONT, Text.class.getResourceAsStream("/res/" + name)).deriveFont(Font.PLAIN, size);
 		} catch (FontFormatException | IOException e) {
 			return new Font("Consolas", Font.PLAIN, size);
 		}

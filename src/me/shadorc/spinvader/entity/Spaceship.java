@@ -1,6 +1,7 @@
 package me.shadorc.spinvader.entity;
 
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
 
@@ -68,7 +69,7 @@ public class Spaceship extends Entity {
 					break;
 			}
 
-			Sound.play("spaceship_shoot.wav", 0.1);
+			Sound.play("spaceship_shoot.wav", 0.10, Data.SOUND_VOLUME);
 			lastShoot = System.currentTimeMillis();
 		}
 	}

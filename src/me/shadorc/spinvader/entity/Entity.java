@@ -19,11 +19,13 @@ public class Entity {
 		LIFE, FIREMODE, EXPLOSIVE;
 	}
 
+	protected Rectangle hitbox;
 	protected ImageIcon img;
 	protected float x, y;
 	protected float life;
 
 	public Entity(float x, float y, float life, ImageIcon img) {
+		this.hitbox = new Rectangle((int) x, (int) y, img.getIconWidth(), img.getIconHeight());
 		this.x = x;
 		this.y = y;
 		this.life = life;
@@ -47,7 +49,7 @@ public class Entity {
 	}
 
 	public Rectangle getHitbox() {
-		return new Rectangle((int) x, (int) y, img.getIconWidth(), img.getIconHeight());
+		return hitbox;
 	}
 
 	public void takeDamage(float damage) {
@@ -57,11 +59,11 @@ public class Entity {
 		}
 	}
 
-	public void shoot() { }
+	public void collidedWith(Entity en) { }
 
 	public void move(double delta) { }
 
-	public void collidedWith(Entity en) { }
+	public void shoot() { }
 
 	public void die() { }
 }

@@ -11,14 +11,15 @@ import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import me.shadorc.spinvader.Storage.Data;
+
 public class Sound {
 
-	private Clip clip;
-	private String name;
 	private FloatControl gainControl;
+	private String name;
+	private Clip clip;
 
-	public Sound(String name, double gain) {
-
+	public Sound(String name, double gain, Data volumeType) {
 		this.name = name;
 
 		try {
@@ -27,7 +28,7 @@ public class Sound {
 			clip.open(audioIn);
 
 			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			this.setGain(gain);
+			this.setGain(Integer.parseInt(Storage.getData(volumeType))*gain/100);
 
 			//Close sound thread when the sound finished
 			clip.addLineListener(new LineListener() {
@@ -42,8 +43,8 @@ public class Sound {
 		}
 	}
 
-	public static void play(String name, double gain) {
-		new Sound(name, gain).start();
+	public static void play(String name, double gain, Data volumeType) {
+		new Sound(name, gain, volumeType).start();
 	}
 
 	public void start() {

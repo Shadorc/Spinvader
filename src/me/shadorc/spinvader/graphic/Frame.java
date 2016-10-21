@@ -3,12 +3,15 @@ package me.shadorc.spinvader.graphic;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.Storage;
+import me.shadorc.spinvader.Storage.Data;
 
 public class Frame {
 
@@ -27,6 +30,14 @@ public class Frame {
 	}
 
 	public static void main(String[] args) {
+		try {
+			Storage.init();
+		} catch (IOException e) {
+			System.err.println("Error while initializing storage file : " + e.getMessage());
+			e.printStackTrace();
+			System.exit(1);
+		}
+
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -37,7 +48,7 @@ public class Frame {
 				game = new Game();
 				menu = new Menu();
 
-				music = new Sound("B-Complex - Beautiful Lies.wav", 0.1);
+				music = new Sound("B-Complex - Beautiful Lies.wav", 0.10, Data.MUSIC_VOLUME);
 
 				Frame.setPanel(Mode.MENU);
 
@@ -45,7 +56,7 @@ public class Frame {
 				frame.setMinimumSize(new Dimension(800, 600));
 				frame.setLocationRelativeTo(null);
 
-				Frame.setFullscreen(true);
+				Frame.setFullscreen(Storage.isEnable(Data.FULLSCREEN_ENABLE));
 			}
 		});
 	}
