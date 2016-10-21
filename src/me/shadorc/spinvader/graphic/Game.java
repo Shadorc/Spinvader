@@ -34,7 +34,7 @@ public class Game extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
 
 	private static Random rand = new Random();
-	private static int FPS_CAP = 100;
+	private static int FPS_CAP = 60;
 
 	private boolean showHitbox = false;
 	private boolean showDebug = true;
@@ -107,21 +107,19 @@ public class Game extends JPanel implements Runnable {
 			double delta = (System.nanoTime() - loopTime)/Math.pow(10, 6); //Converto to ms
 			loopTime = System.nanoTime();
 
-			fps = (int) Math.round(1000/delta);
+			fps = (int) Math.round(1000d/delta);
 			entitiesBuffer = new ArrayList <Entity> (entities);
 			effectsBuffer = new ArrayList <Effect> (effects);
 
 			this.update(delta);
 			this.repaint();
 
-			try {
-				long elapsedNano = System.nanoTime() - loopTime;	//Time to render in ms
-				long totalNanoToSleep = (long) Math.max(0, (Math.pow(10, 9)/FPS_CAP - elapsedNano));	//Time to sleep to match FPS_CAP
-				long msToSleep = (long) Math.floor(totalNanoToSleep/Math.pow(10, 6));
-				int nanoToSleep = (int) (totalNanoToSleep - msToSleep*Math.pow(10, 6));
-				Thread.sleep(msToSleep, nanoToSleep);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			long elapsedNanos = System.nanoTime() - loopTime; //Time to render in ns
+			long nanosToSleep = (long) Math.max(0, (Math.pow(10, 9)/FPS_CAP - elapsedNanos));  //Time to sleep to match FPS_CAP in ns
+
+			long start = System.nanoTime();
+			while((Math.abs(System.nanoTime()-start)) < nanosToSleep) {
+				//Sleep
 			}
 		}
 	}
