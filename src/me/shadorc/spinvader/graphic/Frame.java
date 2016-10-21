@@ -6,6 +6,7 @@ import java.awt.GraphicsEnvironment;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import me.shadorc.spinvader.Sound;
 
@@ -26,22 +27,27 @@ public class Frame {
 	}
 
 	public static void main(String[] args) {
-		frame = new JFrame("Spinvader");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				frame = new JFrame("Spinvader");
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		options = new Options();
-		game = new Game();
-		menu = new Menu();
+				options = new Options();
+				game = new Game();
+				menu = new Menu();
 
-		music = new Sound("B-Complex - Beautiful Lies.wav", 0.1);
+				music = new Sound("B-Complex - Beautiful Lies.wav", 0.1);
 
-		Frame.setPanel(Mode.MENU);
+				Frame.setPanel(Mode.MENU);
 
-		frame.pack();
-		frame.setMinimumSize(new Dimension(800, 600));
-		frame.setLocationRelativeTo(null);
+				frame.pack();
+				frame.setMinimumSize(new Dimension(800, 600));
+				frame.setLocationRelativeTo(null);
 
-		Frame.setFullscreen(true);
+				Frame.setFullscreen(true);
+			}
+		});
 	}
 
 	public static void setPanel(Mode mode) {

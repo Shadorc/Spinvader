@@ -12,7 +12,7 @@ public class Entity {
 	}
 
 	public enum Type {
-		SPACESHIP, ENEMY, BOSS;
+		SPACESHIP, ENEMY;
 	}
 
 	public enum Bonus {

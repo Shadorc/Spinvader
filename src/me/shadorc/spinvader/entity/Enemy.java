@@ -26,7 +26,7 @@ public class Enemy extends Entity {
 		toReach = (int) (y+400*Frame.getScaleY());
 		speedX = 2 * Frame.getScaleX();
 		speedY = 2 * Frame.getScaleY();
-		
+
 		reloadTime = this.generateShootTime();
 		bulletSpeed = 15;
 		lastShoot = System.currentTimeMillis();

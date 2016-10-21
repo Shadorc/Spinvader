@@ -36,8 +36,8 @@ public class Game extends JPanel implements Runnable {
 	private static Random rand = new Random();
 	private static int FPS_CAP = 100;
 
-	private static boolean showHitbox = false;
-	private static boolean showDebug = false;
+	private boolean showHitbox = false;
+	private boolean showDebug = true;
 
 	private boolean isRunning;
 	private boolean gameOver;
