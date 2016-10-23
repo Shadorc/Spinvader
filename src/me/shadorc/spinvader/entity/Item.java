@@ -4,6 +4,7 @@ import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.Utils;
+import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item extends Entity {
@@ -67,14 +68,16 @@ public class Item extends Entity {
 	}
 
 	public static void generate(float x, float y) {
-		switch (Utils.rand(100)) {
-			case 0:
+		switch (Utils.rand(200)) {
+			case 0: 
+			case 1:
 				Main.getGame().addEntity(new Item(x, y, Bonus.LIFE));
 				break;
-			case 1:
-				Main.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
-				break;
 			case 2:
+				if(!Main.getGame().getSpaceship().hasExplosiveAmmo())
+					Main.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
+				break;
+			case 3:
 				if(Main.getGame().getSpaceship().getFireMode() < 4)
 					Main.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
 				break;
