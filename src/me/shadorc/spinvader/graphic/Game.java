@@ -165,20 +165,22 @@ public class Game extends JPanel implements Runnable {
 			int mb = 1024*1024;
 			Runtime runtime = Runtime.getRuntime();
 
-			g2d.setFont(Text.createFont("Consolas", 20));
-			g2d.setColor(Color.RED);
-
 			ArrayList <String> debugInfos = new ArrayList <String> ();
 			debugInfos.add("Resolution: " + Main.getFrame().getWidth() + "x" + Main.getFrame().getHeight());
-			debugInfos.add("Level: " + level);
-			debugInfos.add("Life: " + spaceship.getLife());
-			debugInfos.add("Entities: " + entitiesBuffer.size());
-			debugInfos.add(fps + " FPS");
 			debugInfos.add("Memory used: "+ (runtime.totalMemory() - runtime.freeMemory())/mb + "/" + (runtime.totalMemory()/mb) + " Mo");
+			debugInfos.add("Entities: " + entitiesBuffer.size());
 			debugInfos.add("Threads: " + Thread.activeCount());
+			debugInfos.add("Level: " + level);
+			debugInfos.add(fps + " FPS");
 
+			//Draw a transparent rectangle for a better visibility
+			g2d.setColor(new Color(0, 0, 0, 0.75f));
+			g2d.fillRect(5, 5, 275, 175);
+
+			g2d.setFont(Text.createFont("Consolas", 20));
+			g2d.setColor(Color.RED);
 			for(int i = 0; i < debugInfos.size(); i++) {
-				g2d.drawString(debugInfos.get(i), 40, (i+1)*(5+Text.getHeight(g2d, debugInfos.get(i))));
+				g2d.drawString(debugInfos.get(i), 10, (i+1)*(5+Text.getHeight(g2d, debugInfos.get(i))));
 			}
 		}
 
