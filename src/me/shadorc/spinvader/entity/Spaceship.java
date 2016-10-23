@@ -24,7 +24,7 @@ public class Spaceship extends Entity {
 		speedY = 25 * Frame.getScaleY();
 		lifeMax = 5;
 
-		bulletSpeed = 50;
+		bulletSpeed = (int) (50 * Frame.getScaleY());
 		reloadTime = 200;
 		lastShoot = 0;
 

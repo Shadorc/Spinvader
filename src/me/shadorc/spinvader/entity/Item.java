@@ -16,7 +16,7 @@ public class Item extends Entity {
 		super(x, y, 0, null);
 
 		this.type = type;
-		this.speed = 5;
+		this.speed = 5 * Frame.getScaleY();
 
 		String spriteName = null;
 		switch (type) {
