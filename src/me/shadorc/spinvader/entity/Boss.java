@@ -1,5 +1,7 @@
 package me.shadorc.spinvader.entity;
 
+import javax.swing.ImageIcon;
+
 import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
@@ -10,6 +12,8 @@ import me.shadorc.spinvader.sprites.AnimatedSprite;
 
 public class Boss extends Entity {
 
+	private static ImageIcon SPRITE = Sprite.get("boss.png", 335, 170);
+
 	private float speed;
 
 	private float bulletSpeed, reloadTime;
@@ -18,10 +22,10 @@ public class Boss extends Entity {
 	private Direction dir;
 
 	public Boss(float x, float y) {
-		super(x, y, 50, Sprite.get("boss.png", 335, 170));
+		super(x, y, 50, SPRITE);
 
+		this.bulletSpeed = 20 * Frame.getScaleY();
 		this.reloadTime = this.generateShootTime();
-		this.bulletSpeed = 20;
 		this.lastShoot = System.currentTimeMillis();
 
 		this.dir = Direction.RIGHT;

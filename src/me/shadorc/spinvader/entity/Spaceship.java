@@ -1,5 +1,7 @@
 package me.shadorc.spinvader.entity;
 
+import javax.swing.ImageIcon;
+
 import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
@@ -7,6 +9,8 @@ import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Spaceship extends Entity {
+
+	private static ImageIcon SPRITE = Sprite.get("spaceship.png", 150, 150);
 
 	private float speedX, speedY;
 	private float lifeMax;
@@ -18,7 +22,7 @@ public class Spaceship extends Entity {
 	private int fireMode;
 
 	public Spaceship(int x, int y) {
-		super(x, y, 5, Sprite.get("spaceship.png", 150, 150));
+		super(x, y, 50, SPRITE);
 
 		speedX = 25 * Frame.getScaleX();
 		speedY = 25 * Frame.getScaleY();
@@ -108,6 +112,7 @@ public class Spaceship extends Entity {
 		if(life < lifeMax) {
 			life += i;
 		}
+		life = Math.min(lifeMax,  lifeMax);
 	}
 
 	public void setFireMode(int fireMode) {
