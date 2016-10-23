@@ -72,6 +72,6 @@ public class Sound {
 	}
 
 	public void setGain(double gain) {
-		gainControl.setValue((float) (Math.log(gain) / Math.log(10.0) * 20.0));
+		gainControl.setValue((float) (Math.log(gain)/Math.log(10.0)*20.0));
 	}
 }

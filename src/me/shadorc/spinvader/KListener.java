@@ -6,8 +6,7 @@ import java.util.ArrayList;
 
 public class KListener implements KeyListener {
 
-	private ArrayList <Integer> keysDown;
-	private ArrayList <Integer> keysPressed;
+	private ArrayList <Integer> keysDown, keysPressed;
 
 	public KListener() {
 		keysDown = new ArrayList <Integer> ();
@@ -35,10 +34,9 @@ public class KListener implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent event) {
-		try {
-			keysDown.remove(keysDown.indexOf(event.getKeyCode()));
-		} catch(ArrayIndexOutOfBoundsException e) {
-			System.err.println(event.getKeyCode() + " doesn't exist in " + keysDown);
+		int key = event.getKeyCode();
+		if(keysDown.contains(key)) {
+			keysDown.remove(keysDown.indexOf(key));
 		}
 	}
 

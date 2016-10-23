@@ -227,7 +227,7 @@ public class Game extends JPanel implements Runnable {
 			return;
 		}
 
-		if(System.currentTimeMillis() - multiplierStartTime > 1000) scoreMultiplier = 1;
+		if(System.currentTimeMillis()-multiplierStartTime > 1000) scoreMultiplier = 1;
 
 		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop(false);
 		if(listener.isKeyDown(KeyEvent.VK_LEFT))	spaceship.moveLeft(delta);
@@ -243,7 +243,7 @@ public class Game extends JPanel implements Runnable {
 			generation = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					generate(36);
+					Game.this.generate(36);
 				}
 			});
 			generation.start();

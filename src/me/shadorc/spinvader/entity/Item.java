@@ -59,7 +59,7 @@ public class Item extends Entity {
 
 	@Override
 	public void move(double delta) {
-		y += (float) ((speed * delta) / 30);
+		y += (float) ((speed*delta)/30);
 
 		if(y >= Main.getFrame().getHeight()) {
 			Main.getGame().delEntity(this);

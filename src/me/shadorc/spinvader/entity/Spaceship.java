@@ -48,10 +48,10 @@ public class Spaceship extends Entity {
 
 	@Override
 	public void shoot() {
-		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
+		if((System.currentTimeMillis()-lastShoot) >= reloadTime) {
 			switch(fireMode) {
 				case 1:
-					Main.getGame().addEntity(new Bullet(x + img.getIconWidth()/2, y, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth()/2, y, bulletSpeed, Direction.UP, Type.SPACESHIP));
 					break;
 				case 2:
 					Main.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
@@ -82,25 +82,25 @@ public class Spaceship extends Entity {
 
 	public void moveLeft(double delta) {
 		if(x >= 0) {
-			x -= (speedX * delta) / 30;
+			x -= (speedX*delta)/30;
 		}
 	}
 
 	public void moveRight(double delta) {
 		if(x <= Main.getFrame().getWidth() - img.getIconWidth()) {
-			x += (speedX * delta) / 30;
+			x += (speedX*delta)/30;
 		}
 	}
 
 	public void moveForward(double delta) {
 		if(y >= 0) {
-			y -= (speedY * delta) / 30;
+			y -= (speedY*delta)/30;
 		}
 	}
 
 	public void moveBackward(double delta) {
 		if(y <= Main.getFrame().getHeight() - img.getIconHeight()) {
-			y += (speedY * delta) / 30;
+			y += (speedY*delta)/30;
 		}
 	}
 

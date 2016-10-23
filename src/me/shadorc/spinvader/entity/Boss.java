@@ -30,7 +30,7 @@ public class Boss extends Entity {
 
 	@Override
 	public void move(double delta) {
-		x += (float) ((speed * delta) / 30) * (dir == Direction.RIGHT ? 1 : -1);
+		x += (float) ((speed*delta)/30) * (dir == Direction.RIGHT ? 1 : -1);
 
 		if(dir == Direction.RIGHT && x >= Main.getFrame().getWidth() - img.getIconWidth()) {
 			x = (float) (Main.getFrame().getWidth() - img.getIconWidth());

@@ -16,8 +16,8 @@ public class Storage {
 	private static Properties prop = new Properties();
 
 	public enum Data {
-		FULLSCREEN_ENABLE,
 		ANTIALIASING_ENABLE,
+		FULLSCREEN_ENABLE,
 		MUSIC_VOLUME,
 		SOUND_VOLUME,
 		SCORES;
@@ -25,10 +25,10 @@ public class Storage {
 
 	public static void init() throws IOException {
 		CONFIG_FILE.createNewFile();
-		if(Storage.getData(Data.FULLSCREEN_ENABLE) == null) Storage.save(Data.FULLSCREEN_ENABLE, true);
-		if(Storage.getData(Data.ANTIALIASING_ENABLE) == null) Storage.save(Data.ANTIALIASING_ENABLE, false);
-		if(Storage.getData(Data.MUSIC_VOLUME) == null) Storage.save(Data.MUSIC_VOLUME, 50);
-		if(Storage.getData(Data.SOUND_VOLUME) == null) Storage.save(Data.SOUND_VOLUME, 50);
+		if(Storage.getData(Data.FULLSCREEN_ENABLE) == null) 	Storage.save(Data.FULLSCREEN_ENABLE, true);
+		if(Storage.getData(Data.ANTIALIASING_ENABLE) == null) 	Storage.save(Data.ANTIALIASING_ENABLE, false);
+		if(Storage.getData(Data.MUSIC_VOLUME) == null) 			Storage.save(Data.MUSIC_VOLUME, 50);
+		if(Storage.getData(Data.SOUND_VOLUME) == null) 			Storage.save(Data.SOUND_VOLUME, 50);
 	}
 
 	public static void save(Data data, Object value) {

@@ -23,7 +23,7 @@ public class Enemy extends Entity {
 	private static Direction nextDir;
 
 	public Enemy(float x, float y, ImageIcon img) {
-		super(x, y, (float) Main.getGame().getLevel(), img);
+		super(x, y, Main.getGame().getLevel(), img);
 
 		toReach = (int) (y+400*Frame.getScaleY());
 		speedX = 2 * Frame.getScaleX();
@@ -48,7 +48,9 @@ public class Enemy extends Entity {
 					dir = nextDir;
 				}
 
-				if(y >= (Main.getFrame().getHeight() - img.getIconHeight())) Main.getGame().gameOver();
+				if(y >= (Main.getFrame().getHeight() - img.getIconHeight())) {
+					Main.getGame().gameOver();
+				}
 				break;
 
 			case LEFT:

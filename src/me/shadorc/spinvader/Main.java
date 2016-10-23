@@ -47,19 +47,19 @@ public class Main {
 	}
 
 	public static void setMode(Mode mode) {
-		if(mode == Mode.MENU){
-			frame.setPanel(menu);
+		switch(mode) {
+			case MENU:
+				frame.setPanel(menu);
+				break;
+			case OPTIONS:
+				frame.setPanel(options);
+				break;
+			case GAME:
+				game = new Game();
+				frame.setPanel(game);
+				game.start();
+				break;
 		}
-
-		else if(mode == Mode.OPTIONS) {
-			frame.setPanel(options);
-		} 
-
-		else if(mode == Mode.GAME) {
-			game = new Game();
-			frame.setPanel(game);
-			game.start();
-		} 
 	}
 
 	public static Frame getFrame() {
