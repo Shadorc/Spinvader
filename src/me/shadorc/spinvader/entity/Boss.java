@@ -46,7 +46,7 @@ public class Boss extends Entity {
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
 			Main.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
-			Main.getGame().addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((x + img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
 
 			lastShoot = System.currentTimeMillis();
 			reloadTime = this.generateShootTime();
