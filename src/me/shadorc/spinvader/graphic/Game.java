@@ -13,12 +13,13 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import me.shadorc.spinvader.KListener;
+import me.shadorc.spinvader.Main;
+import me.shadorc.spinvader.Main.Mode;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.Storage.Data;
@@ -26,29 +27,21 @@ import me.shadorc.spinvader.entity.Boss;
 import me.shadorc.spinvader.entity.Enemy;
 import me.shadorc.spinvader.entity.Entity;
 import me.shadorc.spinvader.entity.Spaceship;
-import me.shadorc.spinvader.graphic.Frame.Mode;
 import me.shadorc.spinvader.sprites.AnimatedSprite;
+import me.shadorc.spinvader.sprites.BumpingText;
 import me.shadorc.spinvader.sprites.Effect;
 
 public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Random rand = new Random();
 	private static int FPS_CAP = 60;
 
-	private boolean showHitbox = false;
-	private boolean showDebug = true;
+	private boolean isRunning, isGameOver, isNewRecord;
+	private boolean showHitbox, showDebug;
 
-	private boolean isRunning;
-	private boolean isGameOver;
-	private boolean isNewRecord;
-
-	private ArrayList <Entity> entities;
-	private ArrayList <Effect> effects;
-
-	private ArrayList <Entity> entitiesBuffer;
-	private ArrayList <Effect> effectsBuffer;
+	private ArrayList <Entity> entities, entitiesBuffer;
+	private ArrayList <Effect> effects, effectsBuffer;
 
 	private Spaceship spaceship;
 
@@ -56,9 +49,10 @@ public class Game extends JPanel implements Runnable {
 	private Image background;
 	private Sound music;
 
-	private int multiplicator;
-	private double multiTime;
-	private float scoreSize;
+	private long multiplierStartTime;
+	private int scoreMultiplier;
+	private BumpingText textMultiplier;
+
 	private int level;
 	private int score;
 	private int fps;
@@ -66,27 +60,32 @@ public class Game extends JPanel implements Runnable {
 	private Thread generation;
 	private Thread runningThread;
 
-	Game() {
+	public Game() {
 		super();
 
 		this.isRunning = false;
 		this.isGameOver = false;
 
-		this.entities = new ArrayList <Entity> ();
-		this.effects = new ArrayList <Effect> ();
+		this.showHitbox = false;
+		this.showDebug = false;
 
+		this.entities = new ArrayList <Entity> ();
 		this.entitiesBuffer = new ArrayList <Entity> ();
+
+		this.effects = new ArrayList <Effect> ();
 		this.effectsBuffer = new ArrayList <Effect> ();
 
-		this.spaceship = new Spaceship(Frame.getWidth()/2, Frame.getHeight()/2);
-		this.entities.add(spaceship);
+		this.spaceship = new Spaceship(Main.getFrame().getWidth()/2, Main.getFrame().getHeight()/2);
+		this.addEntity(spaceship);
 
 		this.listener = new KListener();
 		this.background = Sprite.get("background.jpg").getImage();
 		this.music = new Sound("Savant - Spaceheart.wav", 1, Data.MUSIC_VOLUME);
 
-		this.multiplicator = 1;
-		this.scoreSize = 50;
+		this.scoreMultiplier = 1;
+		this.textMultiplier = new BumpingText(Main.getFrame().getWidth(), 20, 0, null, Text.createFont("space_age.ttf", 120), new Color(255, 255, 0, 0), 120);
+		this.addEffect(textMultiplier);
+
 		this.level = 0;
 		this.score = 0;
 		this.fps = 0;
@@ -119,12 +118,10 @@ public class Game extends JPanel implements Runnable {
 			this.repaint();
 
 			long elapsedNanos = System.nanoTime() - loopTime; //Time to render in ns
-			long nanosToSleep = (long) Math.max(0, (Math.pow(10, 9)/FPS_CAP - elapsedNanos));  //Time to sleep to match FPS_CAP in ns
+			long nanosToSleep = (long) Math.max(0, (Math.pow(10, 9)/FPS_CAP - elapsedNanos)); //Time to sleep to match FPS_CAP in ns
 
 			long start = System.nanoTime();
-			while((Math.abs(System.nanoTime()-start)) < nanosToSleep) {
-				//Sleep
-			}
+			while(System.nanoTime()-start < nanosToSleep); //Sleep
 		}
 	}
 
@@ -155,19 +152,12 @@ public class Game extends JPanel implements Runnable {
 
 		//Life bar
 		g2d.setColor(Color.GREEN);
-		g2d.fillRect(0, (int) ((Frame.getHeight()*(spaceship.getMaximumLife()-spaceship.getLife()))/spaceship.getMaximumLife()), (int) (30*Frame.getScaleY()), Frame.getHeight());
+		g2d.fillRect(0, (int) ((Main.getFrame().getHeight()*(spaceship.getMaximumLife()-spaceship.getLife()))/spaceship.getMaximumLife()), (int) (30*Frame.getScaleY()), Main.getFrame().getHeight());
 
 		String sc = "Score : " + score;
-		g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize));
+		g2d.setFont(Text.createFont("space_age.ttf", 50));
 		g2d.setColor(Color.RED);
-		g2d.drawString(sc, Frame.getWidth()-Text.getWidth(g2d, sc)-10, Text.getHeight(g2d, sc));
-
-		if(multiplicator > 1) {
-			g2d.setFont(Text.createFont("space_age.ttf", (int) scoreSize*2));
-			float alpha = (float) (1-Math.min(1, (System.currentTimeMillis()-multiTime)/1000));
-			g2d.setColor(new Color(1, 1, 0, alpha));
-			g2d.drawString("X" + multiplicator, Frame.getWidth()-Text.getWidth(g2d, "X" + multiplicator)-10, Text.getHeight(g2d, "X" + multiplicator)+20);
-		}
+		g2d.drawString(sc, Main.getFrame().getWidth()-Text.getWidth(g2d, sc)-10, Text.getHeight(g2d, sc));
 
 		if(showDebug) {
 			int mb = 1024*1024;
@@ -177,7 +167,7 @@ public class Game extends JPanel implements Runnable {
 			g2d.setColor(Color.RED);
 
 			ArrayList <String> debugInfos = new ArrayList <String> ();
-			debugInfos.add("Resolution: " + Frame.getWidth() + "x" + Frame.getHeight());
+			debugInfos.add("Resolution: " + Main.getFrame().getWidth() + "x" + Main.getFrame().getHeight());
 			debugInfos.add("Level: " + level);
 			debugInfos.add("Life: " + spaceship.getLife());
 			debugInfos.add("Entities: " + entitiesBuffer.size());
@@ -193,7 +183,7 @@ public class Game extends JPanel implements Runnable {
 		if(isGameOver) {
 			//Transparent filter to darken the game 
 			g2d.setPaint(new Color(0, 0, 0, 0.5f));
-			g2d.fillRect(0, 0, Frame.getWidth(), Frame.getHeight());
+			g2d.fillRect(0, 0, Main.getFrame().getWidth(), Main.getFrame().getHeight());
 
 			g2d.setFont(Text.createFont("space_age.ttf", 200));
 			g2d.setColor(Color.RED);
@@ -206,7 +196,7 @@ public class Game extends JPanel implements Runnable {
 				g2d.setColor(Color.GREEN);
 
 				String highscore = "HIGHSCORE !";
-				g.drawString(highscore, Text.getCenterWidth(g2d, highscore), Frame.getHeight()/3);
+				g.drawString(highscore, Text.getCenterWidth(g2d, highscore), Main.getFrame().getHeight()/3);
 			}
 
 			g2d.setFont(Text.createFont("space_age.ttf", 50));
@@ -216,17 +206,17 @@ public class Game extends JPanel implements Runnable {
 			for(int i = 0; i < scores.size(); i++) {
 				String str_score = (i+1) + ". " + scores.get(i);
 				int textHeight = Text.getHeight(g2d, str_score)+5;
-				g2d.drawString(str_score, Text.getCenterWidth(g2d, str_score), (Frame.getHeight()+textHeight*(2*i-scores.size()))/2);
+				g2d.drawString(str_score, Text.getCenterWidth(g2d, str_score), (Main.getFrame().getHeight()+textHeight*(2*i-scores.size()))/2);
 			}
 
 			g2d.setFont(Text.getFont("Consolas", 30));
 			g2d.setColor(Color.WHITE);
 
 			String str_goHome = "Press \"Esc\" to return to the menu";
-			g2d.drawString(str_goHome, Text.getCenterWidth(g2d, str_goHome), 3*Frame.getHeight()/4);
+			g2d.drawString(str_goHome, Text.getCenterWidth(g2d, str_goHome), 3*Main.getFrame().getHeight()/4);
 
 			String str_restart = "Press \"Enter\" to restart";
-			g2d.drawString(str_restart, Text.getCenterWidth(g2d, str_restart), 3*Frame.getHeight()/4+Text.getHeight(g2d, str_restart));
+			g2d.drawString(str_restart, Text.getCenterWidth(g2d, str_restart), 3*Main.getFrame().getHeight()/4+Text.getHeight(g2d, str_restart));
 		}
 	}
 
@@ -237,9 +227,7 @@ public class Game extends JPanel implements Runnable {
 			return;
 		}
 
-		//Score bumping
-		if(scoreSize > 50)	scoreSize -= delta/20;
-		if(System.currentTimeMillis() - multiTime > 1000) multiplicator = 1;
+		if(System.currentTimeMillis() - multiplierStartTime > 1000) scoreMultiplier = 1;
 
 		if(listener.isKeyDown(KeyEvent.VK_ESCAPE))	this.stop(false);
 		if(listener.isKeyDown(KeyEvent.VK_LEFT))	spaceship.moveLeft(delta);
@@ -277,7 +265,7 @@ public class Game extends JPanel implements Runnable {
 		}
 
 		for(Effect effect : effectsBuffer) {
-			effect.update();
+			effect.update(delta);
 		}
 	}
 
@@ -291,7 +279,7 @@ public class Game extends JPanel implements Runnable {
 		music.stop();
 		isRunning = false;
 		isGameOver = false;
-		Frame.setPanel(restart ? Mode.GAME : Mode.MENU);
+		Main.setMode(restart ? Mode.GAME : Mode.MENU);
 	}
 
 	public void gameOver() {
@@ -328,11 +316,11 @@ public class Game extends JPanel implements Runnable {
 		effects.remove(effect);
 	}
 
-	public void incScore(int num) {
-		multiplicator++;
-		multiTime = System.currentTimeMillis();
-		score += num*multiplicator;
-		scoreSize = 60;
+	public void incScore(int sc) {
+		this.scoreMultiplier++;
+		this.multiplierStartTime = System.currentTimeMillis();
+		this.score += sc*this.scoreMultiplier;
+		this.textMultiplier.setText("X" + scoreMultiplier);
 	}
 
 	public Spaceship getSpaceship() {
@@ -364,7 +352,7 @@ public class Game extends JPanel implements Runnable {
 			ImageIcon enemySprite = Sprite.generateSprite(); 
 
 			//Space occupied by each enemy counting the blanck without enemies 
-			int xSize = (Frame.getWidth()-blanck)/column;	
+			int xSize = (Main.getFrame().getWidth()-blanck)/column;	
 
 			//Enemy width without space between them
 			int enemyWidth = xSize - space; 
@@ -381,7 +369,7 @@ public class Game extends JPanel implements Runnable {
 
 			for(int y = 0; y < line; y++) {
 				for(int x = 0; x < column; x++) {
-					this.addEntity(new Enemy(xSize*x, ySize*y - Frame.getHeight()/3, enemySprite));
+					this.addEntity(new Enemy(xSize*x, ySize*y - Main.getFrame().getHeight()/3, enemySprite));
 				}
 			}
 
@@ -407,7 +395,8 @@ public class Game extends JPanel implements Runnable {
 		this.addEffect(explosion);
 	}
 
-	public static int rand(int i) {
-		return rand.nextInt(i);
+	public int getScoreMultiplier() {
+		return scoreMultiplier;
 	}
+
 }

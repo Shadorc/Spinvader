@@ -3,7 +3,7 @@ package me.shadorc.spinvader.sprites;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.Main;
 
 public class ExplosionEffect extends Effect {
 
@@ -16,10 +16,10 @@ public class ExplosionEffect extends Effect {
 	}
 
 	@Override
-	public void update() {
+	public void update(double delta) {
 		this.elapsed = (float) (System.currentTimeMillis() - start);
 		if(elapsed >= duration) {
-			Frame.getGame().delEffect(this);
+			Main.getGame().delEffect(this);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package me.shadorc.spinvader.entity;
 
+import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
 
@@ -22,8 +23,8 @@ public class Bullet extends Entity {
 	public void move(double delta) {
 		y += (speed*delta)/30 * (dir == Direction.DOWN ? 1 : -1);
 
-		if(y <= 0 || y >= Frame.getHeight()) {
-			Frame.getGame().delEntity(this);
+		if(y <= 0 || y >= Main.getFrame().getHeight()) {
+			Main.getGame().delEntity(this);
 		}
 	}
 

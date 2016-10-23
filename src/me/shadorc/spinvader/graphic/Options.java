@@ -24,9 +24,11 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import me.shadorc.spinvader.Main;
+import me.shadorc.spinvader.Main.Mode;
 import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.graphic.Frame.Mode;
+import me.shadorc.spinvader.Utils;
 
 public class Options extends JPanel implements KeyListener, ItemListener, ChangeListener {
 
@@ -37,7 +39,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 	private JCheckBox antialias, fullscreen;
 	private JSlider musicVolSlider, soundVolSlider;
 
-	Options() {
+	public Options() {
 		super(new GridLayout(1, 2));
 
 		background = Sprite.get("menu_background.jpg");
@@ -81,7 +83,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		soundVolSlider.setForeground(Color.WHITE);
 
 		ArrayList <String> sizes = new ArrayList <String> ();
-		for(DisplayMode dm : Frame.getScreen().getDisplayModes()) {
+		for(DisplayMode dm : Utils.getScreen().getDisplayModes()) {
 			String size = dm.getWidth() + "x" + dm.getHeight();
 			if(!sizes.contains(size)) {
 				sizes.add(size);
@@ -134,7 +136,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			Frame.setPanel(Mode.MENU);
+			Main.setMode(Mode.MENU);
 		}
 	}
 
@@ -147,7 +149,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 	@Override
 	public void itemStateChanged(ItemEvent event) {
 		if(event.getSource() == fullscreen) {
-			Frame.setFullscreen(event.getStateChange() == ItemEvent.SELECTED);
+			Main.getFrame().setFullscreen(event.getStateChange() == ItemEvent.SELECTED);
 			Storage.save(Data.FULLSCREEN_ENABLE, fullscreen.isSelected());
 		}
 		else if(event.getSource() == antialias) {

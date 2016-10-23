@@ -1,9 +1,9 @@
 package me.shadorc.spinvader.entity;
 
+import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.graphic.Frame;
-import me.shadorc.spinvader.graphic.Game;
+import me.shadorc.spinvader.Utils;
 import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item extends Entity {
@@ -25,7 +25,7 @@ public class Item extends Entity {
 				break;
 
 			case FIREMODE:
-				this.fireMode = Frame.getGame().getSpaceship().getFireMode()+1;
+				this.fireMode = Main.getGame().getSpaceship().getFireMode()+1;
 				spriteName = "firemode_" + fireMode + ".png";
 				break;
 
@@ -39,18 +39,18 @@ public class Item extends Entity {
 	@Override
 	public void collidedWith(Entity en) {
 		if(en instanceof Spaceship) {
-			Frame.getGame().delEntity(this);
+			Main.getGame().delEntity(this);
 			switch (type) {
 				case EXPLOSIVE:
-					Frame.getGame().getSpaceship().activeBomb();
+					Main.getGame().getSpaceship().activeBomb();
 					break;
 
 				case FIREMODE:
-					Frame.getGame().getSpaceship().setFireMode(fireMode);
+					Main.getGame().getSpaceship().setFireMode(fireMode);
 					break;
 
 				case LIFE:
-					Frame.getGame().getSpaceship().heal(1);
+					Main.getGame().getSpaceship().heal(1);
 					Sound.play("life.wav", 0.20, Data.SOUND_VOLUME);
 					break;
 			}
@@ -61,22 +61,22 @@ public class Item extends Entity {
 	public void move(double delta) {
 		y += (float) ((speed * delta) / 30);
 
-		if(y >= Frame.getHeight()) {
-			Frame.getGame().delEntity(this);
+		if(y >= Main.getFrame().getHeight()) {
+			Main.getGame().delEntity(this);
 		}
 	}
 
 	public static void generate(float x, float y) {
-		switch (Game.rand(100)) {
+		switch (Utils.rand(100)) {
 			case 0:
-				Frame.getGame().addEntity(new Item(x, y, Bonus.LIFE));
+				Main.getGame().addEntity(new Item(x, y, Bonus.LIFE));
 				break;
 			case 1:
-				Frame.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
+				Main.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
 				break;
 			case 2:
-				if(Frame.getGame().getSpaceship().getFireMode() < 4)
-					Frame.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
+				if(Main.getGame().getSpaceship().getFireMode() < 4)
+					Main.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
 				break;
 		}
 	}

@@ -14,4 +14,4 @@ Thumbs.db
 .settings
 
 # Project Files
-scores.dat
+config.properties

@@ -20,7 +20,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import me.shadorc.spinvader.graphic.Frame.Mode;
+import me.shadorc.spinvader.Main;
+import me.shadorc.spinvader.Main.Mode;
 
 public class Menu extends JPanel implements ActionListener, KeyListener {
 
@@ -38,7 +39,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 	private double sleep = System.currentTimeMillis();
 
-	Menu() {
+	public Menu() {
 		super(new GridBagLayout());
 		this.addKeyListener(this);
 
@@ -100,7 +101,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		g2d.setFont(font);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString(title, Text.getCenterWidth(g2d, title), Frame.getHeight()/5);
+		g2d.drawString(title, Text.getCenterWidth(g2d, title), Main.getFrame().getHeight()/5);
 	}
 
 	@Override
@@ -108,9 +109,9 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		JButton bu = (JButton) event.getSource();
 
 		if(bu == start) {
-			Frame.setPanel(Mode.GAME);
+			Main.setMode(Mode.GAME);
 		} else if(bu == options) {
-			Frame.setPanel(Mode.OPTIONS);
+			Main.setMode(Mode.OPTIONS);
 		} else if(bu == quit) {
 			System.exit(0);
 		}

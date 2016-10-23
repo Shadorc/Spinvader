@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 
+import me.shadorc.spinvader.Utils;
+
 public class Sprite {
 
 	public static ImageIcon generateSprite() {
@@ -21,8 +23,8 @@ public class Sprite {
 
 		int width = 50;
 		int height = 40;
-		int column = Game.rand(7);
-		int row = Game.rand(16);
+		int column = Utils.rand(7);
+		int row = Utils.rand(16);
 
 		bu_img = bu_img.getSubimage((column*width + 15*column), (row*height + 10*row), 55, 40);
 

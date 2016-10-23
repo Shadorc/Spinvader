@@ -1,5 +1,6 @@
 package me.shadorc.spinvader.entity;
 
+import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.graphic.Frame;
@@ -40,7 +41,7 @@ public class Spaceship extends Entity {
 		else if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.ENEMY) {
 				this.takeDamage(1);
-				Frame.getGame().delEntity(en);
+				Main.getGame().delEntity(en);
 			}
 		}
 	}
@@ -50,22 +51,22 @@ public class Spaceship extends Entity {
 		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
 			switch(fireMode) {
 				case 1:
-					Frame.getGame().addEntity(new Bullet(x + img.getIconWidth()/2, y, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x + img.getIconWidth()/2, y, bulletSpeed, Direction.UP, Type.SPACESHIP));
 					break;
 				case 2:
-					Frame.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
-					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
 					break;
 				case 3:
-					Frame.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
-					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth()/2, y, bulletSpeed, Direction.UP, Type.SPACESHIP));
-					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth()/2, y, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
 					break;
 				case 4:
-					Frame.getGame().addEntity(new Bullet(x, y+img.getIconHeight(), bulletSpeed, Direction.UP, Type.SPACESHIP));
-					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth()/3, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
-					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth()-(img.getIconWidth()/3), y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
-					Frame.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight(), bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x, y+img.getIconHeight(), bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth()/3, y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth()-(img.getIconWidth()/3), y+img.getIconHeight()/2, bulletSpeed, Direction.UP, Type.SPACESHIP));
+					Main.getGame().addEntity(new Bullet(x+img.getIconWidth(), y+img.getIconHeight(), bulletSpeed, Direction.UP, Type.SPACESHIP));
 					break;
 			}
 
@@ -76,7 +77,7 @@ public class Spaceship extends Entity {
 
 	@Override
 	public void die() {
-		Frame.getGame().gameOver();
+		Main.getGame().gameOver();
 	}
 
 	public void moveLeft(double delta) {
@@ -86,7 +87,7 @@ public class Spaceship extends Entity {
 	}
 
 	public void moveRight(double delta) {
-		if(x <= Frame.getWidth() - img.getIconWidth()) {
+		if(x <= Main.getFrame().getWidth() - img.getIconWidth()) {
 			x += (speedX * delta) / 30;
 		}
 	}
@@ -98,7 +99,7 @@ public class Spaceship extends Entity {
 	}
 
 	public void moveBackward(double delta) {
-		if(y <= Frame.getHeight() - img.getIconHeight()) {
+		if(y <= Main.getFrame().getHeight() - img.getIconHeight()) {
 			y += (speedY * delta) / 30;
 		}
 	}

@@ -2,13 +2,13 @@ package me.shadorc.spinvader.sprites;
 
 import java.awt.Graphics2D;
 
-import me.shadorc.spinvader.graphic.Frame;
+import me.shadorc.spinvader.Main;
 
 public class Effect {
 
 	protected float x, y;
 	protected float duration;
-	protected double start;
+	protected long start;
 
 	public Effect(float x, float y, float duration) {
 		this.x = x;
@@ -17,9 +17,9 @@ public class Effect {
 		this.start = System.currentTimeMillis();
 	}
 
-	public void update() {
+	public void update(double delta) {
 		if(System.currentTimeMillis() - start >= duration) {
-			Frame.getGame().delEffect(this);
+			Main.getGame().delEffect(this);
 		}
 	}
 
@@ -32,5 +32,4 @@ public class Effect {
 	public int getY() {
 		return (int) y;
 	}
-
 }

@@ -5,10 +5,12 @@ import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.io.IOException;
 
+import me.shadorc.spinvader.Main;
+
 public class Text {
 
 	public static int getCenterWidth(Graphics g, String text) {
-		return (int) (Frame.getWidth()-Text.getWidth(g, text))/2;
+		return (int) (Main.getFrame().getWidth()-Text.getWidth(g, text))/2;
 	}
 
 	public static int getWidth(Graphics g, String text) {

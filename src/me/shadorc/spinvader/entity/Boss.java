@@ -1,9 +1,10 @@
 package me.shadorc.spinvader.entity;
 
+import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
+import me.shadorc.spinvader.Utils;
 import me.shadorc.spinvader.graphic.Frame;
-import me.shadorc.spinvader.graphic.Game;
 import me.shadorc.spinvader.graphic.Sprite;
 import me.shadorc.spinvader.sprites.AnimatedSprite;
 
@@ -31,8 +32,8 @@ public class Boss extends Entity {
 	public void move(double delta) {
 		x += (float) ((speed * delta) / 30) * (dir == Direction.RIGHT ? 1 : -1);
 
-		if(dir == Direction.RIGHT && x >= Frame.getWidth() - img.getIconWidth()) {
-			x = (float) (Frame.getWidth() - img.getIconWidth());
+		if(dir == Direction.RIGHT && x >= Main.getFrame().getWidth() - img.getIconWidth()) {
+			x = (float) (Main.getFrame().getWidth() - img.getIconWidth());
 			dir = Direction.LEFT;
 
 		} else if(dir == Direction.LEFT && x <= 0) {
@@ -44,8 +45,8 @@ public class Boss extends Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
-			Frame.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
-			Frame.getGame().addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
 
 			lastShoot = System.currentTimeMillis();
 			reloadTime = this.generateShootTime();
@@ -57,7 +58,7 @@ public class Boss extends Entity {
 		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
 				this.takeDamage(1);
-				Frame.getGame().delEntity(en);
+				Main.getGame().delEntity(en);
 			}
 		}
 	}
@@ -65,13 +66,13 @@ public class Boss extends Entity {
 	@Override
 	public void die() {
 		Sound.play("AlienDestroyed.wav", 0.10, Data.SOUND_VOLUME);
-		Frame.getGame().addEffect(new AnimatedSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100));
-		Frame.getGame().delEntity(this);
-		Frame.getGame().incScore(300);
+		Main.getGame().addEffect(new AnimatedSprite(x, y, Sprite.get("explosion.png", img.getIconWidth(), img.getIconHeight()), 100));
+		Main.getGame().delEntity(this);
+		Main.getGame().incScore(300);
 		Item.generate(x, y);
 	}
 
 	private int generateShootTime() {
-		return Game.rand(1000)+500;
+		return Utils.rand(1000)+500;
 	}
 }
