@@ -8,7 +8,7 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class Bullet extends Entity {
 
-	private static ImageIcon SPRITE = Sprite.get("bullet.png", 5, 22);
+	private final static ImageIcon SPRITE = Sprite.get("bullet.png", 5, 22);
 
 	private float speed;
 

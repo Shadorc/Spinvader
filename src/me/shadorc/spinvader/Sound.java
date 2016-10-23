@@ -44,7 +44,12 @@ public class Sound {
 	}
 
 	public static void play(String name, double gain, Data volumeType) {
-		new Sound(name, gain, volumeType).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				new Sound(name, gain, volumeType).start();
+			}
+		}).start();
 	}
 
 	public void start() {

@@ -61,10 +61,10 @@ public class Frame extends JFrame{
 	}
 
 	public static float getScaleX() {
-		return (float) (Utils.getScreen().getDisplayMode().getWidth()/NORMAL_WIDTH);
+		return (float) (Utils.getDisplayMode().getWidth()/NORMAL_WIDTH);
 	}
 
 	public static float getScaleY() {
-		return (float) (Utils.getScreen().getDisplayMode().getHeight()/NORMAL_HEIGHT);
+		return (float) (Utils.getDisplayMode().getHeight()/NORMAL_HEIGHT);
 	}
 }

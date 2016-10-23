@@ -35,7 +35,7 @@ public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static int FPS_CAP = 60;
+	private static int FPS_CAP = 600;
 
 	private boolean isRunning, isGameOver, isNewRecord;
 	private boolean showHitbox, showDebug;
@@ -304,19 +304,19 @@ public class Game extends JPanel implements Runnable {
 		return false;
 	}
 
-	public synchronized void addEntity(Entity en) {
+	public void addEntity(Entity en) {
 		entities.add(en);
 	}
 
-	public synchronized void delEntity(Entity en) {
+	public void delEntity(Entity en) {
 		entities.remove(en);
 	}
 
-	public synchronized void addEffect(Effect effect) {
+	public void addEffect(Effect effect) {
 		effects.add(effect);
 	}
 
-	public synchronized void delEffect(Effect effect) {
+	public void delEffect(Effect effect) {
 		effects.remove(effect);
 	}
 

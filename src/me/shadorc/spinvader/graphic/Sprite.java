@@ -1,5 +1,6 @@
 package me.shadorc.spinvader.graphic;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -32,7 +33,14 @@ public class Sprite {
 	}
 
 	public static ImageIcon resize(ImageIcon img, int width, int height) {
-		return new ImageIcon(img.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+		BufferedImage resizedImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = resizedImg.createGraphics();
+
+		g2d.setComposite(AlphaComposite.Src);
+		g2d.drawImage(img.getImage(), 0, 0, width, height, null); 
+		g2d.dispose();
+
+		return new ImageIcon(resizedImg);
 	}
 
 	public static ImageIcon get(String name) {
@@ -42,6 +50,6 @@ public class Sprite {
 	public static ImageIcon get(String name, int width, int height) {
 		width *= Frame.getScaleX();
 		height *= Frame.getScaleY();
-		return new ImageIcon(Sprite.get(name).getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
+		return Sprite.resize(Sprite.get(name), width, height);
 	}
 }

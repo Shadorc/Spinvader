@@ -12,6 +12,8 @@ import me.shadorc.spinvader.sprites.AnimatedSprite;
 
 public class Enemy extends Entity {
 
+	private ImageIcon explosionSprite;
+
 	private float speedX, speedY;
 
 	private float bulletSpeed, reloadTime;
@@ -24,6 +26,8 @@ public class Enemy extends Entity {
 
 	public Enemy(float x, float y, ImageIcon img) {
 		super(x, y, Main.getGame().getLevel(), img);
+
+		explosionSprite = Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY()));
 
 		toReach = (int) (y+400*Frame.getScaleY());
 		speedX = 2 * Frame.getScaleX();
@@ -41,7 +45,7 @@ public class Enemy extends Entity {
 	public void move(double delta) {
 		switch(dir) {
 			case DOWN:
-				y += (float) ((speedY * delta) / 30);
+				y += (float) ((speedY * delta)/30);
 
 				if(toReach <= y) {
 					y = toReach;
@@ -82,8 +86,8 @@ public class Enemy extends Entity {
 
 	@Override
 	public void shoot() {
-		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
-			Main.getGame().addEntity(new Bullet((x + img.getIconWidth()/2), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
+		if(System.currentTimeMillis() - lastShoot >= reloadTime) {
+			Main.getGame().addEntity(new Bullet(x+img.getIconWidth()/2, y+img.getIconHeight(), bulletSpeed, Direction.DOWN, Type.ENEMY));
 			lastShoot = System.currentTimeMillis();
 			reloadTime = this.generateShootTime();
 		}
@@ -105,7 +109,7 @@ public class Enemy extends Entity {
 	@Override
 	public void die() {
 		Sound.play("AlienDestroyed.wav", 0.10, Data.SOUND_VOLUME);
-		Main.getGame().addEffect(new AnimatedSprite(x, y, Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY())), 100));
+		Main.getGame().addEffect(new AnimatedSprite(x, y, explosionSprite, 100));
 		Main.getGame().delEntity(this);
 		Main.getGame().incScore(35);
 		Item.generate(x, y);
