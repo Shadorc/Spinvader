@@ -151,8 +151,10 @@ public class Game extends JPanel implements Runnable {
 		}
 
 		//Life bar
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect((int) (spaceship.getHitbox().getX()-1), (int) (spaceship.getHitbox().getMaxY()-1), (int) (spaceship.getLife()*spaceship.getHitbox().getWidth()/spaceship.getMaximumLife()+2), (int) (20*Frame.getScaleY())+2);
 		g2d.setColor(Color.GREEN);
-		g2d.fillRect(0, (int) ((Main.getFrame().getHeight()*(spaceship.getMaximumLife()-spaceship.getLife()))/spaceship.getMaximumLife()), (int) (30*Frame.getScaleY()), Main.getFrame().getHeight());
+		g2d.fillRect((int) spaceship.getHitbox().getX(), (int) (spaceship.getHitbox().getMaxY()), (int) (spaceship.getLife()*spaceship.getHitbox().getWidth()/spaceship.getMaximumLife()), (int) (20*Frame.getScaleY()));
 
 		String sc = "Score : " + score;
 		g2d.setFont(Text.createFont("space_age.ttf", 50));
