@@ -22,11 +22,11 @@ public class Spaceship extends Entity {
 	private int fireMode;
 
 	public Spaceship(int x, int y) {
-		super(x, y, 50, SPRITE);
+		super(x, y, 5, SPRITE);
 
 		speedX = 25 * Frame.getScaleX();
 		speedY = 25 * Frame.getScaleY();
-		lifeMax = 5;
+		lifeMax = this.getLife();
 
 		bulletSpeed = (int) (50 * Frame.getScaleY());
 		reloadTime = 200;

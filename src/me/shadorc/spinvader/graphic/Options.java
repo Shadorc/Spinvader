@@ -1,28 +1,36 @@
 package me.shadorc.spinvader.graphic;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.DisplayMode;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.SpinnerListModel;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Main.Mode;
@@ -30,7 +38,7 @@ import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.Utils;
 
-public class Options extends JPanel implements KeyListener, ItemListener, ChangeListener {
+public class Options extends JPanel implements KeyListener, ItemListener, ChangeListener, DocumentListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -38,15 +46,21 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 
 	private JCheckBox antialias, fullscreen;
 	private JSlider musicVolSlider, soundVolSlider;
+	private JSpinner resSpinner;
+	private JButton backButton, applyButton;
 
 	public Options() {
-		super(new GridLayout(1, 2));
+		super(new BorderLayout());
 
 		background = Sprite.get("menu_background.jpg");
 
 		Font font = Text.createFont("space_invaders.ttf", 30);
 
+		JPanel centralPanel = new JPanel(new GridLayout(1, 2));
+		centralPanel.setOpaque(false);
+
 		antialias = new JCheckBox("Anti-aliasing", true);
+		antialias.setName(Data.ANTIALIASING_ENABLE.toString());
 		antialias.setSelected(Storage.isEnable(Data.ANTIALIASING_ENABLE));
 		antialias.setFont(font);
 		antialias.addItemListener(this);
@@ -55,6 +69,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		antialias.setFocusable(false);
 
 		fullscreen = new JCheckBox("FullScreen", true);
+		fullscreen.setName(Data.FULLSCREEN_ENABLE.toString());
 		fullscreen.setSelected(Storage.isEnable(Data.FULLSCREEN_ENABLE));
 		fullscreen.setFont(font);
 		fullscreen.addItemListener(this);
@@ -63,6 +78,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		fullscreen.setFocusable(false);
 
 		musicVolSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.MUSIC_VOLUME)));
+		musicVolSlider.setName(Data.MUSIC_VOLUME.toString());
 		musicVolSlider.addChangeListener(this);
 		musicVolSlider.setFocusable(false);
 		musicVolSlider.setOpaque(false);
@@ -73,6 +89,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		musicVolSlider.setForeground(Color.WHITE);
 
 		soundVolSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.SOUND_VOLUME)));
+		soundVolSlider.setName(Data.SOUND_VOLUME.toString());
 		soundVolSlider.addChangeListener(this);
 		soundVolSlider.setFocusable(false);
 		soundVolSlider.setOpaque(false);
@@ -82,18 +99,16 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		soundVolSlider.setPaintLabels(true);
 		soundVolSlider.setForeground(Color.WHITE);
 
-		ArrayList <String> sizes = new ArrayList <String> ();
-		for(DisplayMode dm : Utils.getScreen().getDisplayModes()) {
-			String size = dm.getWidth() + "x" + dm.getHeight();
-			if(!sizes.contains(size)) {
-				sizes.add(size);
-			}
-		}
-
-		JComboBox <String> resolution = new JComboBox <String> (sizes.toArray(new String[sizes.size()]));
-		resolution.setBorder(BorderFactory.createEmptyBorder(75, 0, 75, 0));
-		resolution.setOpaque(false);
-		resolution.setFocusable(false);
+		SpinnerListModel resModel = new SpinnerListModel(Utils.getResolutions().keySet().toArray());
+		resSpinner = new JSpinner(resModel);
+		resSpinner.setValue(Storage.getData(Data.RESOLUTION));
+		resSpinner.setName(Data.RESOLUTION.toString());
+		resSpinner.setOpaque(false);
+		resSpinner.setFocusable(false);
+		JFormattedTextField resTextField = ((DefaultEditor) resSpinner.getEditor()).getTextField();
+		resTextField.getDocument().addDocumentListener(this);
+		resTextField.setEditable(false);
+		resTextField.setFocusable(false);
 
 		Border lineBorder = BorderFactory.createLineBorder(Color.BLACK, 4, true);
 		Border margeBorder = BorderFactory.createEmptyBorder(75, 20, 75, 20);
@@ -108,8 +123,8 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		videoOptionsPanel.setBorder(videoCompoundBorder);
 		videoOptionsPanel.add(antialias);
 		videoOptionsPanel.add(fullscreen);
-		videoOptionsPanel.add(resolution);
-		this.add(videoOptionsPanel);
+		videoOptionsPanel.add(resSpinner);
+		centralPanel.add(videoOptionsPanel);
 
 		CompoundBorder audioCompoundBorder = BorderFactory.createCompoundBorder(
 				margeBorder, 
@@ -120,7 +135,31 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		audioOptionsPanel.setBorder(audioCompoundBorder);
 		audioOptionsPanel.add(musicVolSlider);
 		audioOptionsPanel.add(soundVolSlider);
-		this.add(audioOptionsPanel);
+		centralPanel.add(audioOptionsPanel);
+
+		this.add(centralPanel, BorderLayout.CENTER);
+
+		JPanel buttonsPanel = new JPanel(new BorderLayout());
+		buttonsPanel.setOpaque(false);
+
+		backButton = new JButton("Back");
+		backButton.setPreferredSize(new Dimension(200, 50));
+		backButton.setOpaque(false);
+		backButton.setFocusable(false);
+		backButton.addActionListener(this);
+		backButton.setBackground(Color.WHITE);
+
+		applyButton = new JButton("Apply");
+		applyButton.setPreferredSize(new Dimension(200, 50));
+		applyButton.setOpaque(false);
+		applyButton.setFocusable(false);
+		applyButton.addActionListener(this);
+		applyButton.setBackground(Color.WHITE);
+
+		buttonsPanel.add(backButton, BorderLayout.WEST);
+		buttonsPanel.add(applyButton, BorderLayout.EAST);
+
+		this.add(buttonsPanel, BorderLayout.PAGE_END);
 
 		this.addKeyListener(this);
 	}
@@ -148,22 +187,38 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 
 	@Override
 	public void itemStateChanged(ItemEvent event) {
-		if(event.getSource() == fullscreen) {
+		JCheckBox source = (JCheckBox) event.getSource();
+		if(source == fullscreen) {
 			Main.getFrame().setFullscreen(event.getStateChange() == ItemEvent.SELECTED);
-			Storage.save(Data.FULLSCREEN_ENABLE, fullscreen.isSelected());
 		}
-		else if(event.getSource() == antialias) {
-			Storage.save(Data.ANTIALIASING_ENABLE, antialias.isSelected());
-		}
+		Storage.save(source.getName(), source.isSelected());
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent event) {
-		if(event.getSource() == musicVolSlider) {
-			Storage.save(Data.MUSIC_VOLUME, ((JSlider) event.getSource()).getValue());
+		JSlider source = (JSlider) event.getSource();
+		Storage.save(source.getName(), source.getValue());
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent event) { }
+
+	@Override
+	public void insertUpdate(DocumentEvent event) {
+		Storage.save(resSpinner.getName(), resSpinner.getValue());
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent event) { }
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		JButton source = (JButton) event.getSource();
+		if(source == backButton) {
+			Main.setMode(Mode.MENU);
+		} else if(source == applyButton) {
+			Utils.getScreen().setDisplayMode(Utils.getResolutions().get(resSpinner.getValue()));
 		}
-		else if(event.getSource() == soundVolSlider) {
-			Storage.save(Data.SOUND_VOLUME, ((JSlider) event.getSource()).getValue());
-		}
+
 	}
 }

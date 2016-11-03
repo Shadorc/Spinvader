@@ -18,6 +18,7 @@ public class Storage {
 	public enum Data {
 		ANTIALIASING_ENABLE,
 		FULLSCREEN_ENABLE,
+		RESOLUTION,
 		MUSIC_VOLUME,
 		SOUND_VOLUME,
 		SCORES;
@@ -31,7 +32,7 @@ public class Storage {
 		if(Storage.getData(Data.SOUND_VOLUME) == null) 			Storage.save(Data.SOUND_VOLUME, 50);
 	}
 
-	public static void save(Data data, Object value) {
+	public static void save(Object data, Object value) {
 		OutputStream output = null;
 
 		try {

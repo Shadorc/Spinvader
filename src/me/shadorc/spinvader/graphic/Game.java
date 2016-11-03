@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -67,7 +68,7 @@ public class Game extends JPanel implements Runnable {
 		this.isGameOver = false;
 
 		this.showHitbox = false;
-		this.showDebug = false;
+		this.showDebug = true;
 
 		this.entities = new ArrayList <Entity> ();
 		this.entitiesBuffer = new ArrayList <Entity> ();
@@ -109,6 +110,10 @@ public class Game extends JPanel implements Runnable {
 		while(isRunning) {
 			double delta = (System.nanoTime() - loopTime)/Math.pow(10, 6); //Converto to ms
 			loopTime = System.nanoTime();
+
+			if(delta > 20) {
+				System.err.println("[" + new Date() + "] This loop took a long time (" + delta + "ms) to be executed...");
+			}
 
 			fps = (int) Math.round(1000d/delta);
 			entitiesBuffer = new ArrayList <Entity> (entities);

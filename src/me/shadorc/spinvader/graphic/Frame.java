@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import me.shadorc.spinvader.Sound;
+import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.Storage.Data;
 import me.shadorc.spinvader.Utils;
 
@@ -54,6 +55,7 @@ public class Frame extends JFrame{
 		this.setUndecorated(activate);
 		if(Utils.getScreen().isFullScreenSupported()) {
 			Utils.getScreen().setFullScreenWindow(activate ? this : null);
+			if(activate) Utils.getScreen().setDisplayMode(Utils.getResolutions().get(Storage.getData(Data.RESOLUTION)));
 		} else {
 			JOptionPane.showMessageDialog(null, "Le mode plein ecran n'est pas disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
