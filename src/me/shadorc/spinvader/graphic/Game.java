@@ -275,7 +275,6 @@ public class Game extends JPanel implements Runnable {
 			for(Entity en1 : entitiesBuffer) {
 				if(!en.equals(en1) && en.getHitbox().intersects(en1.getHitbox())) {
 					en.collidedWith(en1);
-					en1.collidedWith(en);
 				}
 			}
 		}
@@ -407,7 +406,7 @@ public class Game extends JPanel implements Runnable {
 		for(Entity en : entitiesBuffer) {
 			if(en instanceof Enemy && explosionZone.intersects(en.getHitbox())) {
 				double distance = Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2));
-				((Enemy) en).takeDamage((float) distance/200);
+				en.takeDamage((float) distance/200f);
 			}
 		}
 
