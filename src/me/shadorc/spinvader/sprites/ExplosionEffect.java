@@ -10,7 +10,7 @@ public class ExplosionEffect extends Effect {
 	private float elapsed;
 	private float maxRadius;
 
-	public ExplosionEffect(float x, float y, float duration, float maxRadius) {
+	public ExplosionEffect(float x, float y, int duration, float maxRadius) {
 		super(x, y, duration);
 		this.maxRadius = maxRadius;
 	}

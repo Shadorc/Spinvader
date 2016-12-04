@@ -7,10 +7,10 @@ import me.shadorc.spinvader.Main;
 public class Effect {
 
 	protected float x, y;
-	protected float duration;
+	protected int duration;
 	protected long start;
 
-	public Effect(float x, float y, float duration) {
+	public Effect(float x, float y, int duration) {
 		this.x = x;
 		this.y = y;
 		this.duration = duration;

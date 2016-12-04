@@ -9,7 +9,8 @@ import me.shadorc.spinvader.graphic.Sprite;
 
 public class Item extends Entity {
 
-	private float speed;
+	private float accelY;
+	private float speedX, speedY;
 	private int fireMode;
 	private Bonus type;
 
@@ -17,17 +18,26 @@ public class Item extends Entity {
 		super(x, y, 0, null);
 
 		this.type = type;
-		this.speed = 5 * Frame.getScaleY();
+		this.accelY = 0;
+		this.speedX = 0;
+		this.speedY = 0.3f * Frame.getScaleY();
 
 		String spriteName = null;
 		switch (type) {
-			case EXPLOSIVE:
-				spriteName = "explosion.png";
-				break;
-
 			case FIREMODE:
 				this.fireMode = Main.getGame().getSpaceship().getFireMode()+1;
 				spriteName = "firemode_" + fireMode + ".png";
+				break;
+
+			case COIN:
+				this.speedY = -this.speedY;
+				this.speedX = (Utils.randFloat(0.3f)-0.15f)*Frame.getScaleX();
+				this.accelY = 0.002f;
+				spriteName = "coin.png";
+				break;
+
+			case EXPLOSIVE:
+				spriteName = "explosion.png";
 				break;
 
 			case LIFE:
@@ -54,21 +64,28 @@ public class Item extends Entity {
 					Main.getGame().getSpaceship().heal(1);
 					Sound.play("life.wav", 0.20, Data.SOUND_VOLUME);
 					break;
+
+				case COIN:
+					Main.getGame().incMoney(1);
+					break;
 			}
 		}
 	}
 
 	@Override
 	public void move(double delta) {
-		y += (float) ((speed*delta)/30);
+		this.speedY += this.accelY*delta;
+		this.x += this.speedX*delta;
+		this.y += this.speedY*delta;
 
-		if(y >= Main.getFrame().getHeight()) {
+		if(this.y >= Main.getFrame().getHeight()) {
 			Main.getGame().delEntity(this);
 		}
 	}
 
 	public static void generate(float x, float y) {
-		switch (Utils.rand(200)) {
+		Main.getGame().addEntity(new Item(x, y, Bonus.COIN));
+		switch (Utils.randInt(200)) {
 			case 0: 
 			case 1:
 				Main.getGame().addEntity(new Item(x, y, Bonus.LIFE));

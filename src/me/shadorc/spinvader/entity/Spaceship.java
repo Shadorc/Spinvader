@@ -16,7 +16,7 @@ public class Spaceship extends Entity {
 	private float lifeMax;
 
 	private double lastShoot;
-	private int bulletSpeed, reloadTime;
+	private float bulletSpeed, reloadTime;
 
 	private boolean explosiveAmmo;
 	private int fireMode;
@@ -24,16 +24,16 @@ public class Spaceship extends Entity {
 	public Spaceship(int x, int y) {
 		super(x, y, 5, SPRITE);
 
-		speedX = 25 * Frame.getScaleX();
-		speedY = 25 * Frame.getScaleY();
-		lifeMax = this.getLife();
+		this.speedX = 1.5f * Frame.getScaleX();
+		this.speedY = 1.5f * Frame.getScaleY();
+		this.lifeMax = this.getLife();
 
-		bulletSpeed = (int) (50 * Frame.getScaleY());
-		reloadTime = 200;
-		lastShoot = 0;
+		this.bulletSpeed = 1.7f * Frame.getScaleY();
+		this.reloadTime = 100;
+		this.lastShoot = 0;
 
-		fireMode = 1;
-		explosiveAmmo = false;
+		this.fireMode = 1;
+		this.explosiveAmmo = true;
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class Spaceship extends Entity {
 			}
 
 			Sound.play("spaceship_shoot.wav", 0.10, Data.SOUND_VOLUME);
-			lastShoot = System.currentTimeMillis();
+			this.lastShoot = System.currentTimeMillis();
 		}
 	}
 
@@ -85,34 +85,34 @@ public class Spaceship extends Entity {
 	}
 
 	public void moveLeft(double delta) {
-		if(x >= 0) {
-			x -= (speedX*delta)/30;
+		if(this.x >= 0) {
+			this.x -= this.speedX*delta;
 		}
 	}
 
 	public void moveRight(double delta) {
-		if(x <= Main.getFrame().getWidth() - img.getIconWidth()) {
-			x += (speedX*delta)/30;
+		if(this.x <= (Main.getFrame().getWidth() - this.img.getIconWidth())) {
+			this.x += this.speedX*delta;
 		}
 	}
 
 	public void moveForward(double delta) {
-		if(y >= 0) {
-			y -= (speedY*delta)/30;
+		if(this.y >= 0) {
+			this.y -= this.speedY*delta;
 		}
 	}
 
 	public void moveBackward(double delta) {
-		if(y <= Main.getFrame().getHeight() - img.getIconHeight()) {
-			y += (speedY*delta)/30;
+		if(this.y <= (Main.getFrame().getHeight() - this.img.getIconHeight())) {
+			this.y += this.speedY*delta;
 		}
 	}
 
 	public void heal(int i) {
-		if(life < lifeMax) {
-			life += i;
+		if(this.life < this.lifeMax) {
+			this.life += i;
 		}
-		life = Math.min(lifeMax,  lifeMax);
+		this.life = Math.min(this.lifeMax, this.lifeMax);
 	}
 
 	public void setFireMode(int fireMode) {
@@ -120,18 +120,18 @@ public class Spaceship extends Entity {
 	}
 
 	public void activeBomb() {
-		explosiveAmmo = true;
+		this.explosiveAmmo = true;
 	}
 
 	public int getFireMode() {
-		return fireMode;
+		return this.fireMode;
 	}
 
 	public float getMaximumLife() {
-		return lifeMax;
+		return this.lifeMax;
 	}
 
 	public boolean hasExplosiveAmmo() {
-		return explosiveAmmo;
+		return this.explosiveAmmo;
 	}
 }

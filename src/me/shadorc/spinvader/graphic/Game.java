@@ -36,7 +36,7 @@ public class Game extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static int FPS_CAP = 600;
+	private static int FPS_CAP = 60;
 
 	private boolean isRunning, isGameOver, isNewRecord;
 	private boolean showHitbox, showDebug;
@@ -56,6 +56,7 @@ public class Game extends JPanel implements Runnable {
 
 	private int level;
 	private int score;
+	private int money;
 	private int fps;
 
 	private Thread generation;
@@ -76,7 +77,7 @@ public class Game extends JPanel implements Runnable {
 		this.effects = new ArrayList <Effect> ();
 		this.effectsBuffer = new ArrayList <Effect> ();
 
-		this.spaceship = new Spaceship(Main.getFrame().getWidth()/2, Main.getFrame().getHeight()/2);
+		this.spaceship = new Spaceship(Main.getFrame().getWidth()/2, Main.getFrame().getHeight()*3/4);
 		this.addEntity(spaceship);
 
 		this.listener = new KListener();
@@ -89,6 +90,7 @@ public class Game extends JPanel implements Runnable {
 
 		this.level = 0;
 		this.score = 0;
+		this.money = 0;
 		this.fps = 0;
 
 		this.generation = new Thread();
@@ -116,6 +118,7 @@ public class Game extends JPanel implements Runnable {
 			}
 
 			fps = (int) Math.round(1000d/delta);
+			//FIXME: Enemies can sometimes be killed twice because of entitiesBuffer not being updated ofen
 			entitiesBuffer = new ArrayList <Entity> (entities);
 			effectsBuffer = new ArrayList <Effect> (effects);
 
@@ -161,10 +164,14 @@ public class Game extends JPanel implements Runnable {
 		g2d.setColor(Color.GREEN);
 		g2d.fillRect((int) spaceship.getHitbox().getX(), (int) (spaceship.getHitbox().getMaxY()), (int) (spaceship.getLife()*spaceship.getHitbox().getWidth()/spaceship.getMaximumLife()), (int) (20*Frame.getScaleY()));
 
-		String sc = "Score : " + score;
 		g2d.setFont(Text.createFont("space_age.ttf", 50));
 		g2d.setColor(Color.RED);
+
+		String sc = "Score : " + score;
 		g2d.drawString(sc, Main.getFrame().getWidth()-Text.getWidth(g2d, sc)-10, Text.getHeight(g2d, sc));
+
+		String mon = "Money : " + money;
+		g2d.drawString(mon, Main.getFrame().getWidth()-Text.getWidth(g2d, mon)-10, Text.getHeight(g2d, mon) * 2);
 
 		if(showDebug) {
 			int mb = 1024*1024;
@@ -252,7 +259,7 @@ public class Game extends JPanel implements Runnable {
 			generation = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					Game.this.generate(36);
+					Game.this.genEnemies(36);
 				}
 			});
 			generation.start();
@@ -332,6 +339,10 @@ public class Game extends JPanel implements Runnable {
 		this.textMultiplier.setText("X" + scoreMultiplier);
 	}
 
+	public void incMoney(int money) {
+		this.money += money;
+	}
+
 	public Spaceship getSpaceship() {
 		return spaceship;
 	}
@@ -348,14 +359,14 @@ public class Game extends JPanel implements Runnable {
 		}
 	}
 
-	private void generate(int enemies) {
+	private void genEnemies(int count) {
 		level++;	
 
 		if(level < 8) {
-			final int line = 3;					//Lines
-			final int column = enemies/line;	//Columns
-			final int blanck = 100;				//Space without enemies
-			final int space = 20;				//Space between enemies
+			final int line = 3;				//Lines
+			final int column = count/line;	//Columns
+			final int blanck = 100;			//Space without enemies
+			final int space = 20;			//Space between enemies
 
 			//Get the original sprite
 			ImageIcon enemySprite = Sprite.generateSprite(); 
@@ -390,17 +401,17 @@ public class Game extends JPanel implements Runnable {
 		}
 	}
 
-	public void explosion(float x, float y, float radius) {
-		Ellipse2D zone = new Ellipse2D.Double(x-radius/2, y-radius/2, radius, radius);
+	public void genExplosion(float x, float y, float radius) {
+		Ellipse2D explosionZone = new Ellipse2D.Double(x-radius/2, y-radius/2, radius, radius);
 
 		for(Entity en : entitiesBuffer) {
-			if(zone.intersects(en.getHitbox()) && en instanceof Enemy) {
+			if(en instanceof Enemy && explosionZone.intersects(en.getHitbox())) {
 				double distance = Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2));
 				((Enemy) en).takeDamage((float) distance/200);
 			}
 		}
 
-		Effect explosion = new AnimatedSprite(x-radius/2, y-radius/2, Sprite.get("explosion.png", (int) radius, (int) radius), 100);
+		Effect explosion = new AnimatedSprite((float) explosionZone.getX(), (float) explosionZone.getY(), Sprite.get("explosion.png", (int) radius, (int) radius), 100);
 		this.addEffect(explosion);
 	}
 

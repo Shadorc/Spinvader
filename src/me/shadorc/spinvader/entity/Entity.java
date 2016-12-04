@@ -16,7 +16,7 @@ public class Entity {
 	}
 
 	public enum Bonus {
-		LIFE, FIREMODE, EXPLOSIVE;
+		COIN, LIFE, FIREMODE, EXPLOSIVE;
 	}
 
 	protected ImageIcon img;

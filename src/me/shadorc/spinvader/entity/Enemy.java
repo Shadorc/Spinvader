@@ -27,15 +27,15 @@ public class Enemy extends Entity {
 	public Enemy(float x, float y, ImageIcon img) {
 		super(x, y, Main.getGame().getLevel(), img);
 
-		explosionSprite = Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY()));
+		this.explosionSprite = Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY()));
 
-		toReach = (int) (y+400*Frame.getScaleY());
-		speedX = 2 * Frame.getScaleX();
-		speedY = 2 * Frame.getScaleY();
+		this.toReach = (int) (y+400*Frame.getScaleY());
+		this.speedX = 0.07f * Frame.getScaleX();
+		this.speedY = 0.07f * Frame.getScaleY();
 
-		bulletSpeed = 15 * Frame.getScaleY();
-		reloadTime = this.generateShootTime();
-		lastShoot = System.currentTimeMillis();
+		this.bulletSpeed = 0.5f * Frame.getScaleY();
+		this.reloadTime = this.generateShootTime();
+		this.lastShoot = System.currentTimeMillis();
 
 		dir = Direction.DOWN;
 		nextDir = Direction.RIGHT;
@@ -45,9 +45,9 @@ public class Enemy extends Entity {
 	public void move(double delta) {
 		switch(dir) {
 			case DOWN:
-				y += (float) ((speedY * delta)/30);
+				y += speedY*delta;
 
-				if(toReach <= y) {
+				if(y >= toReach) {
 					y = toReach;
 					dir = nextDir;
 				}
@@ -58,7 +58,7 @@ public class Enemy extends Entity {
 				break;
 
 			case LEFT:
-				x -= (float) ((speedX * delta) / 30);
+				x -= speedX*delta;
 
 				if(x <= 0) {
 					x = 0;
@@ -69,7 +69,7 @@ public class Enemy extends Entity {
 				break;
 
 			case RIGHT:
-				x += (float) ((speedX * delta) / 30);
+				x += speedX*delta;
 
 				if(x >= Main.getFrame().getWidth() - img.getIconWidth()) {
 					x = (float) (Main.getFrame().getWidth() - img.getIconWidth());
@@ -100,7 +100,7 @@ public class Enemy extends Entity {
 				this.takeDamage(1);
 				Main.getGame().delEntity(en);
 				if(Main.getGame().getSpaceship().hasExplosiveAmmo()) {
-					Main.getGame().explosion(en.getX(), en.getY(), 250);
+					Main.getGame().genExplosion(en.getX(), en.getY(), 250);
 				}
 			}
 		}
@@ -116,7 +116,7 @@ public class Enemy extends Entity {
 	}
 
 	private int generateShootTime() {
-		return Utils.rand(5000)+5000;
+		return Utils.randInt(5000)+5000;
 	}
 
 	public void goDown() {

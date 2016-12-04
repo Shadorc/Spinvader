@@ -14,9 +14,9 @@ public class Boss extends Entity {
 
 	private static ImageIcon SPRITE = Sprite.get("boss.png", 335, 170);
 
-	private float speed;
+	private float speedX;
 
-	private float bulletSpeed, reloadTime;
+	private float bulletSpeedY, reloadTime;
 	private double lastShoot;
 
 	private Direction dir;
@@ -24,17 +24,17 @@ public class Boss extends Entity {
 	public Boss(float x, float y) {
 		super(x, y, 50, SPRITE);
 
-		this.bulletSpeed = 20 * Frame.getScaleY();
+		this.bulletSpeedY = 0.7f * Frame.getScaleY();
 		this.reloadTime = this.generateShootTime();
 		this.lastShoot = System.currentTimeMillis();
 
 		this.dir = Direction.RIGHT;
-		this.speed = 15 * Frame.getScaleX();
+		this.speedX = 0.5f * Frame.getScaleX();
 	}
 
 	@Override
 	public void move(double delta) {
-		x += (float) ((speed*delta)/30) * (dir == Direction.RIGHT ? 1 : -1);
+		x += speedX*delta * (dir == Direction.RIGHT ? 1 : -1);
 
 		if(dir == Direction.RIGHT && x >= Main.getFrame().getWidth() - img.getIconWidth()) {
 			x = (float) (Main.getFrame().getWidth() - img.getIconWidth());
@@ -49,8 +49,8 @@ public class Boss extends Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
-			Main.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
-			Main.getGame().addEntity(new Bullet((x + img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeed, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeedY, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((x + img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeedY, Direction.DOWN, Type.ENEMY));
 
 			lastShoot = System.currentTimeMillis();
 			reloadTime = this.generateShootTime();
@@ -77,6 +77,6 @@ public class Boss extends Entity {
 	}
 
 	private int generateShootTime() {
-		return Utils.rand(1000)+500;
+		return Utils.randInt(1000)+500;
 	}
 }

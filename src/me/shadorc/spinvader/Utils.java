@@ -8,10 +8,10 @@ import java.util.Random;
 
 public class Utils {
 
-	private static Random rand = new Random();
 	private static GraphicsDevice screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 	private static DisplayMode displayMode = screen.getDisplayMode();
 	private static HashMap <String, DisplayMode> resolutionMap = Utils.generateRes();
+	private static Random rand = new Random();
 
 	private static HashMap <String, DisplayMode> generateRes() {
 		HashMap <String, DisplayMode> resolutionMap = new HashMap <> ();
@@ -24,8 +24,16 @@ public class Utils {
 		return resolutionMap;
 	}
 
-	public static int rand(int i) {
+	public static int randInt(int i) {
 		return rand.nextInt(i);
+	}
+	
+	public static float randFloat(float i) {
+		return rand.nextFloat()*i;
+	}
+	
+	public static boolean randBool() {
+		return rand.nextBoolean();
 	}
 
 	public static GraphicsDevice getScreen() {

@@ -8,7 +8,7 @@ public class AnimatedSprite extends Effect {
 
 	private ImageIcon img;
 
-	public AnimatedSprite(float x, float y, ImageIcon img, float duration) {
+	public AnimatedSprite(float x, float y, ImageIcon img, int duration) {
 		super(x, y, duration);
 		this.img = img;
 	}

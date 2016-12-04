@@ -24,8 +24,8 @@ public class Sprite {
 
 		int width = 50;
 		int height = 40;
-		int column = Utils.rand(7);
-		int row = Utils.rand(16);
+		int column = Utils.randInt(7);
+		int row = Utils.randInt(16);
 
 		bu_img = bu_img.getSubimage((column*width + 15*column), (row*height + 10*row), 55, 40);
 

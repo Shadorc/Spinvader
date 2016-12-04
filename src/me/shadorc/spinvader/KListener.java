@@ -41,7 +41,5 @@ public class KListener implements KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent event) {
-
-	}
+	public void keyTyped(KeyEvent event) { }
 }

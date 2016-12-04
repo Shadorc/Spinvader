@@ -14,7 +14,7 @@ public class BumpingText extends Effect {
 	private float defaultSize, size;
 	private long elapsed;
 
-	public BumpingText(float x, float y, float duration, String text, Font font, Color color, float size) {
+	public BumpingText(float x, float y, int duration, String text, Font font, Color color, float size) {
 		super(x, y, duration);
 		this.text = text;
 		this.color = color;
