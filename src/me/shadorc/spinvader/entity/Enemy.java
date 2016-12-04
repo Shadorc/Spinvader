@@ -109,7 +109,7 @@ public class Enemy extends Entity {
 	@Override
 	public void die() {
 		Sound.play("AlienDestroyed.wav", 0.10, Data.SOUND_VOLUME);
-		Main.getGame().addEffect(new AnimatedSprite(x, y, explosionSprite, 100));
+		Main.getGame().addEffect(new AnimatedSprite(x, y, explosionSprite, 150));
 		Main.getGame().delEntity(this);
 		Main.getGame().incScore(35);
 		Item.generate(x, y);

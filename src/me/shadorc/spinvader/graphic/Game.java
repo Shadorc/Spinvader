@@ -118,6 +118,7 @@ public class Game extends JPanel implements Runnable {
 			}
 
 			fps = (int) Math.round(1000d/delta);
+
 			//FIXME: Enemies can sometimes be killed twice because of entitiesBuffer not being updated ofen
 			entitiesBuffer = new ArrayList <Entity> (entities);
 			effectsBuffer = new ArrayList <Effect> (effects);
@@ -401,16 +402,18 @@ public class Game extends JPanel implements Runnable {
 	}
 
 	public void genExplosion(float x, float y, float radius) {
-		Ellipse2D explosionZone = new Ellipse2D.Double(x-radius/2, y-radius/2, radius, radius);
+		Ellipse2D explZone = new Ellipse2D.Double(x-radius, y-radius, radius*2, radius*2);
+		final float explMaxDamage = 2;
 
 		for(Entity en : entitiesBuffer) {
-			if(en instanceof Enemy && explosionZone.intersects(en.getHitbox())) {
-				double distance = Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2));
-				en.takeDamage((float) distance/200f);
+			//FIXME : Ugly fix (getLife > 0)
+			if(en instanceof Enemy && en.getLife() > 0 && explZone.intersects(en.getHitbox())) {
+				float distance = (float) Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2));
+				en.takeDamage(explMaxDamage-2*distance/radius);
 			}
 		}
 
-		Effect explosion = new AnimatedSprite((float) explosionZone.getX(), (float) explosionZone.getY(), Sprite.get("explosion.png", (int) radius, (int) radius), 100);
+		Effect explosion = new AnimatedSprite((float) explZone.getX(), (float) explZone.getY(), Sprite.get("explosion.png", (int) explZone.getWidth(), (int) explZone.getHeight()), 150);
 		this.addEffect(explosion);
 	}
 
