@@ -27,7 +27,7 @@ public class Bullet extends Entity {
 	public void move(double delta) {
 		y += speedY*delta * (dir == Direction.DOWN ? 1 : -1);
 
-		if(y <= 0 || y >= Main.getFrame().getHeight()) {
+		if(y + this.getHitbox().getHeight() <= 0 || y >= Main.getFrame().getHeight()) {
 			Main.getGame().delEntity(this);
 		}
 	}

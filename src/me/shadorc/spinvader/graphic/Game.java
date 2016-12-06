@@ -119,7 +119,6 @@ public class Game extends JPanel implements Runnable {
 
 			fps = (int) Math.round(1000d/delta);
 
-			//FIXME: Enemies can sometimes be killed twice because of entitiesBuffer not being updated ofen
 			entitiesBuffer = new ArrayList <Entity> (entities);
 			effectsBuffer = new ArrayList <Effect> (effects);
 
@@ -403,11 +402,10 @@ public class Game extends JPanel implements Runnable {
 
 	public void genExplosion(float x, float y, float radius) {
 		Ellipse2D explZone = new Ellipse2D.Double(x-radius, y-radius, radius*2, radius*2);
-		final float explMaxDamage = 2;
+		final float explMaxDamage = 2.5f;
 
 		for(Entity en : entitiesBuffer) {
-			//FIXME : Ugly fix (getLife > 0)
-			if(en instanceof Enemy && en.getLife() > 0 && explZone.intersects(en.getHitbox())) {
+			if(en instanceof Enemy && explZone.intersects(en.getHitbox())) {
 				float distance = (float) Math.sqrt(Math.pow(x-en.getX(), 2)+Math.pow(y-en.getY(), 2));
 				en.takeDamage(explMaxDamage-2*distance/radius);
 			}

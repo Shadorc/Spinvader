@@ -29,11 +29,11 @@ public class Spaceship extends Entity {
 		this.lifeMax = this.getLife();
 
 		this.bulletSpeed = 1.7f * Frame.getScaleY();
-		this.reloadTime = 100;
+		this.reloadTime = 150;
 		this.lastShoot = 0;
 
 		this.fireMode = 1;
-		this.explosiveAmmo = true;
+		this.explosiveAmmo = false;
 	}
 
 	@Override

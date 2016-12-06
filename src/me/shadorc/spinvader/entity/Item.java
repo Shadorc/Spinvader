@@ -32,7 +32,7 @@ public class Item extends Entity {
 			case COIN:
 				this.speedY = -this.speedY;
 				this.speedX = (Utils.randFloat(0.3f)-0.15f)*Frame.getScaleX();
-				this.accelY = 0.002f;
+				this.accelY = 0.0015f;
 				spriteName = "coin.png";
 				break;
 

@@ -97,10 +97,11 @@ public class Enemy extends Entity {
 	public void collidedWith(Entity en) {
 		if(en instanceof Bullet) {
 			if(((Bullet) en).getType() == Type.SPACESHIP) {
-				this.takeDamage(1);
 				Main.getGame().delEntity(en);
 				if(Main.getGame().getSpaceship().hasExplosiveAmmo()) {
 					Main.getGame().genExplosion(en.getX(), en.getY(), 250);
+				} else {
+					this.takeDamage(1);
 				}
 			}
 		}
