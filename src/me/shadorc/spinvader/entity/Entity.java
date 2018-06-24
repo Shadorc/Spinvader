@@ -57,11 +57,15 @@ public class Entity {
 		}
 	}
 
-	public void collidedWith(Entity en) { }
+	public void collidedWith(Entity en) {
+	}
 
-	public void move(double delta) { }
+	public void move(double delta) {
+	}
 
-	public void shoot() { }
+	public void shoot() {
+	}
 
-	public void die() { }
+	public void die() {
+	}
 }

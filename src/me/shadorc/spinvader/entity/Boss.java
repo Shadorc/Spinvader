@@ -5,18 +5,19 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.Utils;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
 import me.shadorc.spinvader.sprites.AnimatedSprite;
+import me.shadorc.spinvader.utils.RandUtils;
 
 public class Boss extends Entity {
 
-	private static ImageIcon SPRITE = Sprite.get("boss.png", 335, 170);
+	private final static ImageIcon SPRITE = Sprite.get("boss.png", 335, 170);
 
-	private float speedX;
+	private final float speedX;
+	private final float bulletSpeedY;
 
-	private float bulletSpeedY, reloadTime;
+	private float reloadTime;
 	private double lastShoot;
 
 	private Direction dir;
@@ -25,7 +26,7 @@ public class Boss extends Entity {
 		super(x, y, 50, SPRITE);
 
 		this.bulletSpeedY = 0.7f * Frame.getScaleY();
-		this.reloadTime = this.generateShootTime();
+		this.reloadTime = RandUtils.randInt(500, 1500);
 		this.lastShoot = System.currentTimeMillis();
 
 		this.dir = Direction.RIGHT;
@@ -34,10 +35,10 @@ public class Boss extends Entity {
 
 	@Override
 	public void move(double delta) {
-		x += speedX*delta * (dir == Direction.RIGHT ? 1 : -1);
+		x += speedX * delta * (dir == Direction.RIGHT ? 1 : -1);
 
 		if(dir == Direction.RIGHT && x >= Main.getFrame().getWidth() - img.getIconWidth()) {
-			x = (float) (Main.getFrame().getWidth() - img.getIconWidth());
+			x = Main.getFrame().getWidth() - img.getIconWidth();
 			dir = Direction.LEFT;
 
 		} else if(dir == Direction.LEFT && x <= 0) {
@@ -49,21 +50,19 @@ public class Boss extends Entity {
 	@Override
 	public void shoot() {
 		if((System.currentTimeMillis() - lastShoot) >= reloadTime) {
-			Main.getGame().addEntity(new Bullet((x + img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeedY, Direction.DOWN, Type.ENEMY));
-			Main.getGame().addEntity(new Bullet((x + img.getIconWidth() - img.getIconWidth()/3), (y + img.getIconHeight()), bulletSpeedY, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((x + img.getIconWidth() / 3), (y + img.getIconHeight()), bulletSpeedY, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet((x + img.getIconWidth() - img.getIconWidth() / 3), (y + img.getIconHeight()), bulletSpeedY, Direction.DOWN, Type.ENEMY));
 
 			lastShoot = System.currentTimeMillis();
-			reloadTime = this.generateShootTime();
+			reloadTime = RandUtils.randInt(500, 1500);
 		}
 	}
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(en instanceof Bullet) {
-			if(((Bullet) en).getType() == Type.SPACESHIP) {
-				this.takeDamage(1);
-				Main.getGame().delEntity(en);
-			}
+		if(en instanceof Bullet && ((Bullet) en).getType() == Type.SPACESHIP) {
+			this.takeDamage(1);
+			Main.getGame().delEntity(en);
 		}
 	}
 
@@ -74,9 +73,5 @@ public class Boss extends Entity {
 		Main.getGame().delEntity(this);
 		Main.getGame().incScore(300);
 		Item.generate(x, y);
-	}
-
-	private int generateShootTime() {
-		return Utils.randInt(1000)+500;
 	}
 }

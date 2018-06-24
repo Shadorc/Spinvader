@@ -11,7 +11,8 @@ public class BumpingText extends Effect {
 	private String text;
 	private Font font;
 	private Color color;
-	private float defaultSize, size;
+	private final float defaultSize;
+	private float size;
 	private long elapsed;
 
 	public BumpingText(float x, float y, int duration, String text, Font font, Color color, float size) {
@@ -24,12 +25,12 @@ public class BumpingText extends Effect {
 
 	@Override
 	public void update(double delta) {
-		this.elapsed = System.currentTimeMillis()-start;
+		elapsed = System.currentTimeMillis() - start;
 		if(elapsed < duration) {
-			int alpha = (int) (255-elapsed*255/duration);
-			this.color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-			this.size -= delta/20;
-			this.font = this.font.deriveFont(size);
+			int alpha = (int) (255 - elapsed * 255 / duration);
+			color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+			size -= delta / 20;
+			font = font.deriveFont(size);
 		}
 	}
 
@@ -38,7 +39,7 @@ public class BumpingText extends Effect {
 		if(elapsed < duration) {
 			g2d.setFont(font);
 			g2d.setColor(color);
-			g2d.drawString(text, x-Text.getWidth(g2d, text)-10, y+Text.getHeight(g2d, text));
+			g2d.drawString(text, x - Text.getWidth(g2d, text) - 10, y + Text.getHeight(g2d, text));
 		}
 	}
 

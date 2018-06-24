@@ -1,45 +1,38 @@
 package me.shadorc.spinvader;
 
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class KListener implements KeyListener {
+public class KListener extends KeyAdapter {
 
-	private ArrayList <Integer> keysDown, keysPressed;
+	private final Map<Integer, Boolean> keysDown;
+	private final Map<Integer, Boolean> keysPressed;
 
 	public KListener() {
-		keysDown = new ArrayList <Integer> ();
-		keysPressed = new ArrayList <Integer> ();
+		super();
+		this.keysDown = new HashMap<>();
+		this.keysPressed = new HashMap<>();
 	}
 
 	public boolean isKeyDown(int key) {
-		return keysDown.contains(key);
+		return keysDown.getOrDefault(key, false);
 	}
 
 	public boolean wasKeyPressed(int key) {
-		if(keysPressed.contains(key)) {
-			keysPressed.remove(keysPressed.indexOf(key));
-			return true;
-		}
-		return false;
+		return keysPressed.remove(key) != null;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent event) {
-		int key = event.getKeyCode();
-		if(!keysDown.contains(key))		keysDown.add(key);
-		if(!keysPressed.contains(key))	keysPressed.add(key);
+		keysDown.putIfAbsent(event.getKeyCode(), true);
+		keysPressed.putIfAbsent(event.getKeyCode(), true);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent event) {
-		int key = event.getKeyCode();
-		if(keysDown.contains(key)) {
-			keysDown.remove(keysDown.indexOf(key));
-		}
+		keysDown.remove(event.getKeyCode());
 	}
 
-	@Override
-	public void keyTyped(KeyEvent event) { }
 }

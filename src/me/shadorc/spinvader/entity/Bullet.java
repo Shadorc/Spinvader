@@ -10,10 +10,10 @@ public class Bullet extends Entity {
 
 	private final static ImageIcon SPRITE = Sprite.get("bullet.png", 5, 22);
 
-	private float speedY;
+	private final float speedY;
 
-	private Direction dir;
-	private Type type;
+	private final Direction dir;
+	private final Type type;
 
 	public Bullet(float x, float y, float speed, Direction dir, Type type) {
 		super(x, y, 0, SPRITE);
@@ -25,7 +25,7 @@ public class Bullet extends Entity {
 
 	@Override
 	public void move(double delta) {
-		y += speedY*delta * (dir == Direction.DOWN ? 1 : -1);
+		y += speedY * delta * (dir == Direction.DOWN ? 1 : -1);
 
 		if(y + this.getHitbox().getHeight() <= 0 || y >= Main.getFrame().getHeight()) {
 			Main.getGame().delEntity(this);

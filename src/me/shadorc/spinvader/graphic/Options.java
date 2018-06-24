@@ -24,6 +24,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerListModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
@@ -36,18 +37,17 @@ import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Main.Mode;
 import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.Utils;
+import me.shadorc.spinvader.utils.DisplayUtils;
 
 public class Options extends JPanel implements KeyListener, ItemListener, ChangeListener, DocumentListener, ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private ImageIcon background;
+	private final ImageIcon background;
 
-	private JCheckBox antialias, fullscreen;
-	private JSlider musicVolSlider, soundVolSlider;
-	private JSpinner resSpinner;
-	private JButton backButton, applyButton;
+	private final JCheckBox fullscreen;
+	private final JSpinner resSpinner;
+	private final JButton backButton, applyButton;
 
 	public Options() {
 		super(new BorderLayout());
@@ -59,7 +59,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		JPanel centralPanel = new JPanel(new GridLayout(1, 2));
 		centralPanel.setOpaque(false);
 
-		antialias = new JCheckBox("Anti-aliasing", true);
+		JCheckBox antialias = new JCheckBox("Anti-aliasing", true);
 		antialias.setName(Data.ANTIALIASING_ENABLE.toString());
 		antialias.setSelected(Storage.isEnable(Data.ANTIALIASING_ENABLE));
 		antialias.setFont(font);
@@ -77,7 +77,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		fullscreen.setOpaque(false);
 		fullscreen.setFocusable(false);
 
-		musicVolSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.MUSIC_VOLUME)));
+		JSlider musicVolSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.MUSIC_VOLUME)));
 		musicVolSlider.setName(Data.MUSIC_VOLUME.toString());
 		musicVolSlider.addChangeListener(this);
 		musicVolSlider.setFocusable(false);
@@ -88,7 +88,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		musicVolSlider.setPaintLabels(true);
 		musicVolSlider.setForeground(Color.WHITE);
 
-		soundVolSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.SOUND_VOLUME)));
+		JSlider soundVolSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, Integer.parseInt(Storage.getData(Data.SOUND_VOLUME)));
 		soundVolSlider.setName(Data.SOUND_VOLUME.toString());
 		soundVolSlider.addChangeListener(this);
 		soundVolSlider.setFocusable(false);
@@ -99,7 +99,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		soundVolSlider.setPaintLabels(true);
 		soundVolSlider.setForeground(Color.WHITE);
 
-		SpinnerListModel resModel = new SpinnerListModel(Utils.getResolutions().keySet().toArray());
+		SpinnerListModel resModel = new SpinnerListModel(DisplayUtils.RESOLUTIONS_MAP.keySet().toArray());
 		resSpinner = new JSpinner(resModel);
 		resSpinner.setValue(Storage.getData(Data.RESOLUTION));
 		resSpinner.setName(Data.RESOLUTION.toString());
@@ -127,7 +127,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 		centralPanel.add(videoOptionsPanel);
 
 		CompoundBorder audioCompoundBorder = BorderFactory.createCompoundBorder(
-				margeBorder, 
+				margeBorder,
 				BorderFactory.createTitledBorder(lineBorder, "Audio Settings", TitledBorder.CENTER, TitledBorder.TOP, font, Color.BLACK));
 
 		JPanel audioOptionsPanel = new JPanel(new GridLayout(5, 1));
@@ -180,15 +180,17 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {	}
+	public void keyReleased(KeyEvent e) {
+	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {	}
+	public void keyTyped(KeyEvent e) {
+	}
 
 	@Override
 	public void itemStateChanged(ItemEvent event) {
 		JCheckBox source = (JCheckBox) event.getSource();
-		if(source == fullscreen) {
+		if(source.equals(fullscreen)) {
 			Main.getFrame().setFullscreen(event.getStateChange() == ItemEvent.SELECTED);
 		}
 		Storage.save(source.getName(), source.isSelected());
@@ -201,7 +203,8 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 	}
 
 	@Override
-	public void changedUpdate(DocumentEvent event) { }
+	public void changedUpdate(DocumentEvent event) {
+	}
 
 	@Override
 	public void insertUpdate(DocumentEvent event) {
@@ -209,15 +212,16 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
 	}
 
 	@Override
-	public void removeUpdate(DocumentEvent event) { }
+	public void removeUpdate(DocumentEvent event) {
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton source = (JButton) event.getSource();
-		if(source == backButton) {
+		if(source.equals(backButton)) {
 			Main.setMode(Mode.MENU);
-		} else if(source == applyButton) {
-			Utils.getScreen().setDisplayMode(Utils.getResolutions().get(resSpinner.getValue()));
+		} else if(source.equals(applyButton)) {
+			DisplayUtils.SCREEN.setDisplayMode(DisplayUtils.RESOLUTIONS_MAP.get(resSpinner.getValue()));
 		}
 
 	}

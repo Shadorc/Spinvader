@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 
 public class AnimatedSprite extends Effect {
 
-	private ImageIcon img;
+	private final ImageIcon img;
 
 	public AnimatedSprite(float x, float y, ImageIcon img, int duration) {
 		super(x, y, duration);

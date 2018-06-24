@@ -10,7 +10,7 @@ import me.shadorc.spinvader.Main;
 public class Text {
 
 	public static int getCenterWidth(Graphics g, String text) {
-		return (int) (Main.getFrame().getWidth()-Text.getWidth(g, text))/2;
+		return (Main.getFrame().getWidth() - Text.getWidth(g, text)) / 2;
 	}
 
 	public static int getWidth(Graphics g, String text) {
@@ -22,15 +22,14 @@ public class Text {
 	}
 
 	public static Font createFont(String name, int size) {
-		size *= Frame.getScaleX();
 		try {
-			return Font.createFont(Font.TRUETYPE_FONT, Text.class.getResourceAsStream("/res/" + name)).deriveFont(Font.PLAIN, size);
+			return Font.createFont(Font.TRUETYPE_FONT, Text.class.getResourceAsStream("/res/" + name)).deriveFont(Font.PLAIN, size * Frame.getScaleX());
 		} catch (FontFormatException | IOException e) {
-			return new Font("Consolas", Font.PLAIN, size);
+			return new Font("Consolas", Font.PLAIN, (int) (size * Frame.getScaleX()));
 		}
 	}
 
 	public static Font getFont(String name, int size) {
-		return new Font(name, Font.BOLD, (int) (size*Frame.getScaleX()));
+		return new Font(name, Font.BOLD, (int) (size * Frame.getScaleX()));
 	}
 }

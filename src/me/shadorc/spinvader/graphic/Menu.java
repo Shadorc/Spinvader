@@ -27,15 +27,13 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private String title = "Spinvader";
+	private final static String TITLE = "Spinvader";
 
-	private ImageIcon background;
-	private Font font;
+	private final ImageIcon background;
+	private final Font font;
 
 	private JButton selectedButton;
-	private JButton start;
-	private JButton options;
-	private JButton quit;
+	private final JButton start, options, quit;
 
 	private double sleep = System.currentTimeMillis();
 
@@ -43,29 +41,29 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 		super(new GridBagLayout());
 		this.addKeyListener(this);
 
-		background = Sprite.get("menu_background.jpg");
+		this.background = Sprite.get("menu_background.jpg");
 
-		font = Text.createFont("space_invaders.ttf", 200);
+		this.font = Text.createFont("space_invaders.ttf", 200);
 
 		JPanel buttons = new JPanel(new GridLayout(3, 0, 0, 35));
-		buttons.setPreferredSize(new Dimension((int) (700*Frame.getScaleX()), (int) (350*Frame.getScaleY())));
+		buttons.setPreferredSize(new Dimension((int) (700 * Frame.getScaleX()), (int) (350 * Frame.getScaleY())));
 		buttons.setOpaque(false);
 
-		start = this.createButton("Start");
-		options = this.createButton("Options");
-		quit = this.createButton("Quit");
+		this.start = this.createButton("Start");
+		this.options = this.createButton("Options");
+		this.quit = this.createButton("Quit");
 
-		selectedButton = start;
+		this.selectedButton = start;
 
 		buttons.add(start);
 		buttons.add(options);
 		buttons.add(quit);
 
 		this.add(buttons);
-	}		
+	}
 
 	private JButton createButton(String name) {
-		JButton button = new JButton(name);	
+		JButton button = new JButton(name);
 		button.setFont(Text.createFont("space_age.ttf", 50));
 		button.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3, true));
 		button.setBackground(Color.WHITE);
@@ -76,7 +74,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 			public void mouseEntered(MouseEvent e) {
 				JButton bu = (JButton) e.getSource();
 				bu.setBackground(new Color(150, 150, 150));
-				if(bu != selectedButton) {
+				if(!bu.equals(selectedButton)) {
 					selectedButton.setBackground(Color.WHITE);
 					selectedButton = bu;
 				}
@@ -101,18 +99,18 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 
 		g2d.setFont(font);
 		g2d.setColor(Color.BLACK);
-		g2d.drawString(title, Text.getCenterWidth(g2d, title), Main.getFrame().getHeight()/5);
+		g2d.drawString(TITLE, Text.getCenterWidth(g2d, TITLE), Main.getFrame().getHeight() / 5);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton bu = (JButton) event.getSource();
 
-		if(bu == start) {
+		if(bu.equals(start)) {
 			Main.setMode(Mode.GAME);
-		} else if(bu == options) {
+		} else if(bu.equals(options)) {
 			Main.setMode(Mode.OPTIONS);
-		} else if(bu == quit) {
+		} else if(bu.equals(quit)) {
 			System.exit(0);
 		}
 	}
@@ -121,10 +119,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 
-		if((System.currentTimeMillis() - sleep >= 75) && (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN)) {
+		if(System.currentTimeMillis() - sleep >= 75 && (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN)) {
 			sleep = System.currentTimeMillis();
 
-			JButton buttons[] = {start, options, quit};
+			JButton buttons[] = { start, options, quit };
 
 			selectedButton.setBackground(Color.WHITE);
 
@@ -149,8 +147,10 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {	}
+	public void keyReleased(KeyEvent e) {
+	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {	}
+	public void keyTyped(KeyEvent e) {
+	}
 }

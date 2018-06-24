@@ -3,18 +3,18 @@ package me.shadorc.spinvader.entity;
 import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.Utils;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
+import me.shadorc.spinvader.utils.RandUtils;
 
 public class Item extends Entity {
 
 	private float accelY;
 	private float speedX, speedY;
 	private int fireMode;
-	private Bonus type;
+	private final Bonus type;
 
-	Item(float x, float y, Bonus type) {
+	public Item(float x, float y, Bonus type) {
 		super(x, y, 0, null);
 
 		this.type = type;
@@ -25,13 +25,13 @@ public class Item extends Entity {
 		String spriteName = null;
 		switch (type) {
 			case FIREMODE:
-				this.fireMode = Main.getGame().getSpaceship().getFireMode()+1;
+				this.fireMode = Main.getGame().getSpaceship().getFireMode() + 1;
 				spriteName = "firemode_" + fireMode + ".png";
 				break;
 
 			case COIN:
 				this.speedY = -this.speedY;
-				this.speedX = (Utils.randFloat(0.3f)-0.15f)*Frame.getScaleX();
+				this.speedX = (RandUtils.randFloat(0.3f) - 0.15f) * Frame.getScaleX();
 				this.accelY = 0.0015f;
 				spriteName = "coin.png";
 				break;
@@ -74,29 +74,31 @@ public class Item extends Entity {
 
 	@Override
 	public void move(double delta) {
-		this.speedY += this.accelY*delta;
-		this.x += this.speedX*delta;
-		this.y += this.speedY*delta;
+		speedY += accelY * delta;
+		x += speedX * delta;
+		y += speedY * delta;
 
-		if(this.y >= Main.getFrame().getHeight()) {
+		if(y >= Main.getFrame().getHeight()) {
 			Main.getGame().delEntity(this);
 		}
 	}
 
 	public static void generate(float x, float y) {
 		Main.getGame().addEntity(new Item(x, y, Bonus.COIN));
-		switch (Utils.randInt(200)) {
-			case 0: 
+		switch (RandUtils.randInt(200)) {
+			case 0:
 			case 1:
 				Main.getGame().addEntity(new Item(x, y, Bonus.LIFE));
 				break;
 			case 2:
-				if(!Main.getGame().getSpaceship().hasExplosiveAmmo())
+				if(!Main.getGame().getSpaceship().hasExplosiveAmmo()) {
 					Main.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
+				}
 				break;
 			case 3:
-				if(Main.getGame().getSpaceship().getFireMode() < 4)
+				if(Main.getGame().getSpaceship().getFireMode() < 4) {
 					Main.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
+				}
 				break;
 		}
 	}

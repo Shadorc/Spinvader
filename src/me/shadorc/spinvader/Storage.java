@@ -8,12 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 public class Storage {
 
-	private static File CONFIG_FILE = new File("config.properties");
-	private static Properties prop = new Properties();
+	private final static File CONFIG_FILE = new File("config.properties");
+	private final static Properties PROPERTIES = new Properties();
 
 	public enum Data {
 		ANTIALIASING_ENABLE,
@@ -24,77 +25,67 @@ public class Storage {
 		SCORES;
 	}
 
-	public static void init() throws IOException {
-		CONFIG_FILE.createNewFile();
-		if(Storage.getData(Data.FULLSCREEN_ENABLE) == null) 	Storage.save(Data.FULLSCREEN_ENABLE, true);
-		if(Storage.getData(Data.ANTIALIASING_ENABLE) == null) 	Storage.save(Data.ANTIALIASING_ENABLE, false);
-		if(Storage.getData(Data.MUSIC_VOLUME) == null) 			Storage.save(Data.MUSIC_VOLUME, 50);
-		if(Storage.getData(Data.SOUND_VOLUME) == null) 			Storage.save(Data.SOUND_VOLUME, 50);
+	static {
+		try {
+			CONFIG_FILE.createNewFile();
+		} catch (IOException err) {
+			System.err.println("Error while initializing storage file : " + err.getMessage());
+			err.printStackTrace();
+			System.exit(1);
+		}
+
+		if(Storage.getData(Data.FULLSCREEN_ENABLE) == null) {
+			Storage.save(Data.FULLSCREEN_ENABLE, true);
+		}
+		if(Storage.getData(Data.ANTIALIASING_ENABLE) == null) {
+			Storage.save(Data.ANTIALIASING_ENABLE, false);
+		}
+		if(Storage.getData(Data.MUSIC_VOLUME) == null) {
+			Storage.save(Data.MUSIC_VOLUME, 50);
+		}
+		if(Storage.getData(Data.SOUND_VOLUME) == null) {
+			Storage.save(Data.SOUND_VOLUME, 50);
+		}
 	}
 
 	public static void save(Object data, Object value) {
-		OutputStream output = null;
-
-		try {
-			output = new FileOutputStream(CONFIG_FILE);
-
-			prop.setProperty(data.toString(), value.toString());
-			prop.store(output, null);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		} finally {
-			try {
-				if (output != null) output.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try (OutputStream output = new FileOutputStream(CONFIG_FILE)) {
+			PROPERTIES.setProperty(data.toString(), value.toString());
+			PROPERTIES.store(output, null);
+		} catch (IOException err) {
+			err.printStackTrace();
 		}
 	}
 
 	public static String getData(Data data) {
-		InputStream input = null;
-
-		try {
-			input = new FileInputStream(CONFIG_FILE);
-			prop.load(input);
-
-			return prop.getProperty(data.toString());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try (InputStream input = new FileInputStream(CONFIG_FILE)) {
+			PROPERTIES.load(input);
+			return PROPERTIES.getProperty(data.toString());
+		} catch (IOException err) {
+			err.printStackTrace();
 		}
-
 		return null;
 	}
 
-	public static ArrayList<Integer> getScores() {
-		String str_scores = Storage.getData(Data.SCORES);
-		ArrayList <Integer> list_scores = new ArrayList <Integer> ();
-		if(str_scores != null) {
-			String[] arr_scores = str_scores.replaceAll("\\[", "").replaceAll("\\]", "").split(", ");
-			for(String str_score : arr_scores) {
-				list_scores.add(Integer.parseInt(str_score));
+	public static List<Integer> getScores() {
+		String scoresStr = Storage.getData(Data.SCORES);
+		List<Integer> scoresList = new ArrayList<>();
+		if(scoresStr != null) {
+			String[] scoresArray = scoresStr.replaceAll("\\[", "").replaceAll("\\]", "").split(", ");
+			for(String scoreStr : scoresArray) {
+				scoresList.add(Integer.parseInt(scoreStr));
 			}
 		}
-		return list_scores;
+		return scoresList;
 	}
 
 	public static void addScore(int score) {
-		ArrayList <Integer> list_scores = Storage.getScores();
-		list_scores.add(score);
-		Collections.sort(list_scores);
-		Collections.reverse(list_scores);
-		list_scores = new ArrayList <Integer> (list_scores.subList(0, Math.min(5, list_scores.size())));
-		Storage.save(Data.SCORES, list_scores);
+		List<Integer> scoresList = Storage.getScores();
+		scoresList.add(score);
+		Collections.sort(scoresList);
+		Collections.reverse(scoresList);
+		scoresList = scoresList.subList(0, Math.min(5, scoresList.size()));
+		Storage.save(Data.SCORES, scoresList);
 	}
 
 	public static boolean isEnable(Data data) {

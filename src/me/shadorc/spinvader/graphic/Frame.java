@@ -5,26 +5,27 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.Utils;
+import me.shadorc.spinvader.utils.DisplayUtils;
 
-public class Frame extends JFrame{
+public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final float NORMAL_WIDTH = 1920;
 	private static final float NORMAL_HEIGHT = 1080;
 
-	private Sound music;
+	private final Sound music;
 
 	public Frame() {
 		super("Spinvader");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-		music = new Sound("B-Complex - Beautiful Lies.wav", 0.10, Data.MUSIC_VOLUME);
+		this.music = new Sound("B-Complex - Beautiful Lies.wav", 0.10, Data.MUSIC_VOLUME);
 
 		this.pack();
 		this.setMinimumSize(new Dimension(800, 600));
@@ -39,10 +40,9 @@ public class Frame extends JFrame{
 			if(!music.isPlaying()) {
 				music.restart();
 			}
-		} 
-		else if(panel instanceof Game) {
+		} else if(panel instanceof Game) {
 			music.stop();
-		} 
+		}
 
 		this.getContentPane().setFocusable(true);
 		this.getContentPane().requestFocus();
@@ -53,9 +53,11 @@ public class Frame extends JFrame{
 	public void setFullscreen(boolean activate) {
 		this.dispose();
 		this.setUndecorated(activate);
-		if(Utils.getScreen().isFullScreenSupported()) {
-			Utils.getScreen().setFullScreenWindow(activate ? this : null);
-			if(activate) Utils.getScreen().setDisplayMode(Utils.getResolutions().get(Storage.getData(Data.RESOLUTION)));
+		if(DisplayUtils.SCREEN.isFullScreenSupported()) {
+			DisplayUtils.SCREEN.setFullScreenWindow(activate ? this : null);
+			if(activate) {
+				DisplayUtils.SCREEN.setDisplayMode(DisplayUtils.RESOLUTIONS_MAP.get(Storage.getData(Data.RESOLUTION)));
+			}
 		} else {
 			JOptionPane.showMessageDialog(null, "Le mode plein ecran n'est pas disponible", "Erreur", JOptionPane.ERROR_MESSAGE);
 		}
@@ -63,10 +65,10 @@ public class Frame extends JFrame{
 	}
 
 	public static float getScaleX() {
-		return (float) (Utils.getDisplayMode().getWidth()/NORMAL_WIDTH);
+		return DisplayUtils.DISPLAY_MODE.getWidth() / NORMAL_WIDTH;
 	}
 
 	public static float getScaleY() {
-		return (float) (Utils.getDisplayMode().getHeight()/NORMAL_HEIGHT);
+		return DisplayUtils.DISPLAY_MODE.getHeight() / NORMAL_HEIGHT;
 	}
 }

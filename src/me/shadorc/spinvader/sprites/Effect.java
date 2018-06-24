@@ -23,7 +23,9 @@ public class Effect {
 		}
 	}
 
-	public void render(Graphics2D g2d) { }
+	public void render(Graphics2D g2d) {
+		// TODO
+	}
 
 	public int getX() {
 		return (int) x;

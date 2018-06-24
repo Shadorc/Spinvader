@@ -5,18 +5,23 @@ import javax.swing.ImageIcon;
 import me.shadorc.spinvader.Main;
 import me.shadorc.spinvader.Sound;
 import me.shadorc.spinvader.Storage.Data;
-import me.shadorc.spinvader.Utils;
 import me.shadorc.spinvader.graphic.Frame;
 import me.shadorc.spinvader.graphic.Sprite;
 import me.shadorc.spinvader.sprites.AnimatedSprite;
+import me.shadorc.spinvader.utils.RandUtils;
 
 public class Enemy extends Entity {
 
-	private ImageIcon explosionSprite;
+	private final static int LINE = 3; // Lines
+	private final static int BLANCK = 100; // Space without enemies
+	private final static int SPACE = 20; // Space between enemies
 
-	private float speedX, speedY;
+	private final ImageIcon explosionSprite;
 
-	private float bulletSpeed, reloadTime;
+	private final float speedX, speedY;
+	private final float bulletSpeed;
+
+	private float reloadTime;
 	private double lastShoot;
 
 	private int toReach;
@@ -27,14 +32,14 @@ public class Enemy extends Entity {
 	public Enemy(float x, float y, ImageIcon img) {
 		super(x, y, Main.getGame().getLevel(), img);
 
-		this.explosionSprite = Sprite.get("explosion.png", (int) (img.getIconWidth()/Frame.getScaleX()), (int) (img.getIconHeight()/Frame.getScaleY()));
+		this.explosionSprite = Sprite.get("explosion.png", (int) (img.getIconWidth() / Frame.getScaleX()), (int) (img.getIconHeight() / Frame.getScaleY()));
 
-		this.toReach = (int) (y+400*Frame.getScaleY());
+		this.toReach = (int) (y + 400 * Frame.getScaleY());
 		this.speedX = 0.07f * Frame.getScaleX();
 		this.speedY = 0.07f * Frame.getScaleY();
 
 		this.bulletSpeed = 0.5f * Frame.getScaleY();
-		this.reloadTime = this.generateShootTime();
+		this.reloadTime = RandUtils.randInt(5000, 10000);
 		this.lastShoot = System.currentTimeMillis();
 
 		dir = Direction.DOWN;
@@ -43,9 +48,9 @@ public class Enemy extends Entity {
 
 	@Override
 	public void move(double delta) {
-		switch(dir) {
+		switch (dir) {
 			case DOWN:
-				y += speedY*delta;
+				y += speedY * delta;
 
 				if(y >= toReach) {
 					y = toReach;
@@ -58,7 +63,7 @@ public class Enemy extends Entity {
 				break;
 
 			case LEFT:
-				x -= speedX*delta;
+				x -= speedX * delta;
 
 				if(x <= 0) {
 					x = 0;
@@ -69,10 +74,10 @@ public class Enemy extends Entity {
 				break;
 
 			case RIGHT:
-				x += speedX*delta;
+				x += speedX * delta;
 
 				if(x >= Main.getFrame().getWidth() - img.getIconWidth()) {
-					x = (float) (Main.getFrame().getWidth() - img.getIconWidth());
+					x = Main.getFrame().getWidth() - img.getIconWidth();
 					dir = Direction.DOWN;
 					nextDir = Direction.LEFT;
 					Main.getGame().bringDownEnemies();
@@ -87,22 +92,20 @@ public class Enemy extends Entity {
 	@Override
 	public void shoot() {
 		if(System.currentTimeMillis() - lastShoot >= reloadTime) {
-			Main.getGame().addEntity(new Bullet(x+img.getIconWidth()/2, y+img.getIconHeight(), bulletSpeed, Direction.DOWN, Type.ENEMY));
+			Main.getGame().addEntity(new Bullet(x + img.getIconWidth() / 2, y + img.getIconHeight(), bulletSpeed, Direction.DOWN, Type.ENEMY));
 			lastShoot = System.currentTimeMillis();
-			reloadTime = this.generateShootTime();
+			reloadTime = RandUtils.randInt(5000, 10000);
 		}
 	}
 
 	@Override
 	public void collidedWith(Entity en) {
-		if(en instanceof Bullet) {
-			if(((Bullet) en).getType() == Type.SPACESHIP) {
-				Main.getGame().delEntity(en);
-				if(Main.getGame().getSpaceship().hasExplosiveAmmo()) {
-					Main.getGame().genExplosion(en.getX(), en.getY(), 250);
-				} else {
-					this.takeDamage(1);
-				}
+		if(en instanceof Bullet && ((Bullet) en).getType() == Type.SPACESHIP) {
+			Main.getGame().delEntity(en);
+			if(Main.getGame().getSpaceship().hasExplosiveAmmo()) {
+				Main.getGame().genExplosion(en.getX(), en.getY(), 250);
+			} else {
+				this.takeDamage(1);
 			}
 		}
 	}
@@ -116,11 +119,48 @@ public class Enemy extends Entity {
 		Item.generate(x, y);
 	}
 
-	private int generateShootTime() {
-		return Utils.randInt(5000)+5000;
+	public void goDown() {
+		toReach = (int) (this.y + this.getHitbox().getHeight());
 	}
 
-	public void goDown() {
-		toReach = (int) (y + this.getHitbox().getHeight());
+	public static int genEnemies(int level, int count) {
+		int newLevel = level + 1;
+
+		if(newLevel < 8) {
+			// Get the original sprite
+			ImageIcon enemySprite = Sprite.generateSprite();
+
+			final int column = count / LINE; // Columns
+
+			// Space occupied by each enemy counting the blanck without enemies
+			int xSize = (Main.getFrame().getWidth() - BLANCK) / column;
+
+			// Enemy width without space between them
+			int enemyWidth = xSize - SPACE;
+
+			// Resize enemy height depending upon its width
+			float scale = (float) Math.max(enemySprite.getIconWidth(), enemyWidth) / Math.min(enemySprite.getIconWidth(), enemyWidth);
+			int enemyHeight = (int) (enemySprite.getIconHeight() * scale);
+
+			// Space occupied by each enemy counting the space between them
+			int ySize = enemyHeight + SPACE;
+
+			// Resize original sprite with new dimension
+			enemySprite = Sprite.resize(enemySprite, enemyWidth, enemyHeight);
+
+			for(int y = 0; y < LINE; y++) {
+				for(int x = 0; x < column; x++) {
+					Main.getGame().addEntity(new Enemy(xSize * x, ySize * y - Main.getFrame().getHeight() / 3, enemySprite));
+				}
+			}
+
+		} else if(newLevel == 8) {
+			Main.getGame().addEntity(new Boss(100, 50));
+
+		} else {
+			newLevel = 1;
+		}
+
+		return newLevel;
 	}
 }

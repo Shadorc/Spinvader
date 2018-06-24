@@ -15,8 +15,8 @@ import me.shadorc.spinvader.Storage.Data;
 
 public class Sound {
 
+	private final String name;
 	private FloatControl gainControl;
-	private String name;
 	private Clip clip;
 
 	public Sound(String name, double gain, Data volumeType) {
@@ -28,18 +28,19 @@ public class Sound {
 			clip.open(audioIn);
 
 			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			this.setGain(Integer.parseInt(Storage.getData(volumeType))*gain/100);
+			this.setGain(Integer.parseInt(Storage.getData(volumeType)) * gain / 100);
 
-			//Close sound thread when the sound finished
+			// Close sound thread when the sound finished
 			clip.addLineListener(new LineListener() {
+				@Override
 				public void update(LineEvent evt) {
 					if(evt.getType() == LineEvent.Type.STOP) {
 						evt.getLine().close();
 					}
 				}
 			});
-		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException err) {
+			err.printStackTrace();
 		}
 	}
 
@@ -65,8 +66,8 @@ public class Sound {
 			try {
 				AudioInputStream audioIn = AudioSystem.getAudioInputStream(this.getClass().getResource("/snd/" + name));
 				clip.open(audioIn);
-			} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-				e.printStackTrace();
+			} catch (LineUnavailableException | IOException | UnsupportedAudioFileException err) {
+				err.printStackTrace();
 			}
 		}
 		this.start();
@@ -77,6 +78,6 @@ public class Sound {
 	}
 
 	public void setGain(double gain) {
-		gainControl.setValue((float) (Math.log(gain)/Math.log(10.0)*20.0));
+		gainControl.setValue((float) (Math.log(gain) / Math.log(10.0) * 20.0));
 	}
 }
