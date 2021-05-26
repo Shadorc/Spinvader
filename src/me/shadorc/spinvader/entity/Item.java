@@ -9,97 +9,97 @@ import me.shadorc.spinvader.utils.RandUtils;
 
 public class Item extends Entity {
 
-	private float accelY;
-	private float speedX, speedY;
-	private int fireMode;
-	private final Bonus type;
+    private float accelY;
+    private float speedX, speedY;
+    private int fireMode;
+    private final Bonus type;
 
-	public Item(float x, float y, Bonus type) {
-		super(x, y, 0, null);
+    public Item(float x, float y, Bonus type) {
+        super(x, y, 0, null);
 
-		this.type = type;
-		this.accelY = 0;
-		this.speedX = 0;
-		this.speedY = 0.3f * Frame.getScaleY();
+        this.type = type;
+        this.accelY = 0;
+        this.speedX = 0;
+        this.speedY = 0.3f * Frame.getScaleY();
 
-		String spriteName = null;
-		switch (type) {
-			case FIREMODE:
-				this.fireMode = Main.getGame().getSpaceship().getFireMode() + 1;
-				spriteName = "firemode_" + fireMode + ".png";
-				break;
+        String spriteName = null;
+        switch (type) {
+            case FIREMODE:
+                this.fireMode = Main.getGame().getSpaceship().getFireMode() + 1;
+                spriteName = "firemode_" + fireMode + ".png";
+                break;
 
-			case COIN:
-				this.speedY = -this.speedY;
-				this.speedX = (RandUtils.randFloat(0.3f) - 0.15f) * Frame.getScaleX();
-				this.accelY = 0.0015f;
-				spriteName = "coin.png";
-				break;
+            case COIN:
+                this.speedY = -this.speedY;
+                this.speedX = (RandUtils.randFloat(0.3f) - 0.15f) * Frame.getScaleX();
+                this.accelY = 0.0015f;
+                spriteName = "coin.png";
+                break;
 
-			case EXPLOSIVE:
-				spriteName = "explosion.png";
-				break;
+            case EXPLOSIVE:
+                spriteName = "explosion.png";
+                break;
 
-			case LIFE:
-				spriteName = "life.png";
-				break;
-		}
-		this.img = Sprite.get(spriteName, 50, 50);
-	}
+            case LIFE:
+                spriteName = "life.png";
+                break;
+        }
+        this.img = Sprite.get(spriteName, 50, 50);
+    }
 
-	@Override
-	public void collidedWith(Entity en) {
-		if(en instanceof Spaceship) {
-			Main.getGame().delEntity(this);
-			switch (type) {
-				case EXPLOSIVE:
-					Main.getGame().getSpaceship().activeBomb();
-					break;
+    @Override
+    public void collidedWith(Entity en) {
+        if (en instanceof Spaceship) {
+            Main.getGame().delEntity(this);
+            switch (type) {
+                case EXPLOSIVE:
+                    Main.getGame().getSpaceship().activeBomb();
+                    break;
 
-				case FIREMODE:
-					Main.getGame().getSpaceship().setFireMode(fireMode);
-					break;
+                case FIREMODE:
+                    Main.getGame().getSpaceship().setFireMode(fireMode);
+                    break;
 
-				case LIFE:
-					Main.getGame().getSpaceship().heal(1);
-					Sound.play("life.wav", 0.20, Data.SOUND_VOLUME);
-					break;
+                case LIFE:
+                    Main.getGame().getSpaceship().heal(1);
+                    Sound.play("life.wav", 0.20, Data.SOUND_VOLUME);
+                    break;
 
-				case COIN:
-					Main.getGame().incMoney(1);
-					break;
-			}
-		}
-	}
+                case COIN:
+                    Main.getGame().incMoney(1);
+                    break;
+            }
+        }
+    }
 
-	@Override
-	public void move(double delta) {
-		speedY += accelY * delta;
-		x += speedX * delta;
-		y += speedY * delta;
+    @Override
+    public void move(double delta) {
+        speedY += accelY * delta;
+        x += speedX * delta;
+        y += speedY * delta;
 
-		if(y >= Main.getFrame().getHeight()) {
-			Main.getGame().delEntity(this);
-		}
-	}
+        if (y >= Main.getFrame().getHeight()) {
+            Main.getGame().delEntity(this);
+        }
+    }
 
-	public static void generate(float x, float y) {
-		Main.getGame().addEntity(new Item(x, y, Bonus.COIN));
-		switch (RandUtils.randInt(200)) {
-			case 0:
-			case 1:
-				Main.getGame().addEntity(new Item(x, y, Bonus.LIFE));
-				break;
-			case 2:
-				if(!Main.getGame().getSpaceship().hasExplosiveAmmo()) {
-					Main.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
-				}
-				break;
-			case 3:
-				if(Main.getGame().getSpaceship().getFireMode() < 4) {
-					Main.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
-				}
-				break;
-		}
-	}
+    public static void generate(float x, float y) {
+        Main.getGame().addEntity(new Item(x, y, Bonus.COIN));
+        switch (RandUtils.randInt(200)) {
+            case 0:
+            case 1:
+                Main.getGame().addEntity(new Item(x, y, Bonus.LIFE));
+                break;
+            case 2:
+                if (!Main.getGame().getSpaceship().hasExplosiveAmmo()) {
+                    Main.getGame().addEntity(new Item(x, y, Bonus.EXPLOSIVE));
+                }
+                break;
+            case 3:
+                if (Main.getGame().getSpaceship().getFireMode() < 4) {
+                    Main.getGame().addEntity(new Item(x, y, Bonus.FIREMODE));
+                }
+                break;
+        }
+    }
 }
