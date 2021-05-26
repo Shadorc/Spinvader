@@ -46,6 +46,9 @@ public class Storage {
 		if(Storage.getData(Data.SOUND_VOLUME) == null) {
 			Storage.save(Data.SOUND_VOLUME, 50);
 		}
+		if(Storage.getData(Data.RESOLUTION) == null) {
+			Storage.save(Data.RESOLUTION, "1920x1080");
+		}
 	}
 
 	public static void save(Object data, Object value) {
