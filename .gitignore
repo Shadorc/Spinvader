@@ -1,17 +1,29 @@
 # Java class files
 *.class
 
-# generated files
+# Generated files
 bin/
 gen/
-
-# Windows thumbnail db
-Thumbs.db
+out/
 
 # Eclipse project files
 .classpath
 .project
 .settings
+
+# IntelliJ project files
+.idea
+*.iml
+
+# Maven build files
+target/
+dependency-reduced-pom.xml
+
+# PDM files
+.eclipse-pmd
+
+# Windows thumbnail db
+Thumbs.db
 
 # Project Files
 config.properties
