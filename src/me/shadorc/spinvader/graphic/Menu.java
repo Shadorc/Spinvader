@@ -107,7 +107,7 @@ public class Menu extends JPanel implements ActionListener, KeyListener {
         if (System.currentTimeMillis() - sleep >= 75 && (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN)) {
             sleep = System.currentTimeMillis();
 
-            JButton buttons[] = {start, options, quit};
+            JButton[] buttons = {start, options, quit};
 
             selectedButton.setBackground(Color.WHITE);
 

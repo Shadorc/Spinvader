@@ -17,7 +17,7 @@ public class Storage {
         RESOLUTION,
         MUSIC_VOLUME,
         SOUND_VOLUME,
-        SCORES;
+        SCORES
     }
 
     static {
@@ -69,7 +69,7 @@ public class Storage {
         String scoresStr = Storage.getData(Data.SCORES);
         List<Integer> scoresList = new ArrayList<>();
         if (scoresStr != null) {
-            String[] scoresArray = scoresStr.replaceAll("\\[", "").replaceAll("\\]", "").split(", ");
+            String[] scoresArray = scoresStr.replaceAll("\\[", "").replaceAll("]", "").split(", ");
             for (String scoreStr : scoresArray) {
                 scoresList.add(Integer.parseInt(scoreStr));
             }

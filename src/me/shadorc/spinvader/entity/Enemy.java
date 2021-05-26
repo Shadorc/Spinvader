@@ -13,7 +13,7 @@ import javax.swing.*;
 public class Enemy extends Entity {
 
     private final static int LINE = 3; // Lines
-    private final static int BLANCK = 100; // Space without enemies
+    private final static int BLANK = 100; // Space without enemies
     private final static int SPACE = 20; // Space between enemies
 
     private final ImageIcon explosionSprite;
@@ -92,7 +92,8 @@ public class Enemy extends Entity {
     @Override
     public void shoot() {
         if (System.currentTimeMillis() - lastShoot >= reloadTime) {
-            Main.getGame().addEntity(new Bullet(x + img.getIconWidth() / 2, y + img.getIconHeight(), bulletSpeed, Direction.DOWN, Type.ENEMY));
+            Main.getGame().addEntity(new Bullet(x + img.getIconWidth() / 2.0f,
+                    y + img.getIconHeight(), bulletSpeed, Direction.DOWN, Type.ENEMY));
             lastShoot = System.currentTimeMillis();
             reloadTime = RandUtils.randInt(5000, 10000);
         }
@@ -132,8 +133,8 @@ public class Enemy extends Entity {
 
             final int column = count / LINE; // Columns
 
-            // Space occupied by each enemy counting the blanck without enemies
-            int xSize = (Main.getFrame().getWidth() - BLANCK) / column;
+            // Space occupied by each enemy counting the blank without enemies
+            int xSize = (Main.getFrame().getWidth() - BLANK) / column;
 
             // Enemy width without space between them
             int enemyWidth = xSize - SPACE;
@@ -150,7 +151,8 @@ public class Enemy extends Entity {
 
             for (int y = 0; y < LINE; y++) {
                 for (int x = 0; x < column; x++) {
-                    Main.getGame().addEntity(new Enemy(xSize * x, ySize * y - Main.getFrame().getHeight() / 3, enemySprite));
+                    Main.getGame().addEntity(new Enemy(xSize * x,
+                            ySize * y - Main.getFrame().getHeight() / 3.0f, enemySprite));
                 }
             }
 

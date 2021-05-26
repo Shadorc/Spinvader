@@ -17,21 +17,18 @@ public class Main {
     protected static Game game;
 
     public enum Mode {
-        OPTIONS, GAME, MENU;
+        OPTIONS, GAME, MENU
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame = new Frame();
+        SwingUtilities.invokeLater(() -> {
+            frame = new Frame();
 
-                menu = new Menu();
-                options = new Options();
+            menu = new Menu();
+            options = new Options();
 
-                frame.setPanel(menu);
-                frame.setFullscreen(Storage.isEnable(Data.FULLSCREEN_ENABLE));
-            }
+            frame.setPanel(menu);
+            frame.setFullscreen(Storage.isEnable(Data.FULLSCREEN_ENABLE));
         });
     }
 

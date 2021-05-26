@@ -200,7 +200,7 @@ public class Options extends JPanel implements KeyListener, ItemListener, Change
         if (source.equals(backButton)) {
             Main.setMode(Mode.MENU);
         } else if (source.equals(applyButton)) {
-            DisplayUtils.SCREEN.setDisplayMode(DisplayUtils.RESOLUTIONS_MAP.get(resSpinner.getValue()));
+            DisplayUtils.SCREEN.setDisplayMode(DisplayUtils.RESOLUTIONS_MAP.get(resSpinner.getValue().toString()));
         }
 
     }

@@ -168,7 +168,7 @@ public class Game extends JPanel implements Runnable {
             int mb = 1024 * 1024;
             Runtime runtime = Runtime.getRuntime();
 
-            ArrayList<String> debugInfos = new ArrayList<String>();
+            ArrayList<String> debugInfos = new ArrayList<>();
             debugInfos.add("Resolution: " + Main.getFrame().getWidth() + "x" + Main.getFrame().getHeight());
             debugInfos.add("Memory used: " + (runtime.totalMemory() - runtime.freeMemory()) / mb + "/" + (runtime.totalMemory() / mb) + " Mo");
             debugInfos.add("Entities: " + entities.size());
@@ -258,12 +258,7 @@ public class Game extends JPanel implements Runnable {
             showHitbox = !showHitbox;
 
         if (!generation.isAlive() && !this.isEnemyAlive()) {
-            generation = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    level = Enemy.genEnemies(level, 36);
-                }
-            });
+            generation = new Thread(() -> level = Enemy.genEnemies(level, 36));
             generation.start();
         }
 

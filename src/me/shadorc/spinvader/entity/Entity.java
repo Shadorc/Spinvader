@@ -6,15 +6,15 @@ import java.awt.*;
 public class Entity {
 
     public enum Direction {
-        UP, DOWN, RIGHT, LEFT;
+        UP, DOWN, RIGHT, LEFT
     }
 
     public enum Type {
-        SPACESHIP, ENEMY;
+        SPACESHIP, ENEMY
     }
 
     public enum Bonus {
-        COIN, LIFE, FIREMODE, EXPLOSIVE;
+        COIN, LIFE, FIREMODE, EXPLOSIVE
     }
 
     protected ImageIcon img;

@@ -23,12 +23,9 @@ public class Sound {
             this.setGain(Integer.parseInt(Storage.getData(volumeType)) * gain / 100);
 
             // Close sound thread when the sound finished
-            clip.addLineListener(new LineListener() {
-                @Override
-                public void update(LineEvent evt) {
-                    if (evt.getType() == LineEvent.Type.STOP) {
-                        evt.getLine().close();
-                    }
+            clip.addLineListener(evt -> {
+                if (evt.getType() == LineEvent.Type.STOP) {
+                    evt.getLine().close();
                 }
             });
         } catch (LineUnavailableException | IOException | UnsupportedAudioFileException err) {
@@ -37,12 +34,7 @@ public class Sound {
     }
 
     public static void play(String name, double gain, Data volumeType) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                new Sound(name, gain, volumeType).start();
-            }
-        }).start();
+        new Thread(() -> new Sound(name, gain, volumeType).start()).start();
     }
 
     public void start() {

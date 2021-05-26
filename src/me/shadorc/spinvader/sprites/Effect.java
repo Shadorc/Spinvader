@@ -6,7 +6,8 @@ import java.awt.*;
 
 public class Effect {
 
-    protected float x, y;
+    protected final float x;
+    protected final float y;
     protected int duration;
     protected long start;
 
